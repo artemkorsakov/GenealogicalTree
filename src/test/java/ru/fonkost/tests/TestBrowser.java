@@ -48,7 +48,7 @@ public class TestBrowser {
      * Проверка формирования класса Person на основе страницы Рюрика.
      */
     @Test
-    public void testPersonRurick() {
+    public void testPersonRurick() throws Exception {
 	driver.navigate().to(rurickUrl);
 	PersonPage page = new PersonPage(driver);
 	Person person = page.GetPerson();
