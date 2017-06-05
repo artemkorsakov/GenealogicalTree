@@ -1,7 +1,5 @@
 /**
- * Артём Корсаков 
- * site: http://fonkost.ru
- * email: artemkorsakov@mail.ru
+ * http://fonkost.ru
  */
 package ru.fonkost.entities;
 
@@ -18,6 +16,8 @@ public class Person {
     private String name;
     private int numberGeneration = 1;
     private List<Person> childrens = new ArrayList<Person>();
+    private int id;
+    private static int count = 0;
 
     /**
      * Инициализация экземпляра класса по имени и урлу.
@@ -33,6 +33,17 @@ public class Person {
 	}
 	this.name = name;
 	this.url = url;
+	count++;
+	this.id = count;
+    }
+
+    /**
+     * Возвращает идентификатор персоны.
+     *
+     * @return идентификатор
+     */
+    public int getId() {
+	return id;
     }
 
     /**
@@ -70,13 +81,11 @@ public class Person {
      */
     public void setChildren(Person person) {
 	if (person.getUrl().equals(url)) {
-	    System.out.println("Добавляемая персона (" + person + ") имеет тот же урл, что и текущая (" + this + ")");
 	    return;
 	}
 
 	for (Person child : childrens) {
 	    if (person.getUrl().equals(child.getUrl())) {
-		System.out.println("Добавляемая персона (" + person + ") уже есть в списке (" + child + ")");
 		return;
 	    }
 	}
@@ -110,6 +119,6 @@ public class Person {
      */
     @Override
     public String toString() {
-	return name + " (" + url + ")";
+	return "id=" + id + "; name=" + name + "; url=" + url;
     }
 }

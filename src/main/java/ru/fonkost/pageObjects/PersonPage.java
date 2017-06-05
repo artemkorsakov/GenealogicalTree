@@ -1,21 +1,21 @@
 /**
- * Артём Корсаков 
- * site: http://fonkost.ru
- * email: artemkorsakov@mail.ru
+ * http://fonkost.ru
  */
 package ru.fonkost.pageObjects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import ru.fonkost.driverHelper.DriverFactory;
 import ru.fonkost.entities.Person;
 
 /**
- * Страница, посвященная историческому лицу.
+ * Страница исторического лица.
  *
  * @author Артём Корсаков
  */
@@ -30,11 +30,12 @@ public class PersonPage {
      */
     public PersonPage(WebDriver driver) {
 	this.driver = driver;
+	WaitLoadPage();
     }
 
     /**
-     * Возвращает экземпляр класса Person с данными личности, на странице
-     * которой находимся в текущий момент.
+     * Возвращает экземпляр класса Person с данными персоны, на странице которой
+     * находимся в текущий момент.
      *
      * @return the person
      */
@@ -46,13 +47,16 @@ public class PersonPage {
     }
 
     /**
-     * Возвращает список урлов страниц детей личности
+     * Возвращает список урлов страниц детей персоны
      *
      * @return the list
      */
     public List<String> GetChildrensUrl() {
+	driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 	List<WebElement> childrensLinks = driver
 		.findElements(By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a"));
+	driver.manage().timeouts().implicitlyWait(DriverFactory.timeout, TimeUnit.SECONDS);
+
 	List<String> childrens = new ArrayList<String>();
 
 	for (WebElement childrenLink : childrensLinks) {
@@ -61,5 +65,12 @@ public class PersonPage {
 	}
 
 	return childrens;
+    }
+
+    /**
+     * Ожидание загрузки страницы
+     */
+    private void WaitLoadPage() {
+	this.driver.findElement(By.cssSelector("#firstHeading"));
     }
 }

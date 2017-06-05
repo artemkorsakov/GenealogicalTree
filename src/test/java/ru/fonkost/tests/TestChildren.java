@@ -1,7 +1,5 @@
 /**
- * Артём Корсаков 
- * site: http://fonkost.ru
- * email: artemkorsakov@mail.ru
+ * http://fonkost.ru
  */
 package ru.fonkost.tests;
 
@@ -19,7 +17,7 @@ import ru.fonkost.entities.Person;
 import ru.fonkost.pageObjects.PersonPage;
 
 /**
- * Тесты, проверяющие корректность вычисления детей представителя династии.
+ * Тесты, проверяющие корректность определения детей представителя династии.
  *
  * @author Артём Корсаков
  */
@@ -27,12 +25,9 @@ public class TestChildren {
     private String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
     private WebDriver driver;
 
-    /**
-     * Инициализация драйвера перед запуском каждого теста.
-     */
     @Before
     public void Start() {
-	driver = DriverFactory.GetDriver(30);
+	driver = DriverFactory.GetDriver();
     }
 
     /**
@@ -47,9 +42,28 @@ public class TestChildren {
 
 	driver.navigate().to(childrens.get(0));
 	Person person = page.GetPerson();
+	assertTrue(person.getName().equals("Игорь Рюрикович"));
 	assertTrue(person.getUrl().equals(
 		"https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D0%BE%D1%80%D1%8C_%D0%A0%D1%8E%D1%80%D0%B8%D0%BA%D0%BE%D0%B2%D0%B8%D1%87"));
-	assertTrue(person.getName().equals("Игорь Рюрикович"));
+    }
+
+    /**
+     * Проверка определения количества детей
+     */
+    @Test
+    public void testTheNumberOfChildren() throws Exception {
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Ярославич_(князь_галицкий)");
+	PersonPage page = new PersonPage(driver);
+	List<String> childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 0);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Мария_Добронега");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 0);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Святославич");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 16);
     }
 
     /**
@@ -139,9 +153,6 @@ public class TestChildren {
 	assertTrue(svyatoslav.getCountOfChildrens() == 3);
     }
 
-    /**
-     * Остановка драйвера после запуска каждого теста.
-     */
     @After
     public void Stop() {
 	driver.quit();

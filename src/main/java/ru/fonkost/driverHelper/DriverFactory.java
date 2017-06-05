@@ -1,7 +1,5 @@
 /**
- * Артём Корсаков 
- * site: http://fonkost.ru
- * email: artemkorsakov@mail.ru
+ * http://fonkost.ru
  */
 package ru.fonkost.driverHelper;
 
@@ -14,6 +12,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  * Фабрика по созданию драйверов браузеров.
  */
 public class DriverFactory {
+    public static final int timeout = 30;
 
     /**
      * Возвращает драйвер браузера Firefox.
@@ -22,7 +21,7 @@ public class DriverFactory {
      *            лимит ожидания элементов
      * @return драйвер
      */
-    public static WebDriver GetDriver(int timeout) {
+    public static WebDriver GetDriver() {
 	WebDriver driver = new FirefoxDriver();
 	driver.manage().window().maximize();
 	driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);

@@ -1,7 +1,5 @@
 /**
- * Артём Корсаков 
- * site: http://fonkost.ru
- * email: artemkorsakov@mail.ru
+ * http://fonkost.ru
  */
 package ru.fonkost.tests;
 
@@ -18,7 +16,7 @@ import ru.fonkost.pageObjects.PersonPage;
 
 /**
  * Тесты, проверяющие, что драйвер корректно запустился и отработал, а также
- * определение Имени и Страницы для представителя династии.
+ * определение Имени и Url-страницы для представителя династии.
  *
  * @author Артём Корсаков
  */
@@ -26,12 +24,9 @@ public class TestBrowser {
     private String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
     private WebDriver driver;
 
-    /**
-     * Инициализация драйвера перед запуском каждого теста.
-     */
     @Before
     public void Start() {
-	driver = DriverFactory.GetDriver(30);
+	driver = DriverFactory.GetDriver();
     }
 
     /**
@@ -54,12 +49,10 @@ public class TestBrowser {
 	Person person = page.GetPerson();
 	assertTrue(person.getUrl().equals(rurickUrl));
 	assertTrue(person.getName().equals("Рюрик"));
-	assertTrue(person.toString().equals("Рюрик (https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA)"));
+	assertTrue(person.toString()
+		.equals("id=1; name=Рюрик; url=https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
     }
 
-    /**
-     * Остановка драйвера после запуска каждого теста.
-     */
     @After
     public void Stop() {
 	driver.quit();
