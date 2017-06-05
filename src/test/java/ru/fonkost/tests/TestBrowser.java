@@ -49,8 +49,6 @@ public class TestBrowser {
 	Person person = page.GetPerson();
 	assertTrue(person.getUrl().equals(rurickUrl));
 	assertTrue(person.getName().equals("Рюрик"));
-	assertTrue(person.toString()
-		.equals("id=1; name=Рюрик; url=https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
     }
 
     @After

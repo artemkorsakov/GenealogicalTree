@@ -119,6 +119,7 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "id=" + id + "; name=" + name + "; url=" + url;
+	return "count=" + count + "id=" + id + "; name=" + name + "; numberGeneration=" + numberGeneration
+		+ "; getCountOfChildrens=" + getCountOfChildrens() + "; url=" + url;
     }
 }
