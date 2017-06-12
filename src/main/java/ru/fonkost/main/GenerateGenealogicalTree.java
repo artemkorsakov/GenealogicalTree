@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 import ru.fonkost.driverHelper.DriverFactory;
 import ru.fonkost.entities.Person;
 import ru.fonkost.pageObjects.PersonPage;
+import ru.fonkost.utils.ExcelWorker;
 
 /**
  * Генерация родословного дерева.
@@ -35,7 +36,10 @@ public final class GenerateGenealogicalTree {
      *            the arguments
      */
     public static void main(String[] args) throws Exception {
+	ExcelWorker excelWorker = new ExcelWorker();
+	excelWorker.createSheet("Рюриковичи");
 	WebDriver driver = DriverFactory.GetDriver();
+
 	driver.navigate().to(rurickUrl);
 	PersonPage page = new PersonPage(driver);
 	Person AncestorOfADynasty = page.GetPerson();
@@ -54,15 +58,14 @@ public final class GenerateGenealogicalTree {
 	    }
 	    UnvisitedPersons.remove(currentPerson);
 	    UnvisitedPersons.addAll(currentPerson.getChildrens());
-	    LogResult(currentPerson);
+
+	    excelWorker.savePerson(currentPerson);
 	}
 
+	excelWorker.saveSheet();
+	Person.ResetCount();
 	driver.quit();
 	driver = null;
-    }
-
-    private static void LogResult(Person person) {
-	System.out.println(person);
     }
 
     private static void GoToUrl(WebDriver driver, String url) {
