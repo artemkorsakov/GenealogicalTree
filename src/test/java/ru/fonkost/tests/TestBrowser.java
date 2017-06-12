@@ -55,5 +55,6 @@ public class TestBrowser {
     public void Stop() {
 	driver.quit();
 	driver = null;
+	Person.ResetCount();
     }
 }

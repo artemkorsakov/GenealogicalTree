@@ -17,6 +17,7 @@ public class Person {
     private int numberGeneration = 1;
     private List<Person> childrens = new ArrayList<Person>();
     private int id;
+    private int idParent = 0;
     private static int count = 0;
 
     /**
@@ -44,6 +45,15 @@ public class Person {
      */
     public int getId() {
 	return id;
+    }
+
+    /**
+     * Возвращает идентификатор родителя персоны.
+     *
+     * @return идентификатор родителя
+     */
+    public int getIdParent() {
+	return idParent;
     }
 
     /**
@@ -90,7 +100,8 @@ public class Person {
 	    }
 	}
 
-	person.numberGeneration = numberGeneration + 1;
+	person.numberGeneration = this.numberGeneration + 1;
+	person.idParent = this.id;
 	childrens.add(person);
     }
 
@@ -112,6 +123,13 @@ public class Person {
 	return name;
     }
 
+    /**
+     * Обнуляет счетчик идентификаторов.
+     */
+    public static void ResetCount() {
+	count = 0;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -119,7 +137,7 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "count=" + count + "id=" + id + "; name=" + name + "; numberGeneration=" + numberGeneration
+	return "name=" + name + "; count=" + count + "id=" + id + "; numberGeneration=" + numberGeneration
 		+ "; getCountOfChildrens=" + getCountOfChildrens() + "; url=" + url;
     }
 }
