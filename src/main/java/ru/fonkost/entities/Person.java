@@ -137,7 +137,7 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "name=" + name + "; count=" + count + "id=" + id + "; numberGeneration=" + numberGeneration
-		+ "; getCountOfChildrens=" + getCountOfChildrens() + "; url=" + url;
+	return "name=" + name + "; count=" + count + "; id=" + id + "; numberGeneration=" + numberGeneration + "; url="
+		+ url;
     }
 }

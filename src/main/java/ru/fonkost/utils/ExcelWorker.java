@@ -62,9 +62,9 @@ public class ExcelWorker {
     /**
      * Сохраняем созданный в памяти Excel документ в файл
      */
-    public void saveSheet() {
+    public void saveSheet(String fileName) {
 	try {
-	    FileOutputStream out = new FileOutputStream(new File("C:\\workspace\\dynasticTree.csv"));
+	    FileOutputStream out = new FileOutputStream(new File(fileName));
 	    workbook.write(out);
 	    workbook.close();
 	    out.close();

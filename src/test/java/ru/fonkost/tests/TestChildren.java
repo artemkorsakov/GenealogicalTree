@@ -64,6 +64,22 @@ public class TestChildren {
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Святославич");
 	childrens = page.GetChildrensUrl();
 	assertTrue(childrens.size() == 16);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Ярослав_Святославич");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 3);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Людовик_VII");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 5);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Галеран_IV_де_Бомон,_граф_де_Мёлан");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 0);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Юрий_Ярославич_(князь_туровский)");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 5);
     }
 
     /**

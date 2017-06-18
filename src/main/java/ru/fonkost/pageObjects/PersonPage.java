@@ -6,6 +6,8 @@ package ru.fonkost.pageObjects;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -53,13 +55,25 @@ public class PersonPage {
      */
     public List<String> GetChildrensUrl() {
 	driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-	List<WebElement> childrensLinks = driver
-		.findElements(By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a"));
+	List<WebElement> childrensLinks = driver.findElements(
+		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
 	driver.manage().timeouts().implicitlyWait(DriverFactory.timeout, TimeUnit.SECONDS);
 
 	List<String> childrens = new ArrayList<String>();
 
 	for (WebElement childrenLink : childrensLinks) {
+	    String parentTagName = childrenLink.findElement(By.xpath(".//..")).getTagName();
+	    if (parentTagName.equals("sup")) {
+		continue;
+	    }
+
+	    String name = childrenLink.getText();
+	    Pattern p = Pattern.compile("^[\\D]+.+");
+	    Matcher m = p.matcher(name);
+	    if (!m.matches()) {
+		continue;
+	    }
+
 	    String url = childrenLink.getAttribute("href");
 	    childrens.add(url);
 	}

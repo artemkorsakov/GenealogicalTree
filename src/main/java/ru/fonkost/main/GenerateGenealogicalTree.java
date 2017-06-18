@@ -20,7 +20,9 @@ import ru.fonkost.utils.ExcelWorker;
  */
 public final class GenerateGenealogicalTree {
     private static String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
+    private static String dynastyName = "Рюриковичи";
     private static int limitNumberGeneration = 9;
+    private static String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
     /**
      * Открываем страницу основателя династии. Переходим по урлу и вычисляем его
@@ -38,7 +40,7 @@ public final class GenerateGenealogicalTree {
      */
     public static void main(String[] args) throws Exception {
 	ExcelWorker excelWorker = new ExcelWorker();
-	excelWorker.createSheet("Рюриковичи");
+	excelWorker.createSheet(dynastyName);
 	WebDriver driver = DriverFactory.GetDriver();
 
 	driver.navigate().to(rurickUrl);
@@ -65,7 +67,7 @@ public final class GenerateGenealogicalTree {
 	    excelWorker.savePerson(currentPerson);
 	}
 
-	excelWorker.saveSheet();
+	excelWorker.saveSheet(fileName);
 	Person.ResetCount();
 	driver.quit();
 	driver = null;
