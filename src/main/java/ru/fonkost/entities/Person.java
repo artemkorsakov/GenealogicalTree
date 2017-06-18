@@ -28,9 +28,9 @@ public class Person {
      * @param url
      *            the url
      */
-    public Person(String name, String url) throws Exception {
+    public Person(String name, String url) throws IllegalArgumentException {
 	if (name == null || url == null || name.isEmpty() || url.isEmpty()) {
-	    throw new Exception("Оба аргумента должны иметь значение");
+	    throw new IllegalArgumentException("Оба аргумента должны иметь значение");
 	}
 	this.name = name;
 	this.url = url;
@@ -128,6 +128,20 @@ public class Person {
      */
     public static void ResetCount() {
 	count = 0;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+	if ((object == null) || !(object instanceof Person)) {
+	    return false;
+	}
+	Person person = (Person) object;
+	return this.url.equals(person.url);
+    }
+
+    @Override
+    public int hashCode() {
+	return this.url.hashCode();
     }
 
     /*

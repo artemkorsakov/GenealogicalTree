@@ -19,63 +19,106 @@ import ru.fonkost.utils.ExcelWorker;
  * @author Артём Корсаков
  */
 public final class GenerateGenealogicalTree {
-    private static String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
-    private static String dynastyName = "Рюриковичи";
-    private static int limitNumberGeneration = 9;
-    private static String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
+    private static WebDriver driver = DriverFactory.GetDriver();
+    private static List<Person> AllPersons = new ArrayList<Person>();
+    private static ExcelWorker excelWorker = new ExcelWorker();
 
     /**
-     * Открываем страницу основателя династии. Переходим по урлу и вычисляем его
-     * основные данные. Создаем список непосещенных персон, в который добавляем
-     * основателя династии. В цикле до тех пор, пока список непосещенных персон
-     * не опустеет, проходим по каждой персоне: посещаем страницу этой персоны,
-     * вычисляем урлы детей персоны, переходим по ним, вычисляем основные данные
-     * детей и формируем список детей персоны. Затем подготавливаем следующую
-     * итерацию: добавляем в список непосещенных персон всех детей текущего
-     * человека, а также удаляем из списка просмотренного текущего человека. И
-     * так до тех пор, пока все персоны не будут посещены.
+     * Вычисляем основателя династии и добавляем его в генеалогическое древо. В
+     * цикле до тех пор, пока не достигнем конца списка древа, проходим по
+     * каждой персоне: посещаем страницу, вычисляем урлы детей, переходим по
+     * ним, вычисляем основные данные и формируем список детей персоны. Затем
+     * подготавливаем следующую итерацию: добавляем в древо всех детей текущего
+     * человека, если их ещё нет в списке, а также увеличиваем итератор.
      *
      * @param args
      *            the arguments
+     * @throws Exception
+     *             the exception
      */
     public static void main(String[] args) throws Exception {
-	ExcelWorker excelWorker = new ExcelWorker();
-	excelWorker.createSheet(dynastyName);
-	WebDriver driver = DriverFactory.GetDriver();
+	final String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
+	final int limitNumberGeneration = 9;
+	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
-	driver.navigate().to(rurickUrl);
-	PersonPage page = new PersonPage(driver);
-	Person AncestorOfADynasty = page.GetPerson();
+	DetermineAncestorOfADynasty(rurickUrl);
 
-	List<Person> UnvisitedPersons = new ArrayList<Person>();
-	UnvisitedPersons.add(AncestorOfADynasty);
-
-	while (UnvisitedPersons.size() > 0) {
-	    Person currentPerson = UnvisitedPersons.get(0);
-	    GoToUrl(driver, currentPerson.getUrl());
-	    List<String> childrensUrl = page.GetChildrensUrl();
-	    for (String link : childrensUrl) {
-		GoToUrl(driver, link);
-		Person person = page.GetPerson();
-		currentPerson.setChildren(person);
-	    }
-	    UnvisitedPersons.remove(currentPerson);
+	int i = 0;
+	while (i < AllPersons.size()) {
+	    Person currentPerson = AllPersons.get(i);
+	    GoToUrl(currentPerson.getUrl());
+	    DeterminePersonChildren(currentPerson);
 	    if (currentPerson.getNumberGeneration() <= limitNumberGeneration) {
-		UnvisitedPersons.addAll(currentPerson.getChildrens());
+		AddPersonsInList(currentPerson.getChildrens());
 	    }
-
 	    excelWorker.savePerson(currentPerson);
+
+	    i++;
 	}
 
-	excelWorker.saveSheet(fileName);
-	Person.ResetCount();
-	driver.quit();
-	driver = null;
+	SaveResultAndQuit(fileName);
     }
 
-    private static void GoToUrl(WebDriver driver, String url) {
+    /*
+     * Определение родоначальника династии
+     */
+    private static void DetermineAncestorOfADynasty(String url) throws IllegalArgumentException {
+	driver.navigate().to(url);
+	PersonPage page = new PersonPage(driver);
+	Person AncestorOfADynasty = page.GetPerson();
+	excelWorker.createSheet("Генеалогическое древо " + AncestorOfADynasty.getName());
+	AllPersons.add(AncestorOfADynasty);
+    }
+
+    /*
+     * Определение детей персоны
+     */
+    private static void DeterminePersonChildren(Person currentPerson) throws IllegalArgumentException {
+	PersonPage page = new PersonPage(driver);
+	List<String> childrensUrl = page.GetChildrensUrl();
+	for (String link : childrensUrl) {
+	    GoToUrl(link);
+	    Person person = page.GetPerson();
+	    currentPerson.setChildren(person);
+	}
+    }
+
+    /*
+     * Добавляет заданных персон в список
+     */
+    private static void AddPersonsInList(List<Person> persons) {
+	for (Person person : persons) {
+	    AddPersonInList(person);
+	}
+    }
+
+    /*
+     * Добавляет персону только если её ещё нет в списке
+     */
+    private static void AddPersonInList(Person person) {
+	if (!AllPersons.contains(person)) {
+	    AllPersons.add(person);
+	}
+    }
+
+    /*
+     * Переход по заданному урлу только если текущий урл отличается от заданого.
+     */
+    private static void GoToUrl(String url) {
 	if (!driver.getCurrentUrl().equals(url)) {
 	    driver.navigate().to(url);
 	}
+    }
+
+    /*
+     * Сохранение результатов и обнуление ссылок.
+     */
+    private static void SaveResultAndQuit(String fileName) {
+	excelWorker.saveSheet(fileName);
+	excelWorker = null;
+	AllPersons = null;
+	Person.ResetCount();
+	driver.quit();
+	driver = null;
     }
 }

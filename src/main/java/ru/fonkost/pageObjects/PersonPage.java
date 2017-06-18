@@ -41,7 +41,7 @@ public class PersonPage {
      *
      * @return the person
      */
-    public Person GetPerson() throws Exception {
+    public Person GetPerson() throws IllegalArgumentException {
 	String url = driver.getCurrentUrl();
 	String name = driver.findElement(By.cssSelector("#firstHeading")).getText();
 	Person person = new Person(name, url);
