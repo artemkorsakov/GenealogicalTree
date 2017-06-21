@@ -20,8 +20,9 @@ import ru.fonkost.utils.ExcelWorker;
  */
 public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
-    private static List<Person> AllPersons = new ArrayList<Person>();
     private static ExcelWorker excelWorker = new ExcelWorker();
+    private static int limitNumberGeneration = 10;
+    private static List<Person> AllPersons = new ArrayList<Person>();
 
     /**
      * Вычисляем основателя династии и добавляем его в генеалогическое древо. В
@@ -38,21 +39,13 @@ public final class GenerateGenealogicalTree {
      */
     public static void main(String[] args) throws Exception {
 	final String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
-	final int limitNumberGeneration = 9;
 	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
 	DetermineAncestorOfADynasty(rurickUrl);
 
 	int i = 0;
 	while (i < AllPersons.size()) {
-	    Person currentPerson = AllPersons.get(i);
-	    GoToUrl(currentPerson.getUrl());
-	    DeterminePersonChildren(currentPerson);
-	    if (currentPerson.getNumberGeneration() <= limitNumberGeneration) {
-		AddPersonsInList(currentPerson.getChildrens());
-	    }
-	    excelWorker.savePerson(currentPerson);
-
+	    DeterminePersonChildren(i);
 	    i++;
 	}
 
@@ -73,32 +66,20 @@ public final class GenerateGenealogicalTree {
     /*
      * Определение детей персоны
      */
-    private static void DeterminePersonChildren(Person currentPerson) throws IllegalArgumentException {
+    private static void DeterminePersonChildren(int i) throws Exception {
+	Person currentPerson = AllPersons.get(i);
+	GoToUrl(currentPerson.getUrl());
 	PersonPage page = new PersonPage(driver);
 	List<String> childrensUrl = page.GetChildrensUrl();
 	for (String link : childrensUrl) {
 	    GoToUrl(link);
 	    Person person = page.GetPerson();
 	    currentPerson.setChildren(person);
+	    if ((person.getNumberGeneration() <= limitNumberGeneration) && (!AllPersons.contains(person))) {
+		AllPersons.add(person);
+	    }
 	}
-    }
-
-    /*
-     * Добавляет заданных персон в список
-     */
-    private static void AddPersonsInList(List<Person> persons) {
-	for (Person person : persons) {
-	    AddPersonInList(person);
-	}
-    }
-
-    /*
-     * Добавляет персону только если её ещё нет в списке
-     */
-    private static void AddPersonInList(Person person) {
-	if (!AllPersons.contains(person)) {
-	    AllPersons.add(person);
-	}
+	excelWorker.savePerson(currentPerson);
     }
 
     /*

@@ -52,18 +52,18 @@ public class TestChildren {
      */
     @Test
     public void testTheNumberOfChildren() throws Exception {
-	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Ярославич_(князь_галицкий)");
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Святославич");
 	PersonPage page = new PersonPage(driver);
 	List<String> childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 16);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Ярославич_(князь_галицкий)");
+	childrens = page.GetChildrensUrl();
 	assertTrue(childrens.size() == 0);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Мария_Добронега");
 	childrens = page.GetChildrensUrl();
 	assertTrue(childrens.size() == 0);
-
-	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Святославич");
-	childrens = page.GetChildrensUrl();
-	assertTrue(childrens.size() == 16);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Ярослав_Святославич");
 	childrens = page.GetChildrensUrl();

@@ -54,6 +54,7 @@ public class PersonPage {
      * @return the list
      */
     public List<String> GetChildrensUrl() {
+	WaitLoadPage();
 	driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 	List<WebElement> childrensLinks = driver.findElements(
 		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
