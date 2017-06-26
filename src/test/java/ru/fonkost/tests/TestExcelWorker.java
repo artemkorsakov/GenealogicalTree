@@ -50,34 +50,35 @@ public class TestExcelWorker {
 	driver.navigate().to(rurickUrl);
 	PersonPage page = new PersonPage(driver);
 	Person rurick = page.GetPerson();
-	excelWorker.savePerson(rurick);
 
 	List<String> childrensRurick = page.GetChildrensUrl();
 	driver.navigate().to(childrensRurick.get(0));
 	Person igor = page.GetPerson();
 	rurick.setChildren(igor);
-	excelWorker.savePerson(igor);
 
 	List<String> childrensIgor = page.GetChildrensUrl();
 	driver.navigate().to(childrensIgor.get(0));
 	Person svyatoslav = page.GetPerson();
 	igor.setChildren(svyatoslav);
-	excelWorker.savePerson(svyatoslav);
 
 	List<String> childrensSvyatoslav = page.GetChildrensUrl();
 	driver.navigate().to(childrensSvyatoslav.get(0));
 	Person yaropolk = page.GetPerson();
 	svyatoslav.setChildren(yaropolk);
-	excelWorker.savePerson(yaropolk);
 
 	driver.navigate().to(childrensSvyatoslav.get(1));
 	Person oleg = page.GetPerson();
 	svyatoslav.setChildren(oleg);
-	excelWorker.savePerson(oleg);
 
 	driver.navigate().to(childrensSvyatoslav.get(2));
 	Person vladimir = page.GetPerson();
 	svyatoslav.setChildren(vladimir);
+
+	excelWorker.savePerson(rurick);
+	excelWorker.savePerson(igor);
+	excelWorker.savePerson(svyatoslav);
+	excelWorker.savePerson(yaropolk);
+	excelWorker.savePerson(oleg);
 	excelWorker.savePerson(vladimir);
 
 	excelWorker.saveSheet(fileName);
@@ -90,7 +91,7 @@ public class TestExcelWorker {
 	Row row = sheet.getRow(0);
 	assertTrue(row.getCell(0).getStringCellValue().equals("id"));
 	assertTrue(row.getCell(1).getStringCellValue().equals("name"));
-	assertTrue(row.getCell(2).getStringCellValue().equals("idParent"));
+	assertTrue(row.getCell(2).getStringCellValue().equals("childrens"));
 	assertTrue(row.getCell(3).getStringCellValue().equals("numberGeneration"));
 	assertTrue(row.getCell(4).getStringCellValue().equals("url"));
 
@@ -113,8 +114,8 @@ public class TestExcelWorker {
 
 	assertTrue(row.getCell(1).getStringCellValue().equals(person.getName()));
 
-	int idParent = (int) (row.getCell(2).getNumericCellValue());
-	assertTrue(idParent == person.getIdParent());
+	String childrens = row.getCell(2).getStringCellValue();
+	assertTrue(childrens.equals(person.getChildrens().toString()));
 
 	int numberGeneration = (int) (row.getCell(3).getNumericCellValue());
 	assertTrue(numberGeneration == person.getNumberGeneration());

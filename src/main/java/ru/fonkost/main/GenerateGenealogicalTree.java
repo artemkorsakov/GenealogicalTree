@@ -73,9 +73,10 @@ public final class GenerateGenealogicalTree {
 	List<String> childrensUrl = page.GetChildrensUrl();
 	for (String link : childrensUrl) {
 	    GoToUrl(link);
-	    Person person = page.GetPerson();
+	    int indexOf = AllPersons.indexOf(link);
+	    Person person = (indexOf == -1) ? page.GetPerson() : AllPersons.get(indexOf);
 	    currentPerson.setChildren(person);
-	    if ((person.getNumberGeneration() <= limitNumberGeneration) && (!AllPersons.contains(person))) {
+	    if (person.getNumberGeneration() <= limitNumberGeneration) {
 		AllPersons.add(person);
 	    }
 	}

@@ -15,9 +15,8 @@ public class Person {
     private String url;
     private String name;
     private int numberGeneration = 1;
-    private List<Person> childrens = new ArrayList<Person>();
+    private List<Integer> childrens = new ArrayList<Integer>();
     private int id;
-    private int idParent = 0;
     private static int count = 0;
 
     /**
@@ -48,15 +47,6 @@ public class Person {
     }
 
     /**
-     * Возвращает идентификатор родителя персоны.
-     *
-     * @return идентификатор родителя
-     */
-    public int getIdParent() {
-	return idParent;
-    }
-
-    /**
      * Возвращает номер поколения, начиная с основателя династии.
      *
      * @return номер поколения
@@ -66,11 +56,11 @@ public class Person {
     }
 
     /**
-     * Возвращает список детей.
+     * Возвращает список идентификаторов детей.
      *
      * @return детей персоны
      */
-    public List<Person> getChildrens() {
+    public List<Integer> getChildrens() {
 	return childrens;
     }
 
@@ -90,19 +80,16 @@ public class Person {
      *            персона
      */
     public void setChildren(Person person) {
-	if (person.getUrl().equals(url)) {
+	if (person.getId() == id) {
 	    return;
 	}
 
-	for (Person child : childrens) {
-	    if (person.getUrl().equals(child.getUrl())) {
-		return;
-	    }
+	if (childrens.contains(person.getId())) {
+	    return;
 	}
 
 	person.numberGeneration = this.numberGeneration + 1;
-	person.idParent = this.id;
-	childrens.add(person);
+	childrens.add(person.getId());
     }
 
     /**
@@ -132,9 +119,19 @@ public class Person {
 
     @Override
     public boolean equals(Object object) {
-	if ((object == null) || !(object instanceof Person)) {
+	if (object == null) {
 	    return false;
 	}
+
+	if (object instanceof String) {
+	    String url = (String) object;
+	    return this.url.equals(url);
+	}
+
+	if (!(object instanceof Person)) {
+	    return false;
+	}
+
 	Person person = (Person) object;
 	return this.url.equals(person.url);
     }

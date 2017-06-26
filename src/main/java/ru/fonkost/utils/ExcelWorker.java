@@ -33,7 +33,7 @@ public class ExcelWorker {
 	Row row = sheet.createRow(rowNum);
 	row.createCell(0).setCellValue("id");
 	row.createCell(1).setCellValue("name");
-	row.createCell(2).setCellValue("idParent");
+	row.createCell(2).setCellValue("childrens");
 	row.createCell(3).setCellValue("numberGeneration");
 	row.createCell(4).setCellValue("url");
 	rowNum++;
@@ -51,7 +51,7 @@ public class ExcelWorker {
 	Row row = sheet.createRow(rowNum);
 	row.createCell(0).setCellValue(person.getId());
 	row.createCell(1).setCellValue(person.getName());
-	row.createCell(2).setCellValue(person.getIdParent());
+	row.createCell(2).setCellValue(person.getChildrens().toString());
 	row.createCell(3).setCellValue(person.getNumberGeneration());
 	row.createCell(4).setCellValue(person.getUrl());
 	rowNum++;
