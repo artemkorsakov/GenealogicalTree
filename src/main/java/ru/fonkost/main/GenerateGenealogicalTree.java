@@ -76,7 +76,7 @@ public final class GenerateGenealogicalTree {
 	    int indexOf = AllPersons.indexOf(link);
 	    Person person = (indexOf == -1) ? page.GetPerson() : AllPersons.get(indexOf);
 	    currentPerson.setChildren(person);
-	    if (person.getNumberGeneration() <= limitNumberGeneration) {
+	    if ((indexOf == -1) && (person.getNumberGeneration() <= limitNumberGeneration)) {
 		AllPersons.add(person);
 	    }
 	}
