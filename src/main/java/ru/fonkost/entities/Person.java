@@ -119,16 +119,7 @@ public class Person {
 
     @Override
     public boolean equals(Object object) {
-	if (object == null) {
-	    return false;
-	}
-
-	if (object instanceof String) {
-	    String url = (String) object;
-	    return this.url.equals(url);
-	}
-
-	if (!(object instanceof Person)) {
+	if ((object == null) || (!(object instanceof Person))) {
 	    return false;
 	}
 

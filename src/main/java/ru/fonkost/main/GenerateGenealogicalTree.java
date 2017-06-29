@@ -21,7 +21,6 @@ import ru.fonkost.utils.ExcelWorker;
 public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
     private static ExcelWorker excelWorker = new ExcelWorker();
-    private static int limitNumberGeneration = 10;
     private static List<Person> AllPersons = new ArrayList<Person>();
 
     /**
@@ -73,11 +72,13 @@ public final class GenerateGenealogicalTree {
 	List<String> childrensUrl = page.GetChildrensUrl();
 	for (String link : childrensUrl) {
 	    GoToUrl(link);
-	    int indexOf = AllPersons.indexOf(link);
-	    Person person = (indexOf == -1) ? page.GetPerson() : AllPersons.get(indexOf);
-	    currentPerson.setChildren(person);
-	    if ((indexOf == -1) && (person.getNumberGeneration() <= limitNumberGeneration)) {
-		AllPersons.add(person);
+	    Person newPerson = page.GetPerson();
+	    int indexOf = AllPersons.indexOf(newPerson);
+	    if (indexOf == -1) {
+		currentPerson.setChildren(newPerson);
+		AllPersons.add(newPerson);
+	    } else {
+		currentPerson.setChildren(AllPersons.get(indexOf));
 	    }
 	}
 	excelWorker.savePerson(currentPerson);
