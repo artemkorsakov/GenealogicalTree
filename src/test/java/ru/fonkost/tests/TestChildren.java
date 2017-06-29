@@ -91,28 +91,30 @@ public class TestChildren {
 	driver.navigate().to(rurickUrl);
 	PersonPage page = new PersonPage(driver);
 	Person rurick = page.GetPerson();
-	assertPersonFields(rurick, 1, 1, 0);
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().isEmpty());
-	rurick.setChildren(rurick);
-	assertPersonFields(rurick, 1, 1, 0);
+	rurick.setChildren(rurick.getId());
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().isEmpty());
 
 	List<String> childrensUrl = page.GetChildrensUrl();
 	driver.navigate().to(childrensUrl.get(0));
 	Person igor = page.GetPerson();
-	assertPersonFields(rurick, 1, 1, 0);
-	assertPersonFields(igor, 2, 1, 0);
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().isEmpty());
+	assertTrue(igor.getId() == 2);
 	assertTrue(igor.getChildrens().isEmpty());
-	rurick.setChildren(igor);
-	assertPersonFields(rurick, 1, 1, 1);
-	assertPersonFields(igor, 2, 2, 0);
+	rurick.setChildren(igor.getId());
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().get(0) == 2);
+	assertTrue(rurick.getChildrens().size() == 1);
+	assertTrue(igor.getId() == 2);
 	assertTrue(igor.getChildrens().isEmpty());
-	rurick.setChildren(igor);
-	assertPersonFields(rurick, 1, 1, 1);
-	assertPersonFields(igor, 2, 2, 0);
+	rurick.setChildren(igor.getId());
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().get(0) == 2);
+	assertTrue(rurick.getChildrens().size() == 1);
+	assertTrue(igor.getId() == 2);
 	assertTrue(igor.getChildrens().isEmpty());
     }
 
@@ -126,7 +128,7 @@ public class TestChildren {
 	driver.navigate().to(rurickUrl);
 	PersonPage page = new PersonPage(driver);
 	Person rurick = page.GetPerson();
-	assertPersonFields(rurick, 1, 1, 0);
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().isEmpty());
 
 	// 1-е поколение
@@ -134,10 +136,11 @@ public class TestChildren {
 	assertTrue(childrensRurick.size() == 1);
 	driver.navigate().to(childrensRurick.get(0));
 	Person igor = page.GetPerson();
-	rurick.setChildren(igor);
-	assertPersonFields(rurick, 1, 1, 1);
-	assertPersonFields(igor, 2, 2, 0);
+	rurick.setChildren(igor.getId());
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().get(0) == 2);
+	assertTrue(rurick.getChildrens().size() == 1);
+	assertTrue(igor.getId() == 2);
 	assertTrue(igor.getChildrens().isEmpty());
 
 	// 2-е поколение
@@ -145,12 +148,14 @@ public class TestChildren {
 	assertTrue(childrensIgor.size() == 1);
 	driver.navigate().to(childrensIgor.get(0));
 	Person svyatoslav = page.GetPerson();
-	igor.setChildren(svyatoslav);
-	assertPersonFields(rurick, 1, 1, 1);
-	assertPersonFields(igor, 2, 2, 1);
-	assertPersonFields(svyatoslav, 3, 3, 0);
+	igor.setChildren(svyatoslav.getId());
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().get(0) == 2);
+	assertTrue(rurick.getChildrens().size() == 1);
+	assertTrue(igor.getId() == 2);
 	assertTrue(igor.getChildrens().get(0) == 3);
+	assertTrue(igor.getChildrens().size() == 1);
+	assertTrue(svyatoslav.getId() == 3);
 	assertTrue(svyatoslav.getChildrens().isEmpty());
 
 	// 3-е поколение
@@ -160,29 +165,26 @@ public class TestChildren {
 	for (String link : childrensSvyatoslavUrl) {
 	    driver.navigate().to(link);
 	    Person person = page.GetPerson();
-	    svyatoslav.setChildren(person);
+	    svyatoslav.setChildren(person.getId());
 	    childrensSvyatoslav.add(person);
 	}
-	assertPersonFields(rurick, 1, 1, 1);
+	assertTrue(rurick.getId() == 1);
 	assertTrue(rurick.getChildrens().get(0) == 2);
-	assertPersonFields(igor, 2, 2, 1);
+	assertTrue(rurick.getChildrens().size() == 1);
+	assertTrue(igor.getId() == 2);
 	assertTrue(igor.getChildrens().get(0) == 3);
-	assertPersonFields(svyatoslav, 3, 3, 3);
+	assertTrue(igor.getChildrens().size() == 1);
+	assertTrue(svyatoslav.getId() == 3);
 	assertTrue(svyatoslav.getChildrens().get(0) == 4);
 	assertTrue(svyatoslav.getChildrens().get(1) == 5);
 	assertTrue(svyatoslav.getChildrens().get(2) == 6);
-	assertPersonFields(childrensSvyatoslav.get(0), 4, 4, 0);
+	assertTrue(svyatoslav.getChildrens().size() == 3);
+	assertTrue(childrensSvyatoslav.get(0).getId() == 4);
 	assertTrue(childrensSvyatoslav.get(0).getChildrens().isEmpty());
-	assertPersonFields(childrensSvyatoslav.get(1), 5, 4, 0);
+	assertTrue(childrensSvyatoslav.get(1).getId() == 5);
 	assertTrue(childrensSvyatoslav.get(1).getChildrens().isEmpty());
-	assertPersonFields(childrensSvyatoslav.get(2), 6, 4, 0);
+	assertTrue(childrensSvyatoslav.get(2).getId() == 6);
 	assertTrue(childrensSvyatoslav.get(2).getChildrens().isEmpty());
-    }
-
-    private void assertPersonFields(Person person, int id, int number, int count) throws Exception {
-	assertTrue(person.getId() == id);
-	assertTrue(person.getNumberGeneration() == number);
-	assertTrue(person.getCountOfChildrens() == count);
     }
 
     @After

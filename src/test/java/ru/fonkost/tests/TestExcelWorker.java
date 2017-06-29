@@ -54,25 +54,25 @@ public class TestExcelWorker {
 	List<String> childrensRurick = page.GetChildrensUrl();
 	driver.navigate().to(childrensRurick.get(0));
 	Person igor = page.GetPerson();
-	rurick.setChildren(igor);
+	rurick.setChildren(igor.getId());
 
 	List<String> childrensIgor = page.GetChildrensUrl();
 	driver.navigate().to(childrensIgor.get(0));
 	Person svyatoslav = page.GetPerson();
-	igor.setChildren(svyatoslav);
+	igor.setChildren(svyatoslav.getId());
 
 	List<String> childrensSvyatoslav = page.GetChildrensUrl();
 	driver.navigate().to(childrensSvyatoslav.get(0));
 	Person yaropolk = page.GetPerson();
-	svyatoslav.setChildren(yaropolk);
+	svyatoslav.setChildren(yaropolk.getId());
 
 	driver.navigate().to(childrensSvyatoslav.get(1));
 	Person oleg = page.GetPerson();
-	svyatoslav.setChildren(oleg);
+	svyatoslav.setChildren(oleg.getId());
 
 	driver.navigate().to(childrensSvyatoslav.get(2));
 	Person vladimir = page.GetPerson();
-	svyatoslav.setChildren(vladimir);
+	svyatoslav.setChildren(vladimir.getId());
 
 	excelWorker.savePerson(rurick);
 	excelWorker.savePerson(igor);
@@ -92,8 +92,7 @@ public class TestExcelWorker {
 	assertTrue(row.getCell(0).getStringCellValue().equals("id"));
 	assertTrue(row.getCell(1).getStringCellValue().equals("name"));
 	assertTrue(row.getCell(2).getStringCellValue().equals("childrens"));
-	assertTrue(row.getCell(3).getStringCellValue().equals("numberGeneration"));
-	assertTrue(row.getCell(4).getStringCellValue().equals("url"));
+	assertTrue(row.getCell(3).getStringCellValue().equals("url"));
 
 	assertPerson(sheet, 1, rurick);
 	assertPerson(sheet, 2, igor);
@@ -117,10 +116,7 @@ public class TestExcelWorker {
 	String childrens = row.getCell(2).getStringCellValue();
 	assertTrue(childrens.equals(person.getChildrens().toString()));
 
-	int numberGeneration = (int) (row.getCell(3).getNumericCellValue());
-	assertTrue(numberGeneration == person.getNumberGeneration());
-
-	assertTrue(row.getCell(4).getStringCellValue().equals(person.getUrl()));
+	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
     }
 
     @After

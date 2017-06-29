@@ -75,10 +75,10 @@ public final class GenerateGenealogicalTree {
 	    Person newPerson = page.GetPerson();
 	    int indexOf = AllPersons.indexOf(newPerson);
 	    if (indexOf == -1) {
-		currentPerson.setChildren(newPerson);
+		currentPerson.setChildren(newPerson.getId());
 		AllPersons.add(newPerson);
 	    } else {
-		currentPerson.setChildren(AllPersons.get(indexOf));
+		currentPerson.setChildren(AllPersons.get(indexOf).getId());
 	    }
 	}
 	excelWorker.savePerson(currentPerson);

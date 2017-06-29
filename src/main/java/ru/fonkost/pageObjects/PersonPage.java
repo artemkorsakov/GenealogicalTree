@@ -25,7 +25,7 @@ public class PersonPage {
     private WebDriver driver;
 
     /**
-     * Instantiates a new person page.
+     * Инициализация страницы с ожиданием загрузки
      *
      * @param driver
      *            the driver

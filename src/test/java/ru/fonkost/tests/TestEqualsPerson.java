@@ -25,7 +25,7 @@ public class TestEqualsPerson {
     private Person rurick = new Person(rurickName, rurickUrl);
 
     /**
-     * Обнуляем счетчик персон перез запуском теста.
+     * Обнуляем счетчик персон перед запуском теста.
      */
     @Before
     public void setUp() {
@@ -60,6 +60,7 @@ public class TestEqualsPerson {
 	assertTrue(rurick.hashCode() == rurickUrl.hashCode());
 	assertTrue(rurick.hashCode() == new Person(rurickName, rurickUrl).hashCode());
 	assertFalse(rurick.hashCode() == (rurickUrl + "a").hashCode());
+	assertFalse(rurick.hashCode() == new Person(rurickName, rurickUrl + "a").hashCode());
     }
 
     /**

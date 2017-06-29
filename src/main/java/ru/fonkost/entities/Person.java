@@ -14,7 +14,6 @@ import java.util.List;
 public class Person {
     private String url;
     private String name;
-    private int numberGeneration = 1;
     private List<Integer> childrens = new ArrayList<Integer>();
     private int id;
     private static int count = 0;
@@ -47,15 +46,6 @@ public class Person {
     }
 
     /**
-     * Возвращает номер поколения, начиная с основателя династии.
-     *
-     * @return номер поколения
-     */
-    public int getNumberGeneration() {
-	return this.numberGeneration;
-    }
-
-    /**
      * Возвращает список идентификаторов детей.
      *
      * @return детей персоны
@@ -65,31 +55,15 @@ public class Person {
     }
 
     /**
-     * Возвращает количество детей.
-     *
-     * @return количество детей
-     */
-    public int getCountOfChildrens() {
-	return childrens.size();
-    }
-
-    /**
      * Добавляет ребенка в список.
      *
      * @param person
      *            персона
      */
-    public void setChildren(Person person) {
-	if (person.getId() == id) {
-	    return;
+    public void setChildren(int childId) {
+	if ((childId != id) && (!childrens.contains(childId))) {
+	    childrens.add(childId);
 	}
-
-	if (childrens.contains(person.getId())) {
-	    return;
-	}
-
-	person.numberGeneration = this.numberGeneration + 1;
-	childrens.add(person.getId());
     }
 
     /**
@@ -139,7 +113,6 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "name=" + name + "; count=" + count + "; id=" + id + "; numberGeneration=" + numberGeneration + "; url="
-		+ url;
+	return "name=" + name + "; count=" + count + "; id=" + id + "; url=" + url;
     }
 }
