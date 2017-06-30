@@ -3,6 +3,7 @@
  */
 package ru.fonkost.main;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,6 @@ import ru.fonkost.utils.ExcelWorker;
  */
 public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
-    private static ExcelWorker excelWorker = new ExcelWorker();
     private static List<Person> AllPersons = new ArrayList<Person>();
 
     /**
@@ -41,13 +41,11 @@ public final class GenerateGenealogicalTree {
 	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
 	DetermineAncestorOfADynasty(rurickUrl);
-
 	int i = 0;
 	while (i < AllPersons.size()) {
-	    DeterminePersonChildren(i);
+	    DeterminePersonChildren(AllPersons.get(i));
 	    i++;
 	}
-
 	SaveResultAndQuit(fileName);
     }
 
@@ -58,15 +56,13 @@ public final class GenerateGenealogicalTree {
 	driver.navigate().to(url);
 	PersonPage page = new PersonPage(driver);
 	Person AncestorOfADynasty = page.GetPerson();
-	excelWorker.createSheet("Генеалогическое древо " + AncestorOfADynasty.getName());
 	AllPersons.add(AncestorOfADynasty);
     }
 
     /*
      * Определение детей персоны
      */
-    private static void DeterminePersonChildren(int i) throws Exception {
-	Person currentPerson = AllPersons.get(i);
+    private static void DeterminePersonChildren(Person currentPerson) throws Exception {
 	GoToUrl(currentPerson.getUrl());
 	PersonPage page = new PersonPage(driver);
 	List<String> childrensUrl = page.GetChildrensUrl();
@@ -75,29 +71,23 @@ public final class GenerateGenealogicalTree {
 	    Person newPerson = page.GetPerson();
 	    int indexOf = AllPersons.indexOf(newPerson);
 	    if (indexOf == -1) {
-		currentPerson.setChildren(newPerson.getId());
+		currentPerson.setChild(newPerson.getId());
 		AllPersons.add(newPerson);
 	    } else {
-		currentPerson.setChildren(AllPersons.get(indexOf).getId());
+		currentPerson.setChild(AllPersons.get(indexOf).getId());
 	    }
 	}
-	excelWorker.savePerson(currentPerson);
     }
 
-    /*
-     * Переход по заданному урлу только если текущий урл отличается от заданого.
-     */
     private static void GoToUrl(String url) {
 	if (!driver.getCurrentUrl().equals(url)) {
 	    driver.navigate().to(url);
 	}
     }
 
-    /*
-     * Сохранение результатов и обнуление ссылок.
-     */
-    private static void SaveResultAndQuit(String fileName) {
-	excelWorker.saveSheet(fileName);
+    private static void SaveResultAndQuit(String fileName) throws ParseException {
+	ExcelWorker excelWorker = new ExcelWorker();
+	excelWorker.savePersons(fileName, AllPersons);
 	excelWorker = null;
 	AllPersons = null;
 	Person.ResetCount();

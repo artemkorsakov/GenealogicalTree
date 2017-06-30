@@ -8,19 +8,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
 
-import ru.fonkost.driverHelper.DriverFactory;
 import ru.fonkost.entities.Person;
-import ru.fonkost.pageObjects.PersonPage;
 import ru.fonkost.utils.ExcelWorker;
 
 /**
@@ -29,65 +25,42 @@ import ru.fonkost.utils.ExcelWorker;
  * @author Артём Корсаков
  */
 public class TestExcelWorker {
-    private String fileName = "C:\\workspace\\dynasticTree.xls";
-    private String dynastyName = "Рюриковичи";
-    private String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
-    private WebDriver driver;
-
-    @Before
-    public void Start() {
-	driver = DriverFactory.GetDriver();
-    }
-
     /**
-     * Тестирование создания Excel-файла с результатами.
+     * Тестирование создания Excel-файла со списком персон
      */
     @Test
     public void testExcelWorker() throws Exception {
+	String fileName = "C:\\workspace\\dynasticTree.xls";
+
+	List<Person> persons = new ArrayList<Person>();
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик");
+	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович");
+	rurick.setChild(igor.getId());
+	Person svyatoslav = new Person("Святослав Игоревич", "https://ru.wikipedia.org/wiki/Святослав Игоревич");
+	igor.setChild(svyatoslav.getId());
+	Person yaropolk = new Person("Ярополк Святославич", "https://ru.wikipedia.org/wiki/Ярополк Святославич");
+	Person oleg = new Person("Олег Святославич (князь древлянский)",
+		"https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)");
+	Person vladimir = new Person("Владимир Святославич", "https://ru.wikipedia.org/wiki/Владимир Святославич");
+	svyatoslav.setChild(yaropolk.getId());
+	svyatoslav.setChild(oleg.getId());
+	svyatoslav.setChild(vladimir.getId());
+
+	persons.add(rurick);
+	persons.add(igor);
+	persons.add(svyatoslav);
+	persons.add(yaropolk);
+	persons.add(oleg);
+	persons.add(vladimir);
+
 	ExcelWorker excelWorker = new ExcelWorker();
-	excelWorker.createSheet(dynastyName);
-
-	driver.navigate().to(rurickUrl);
-	PersonPage page = new PersonPage(driver);
-	Person rurick = page.GetPerson();
-
-	List<String> childrensRurick = page.GetChildrensUrl();
-	driver.navigate().to(childrensRurick.get(0));
-	Person igor = page.GetPerson();
-	rurick.setChildren(igor.getId());
-
-	List<String> childrensIgor = page.GetChildrensUrl();
-	driver.navigate().to(childrensIgor.get(0));
-	Person svyatoslav = page.GetPerson();
-	igor.setChildren(svyatoslav.getId());
-
-	List<String> childrensSvyatoslav = page.GetChildrensUrl();
-	driver.navigate().to(childrensSvyatoslav.get(0));
-	Person yaropolk = page.GetPerson();
-	svyatoslav.setChildren(yaropolk.getId());
-
-	driver.navigate().to(childrensSvyatoslav.get(1));
-	Person oleg = page.GetPerson();
-	svyatoslav.setChildren(oleg.getId());
-
-	driver.navigate().to(childrensSvyatoslav.get(2));
-	Person vladimir = page.GetPerson();
-	svyatoslav.setChildren(vladimir.getId());
-
-	excelWorker.savePerson(rurick);
-	excelWorker.savePerson(igor);
-	excelWorker.savePerson(svyatoslav);
-	excelWorker.savePerson(yaropolk);
-	excelWorker.savePerson(oleg);
-	excelWorker.savePerson(vladimir);
-
-	excelWorker.saveSheet(fileName);
+	excelWorker.savePersons(fileName, persons);
 
 	// Анализ результатов
 	FileInputStream file = new FileInputStream(new File(fileName));
 	HSSFWorkbook workbook = new HSSFWorkbook(file);
 	HSSFSheet sheet = workbook.getSheetAt(0);
-	assertTrue(sheet.getSheetName().equals(dynastyName));
+	assertTrue(sheet.getSheetName().equals("Генеалогическое древо Рюрик"));
 	Row row = sheet.getRow(0);
 	assertTrue(row.getCell(0).getStringCellValue().equals("id"));
 	assertTrue(row.getCell(1).getStringCellValue().equals("name"));
@@ -105,7 +78,7 @@ public class TestExcelWorker {
 	file.close();
     }
 
-    public void assertPerson(HSSFSheet sheet, int rowNum, Person person) throws ParseException {
+    private void assertPerson(HSSFSheet sheet, int rowNum, Person person) throws ParseException {
 	Row row = sheet.getRow(rowNum);
 
 	int id = (int) (row.getCell(0).getNumericCellValue());
@@ -117,12 +90,5 @@ public class TestExcelWorker {
 	assertTrue(childrens.equals(person.getChildrens().toString()));
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
-    }
-
-    @After
-    public void Stop() {
-	driver.quit();
-	driver = null;
-	Person.ResetCount();
     }
 }

@@ -60,7 +60,7 @@ public class Person {
      * @param person
      *            персона
      */
-    public void setChildren(int childId) {
+    public void setChild(int childId) {
 	if ((childId != id) && (!childrens.contains(childId))) {
 	    childrens.add(childId);
 	}

@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
 import ru.fonkost.driverHelper.DriverFactory;
-import ru.fonkost.entities.Person;
-import ru.fonkost.pageObjects.PersonPage;
 
 /**
  * Тесты, проверяющие, что драйвер корректно запустился и отработал, а также
@@ -21,7 +19,6 @@ import ru.fonkost.pageObjects.PersonPage;
  * @author Артём Корсаков
  */
 public class TestBrowser {
-    private String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
     private WebDriver driver;
 
     @Before
@@ -30,31 +27,19 @@ public class TestBrowser {
     }
 
     /**
-     * Проверка корректного открытия страницы
-     * https://ru.wikipedia.org/wiki/Рюрик
+     * Проверяет, что корректно запустился драйвер и что при переходе по урлу
+     * https://ru.wikipedia.org/wiki/Рюрик открывается страница с заголовком
+     * "Рюрик — Википедия"
      */
     @Test
     public void testStartBrowserAndNavigate() {
-	driver.navigate().to(rurickUrl);
+	driver.navigate().to("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA");
 	assertTrue(driver.getTitle().equals("Рюрик — Википедия"));
-    }
-
-    /**
-     * Проверка формирования класса Person на основе страницы Рюрика.
-     */
-    @Test
-    public void testPersonRurick() throws Exception {
-	driver.navigate().to(rurickUrl);
-	PersonPage page = new PersonPage(driver);
-	Person person = page.GetPerson();
-	assertTrue(person.getUrl().equals(rurickUrl));
-	assertTrue(person.getName().equals("Рюрик"));
     }
 
     @After
     public void Stop() {
 	driver.quit();
 	driver = null;
-	Person.ResetCount();
     }
 }

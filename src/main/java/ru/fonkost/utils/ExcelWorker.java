@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,16 +21,30 @@ import ru.fonkost.entities.Person;
  * @author Артём Корсаков
  */
 public class ExcelWorker {
-    private static HSSFWorkbook workbook = null;
-    private static HSSFSheet sheet = null;
-    private static int rowNum = 0;
+    private HSSFWorkbook workbook;
+    private HSSFSheet sheet;
+    private int rowNum;
 
     /**
-     * Создание листа Excel.
+     * Сохранение списка персон в Excel-файле
      */
-    public void createSheet(String name) {
+    public void savePersons(String fileName, List<Person> Persons) throws ParseException {
+	if (Persons.isEmpty()) {
+	    return;
+	}
+
+	String dynastyName = Persons.get(0).getName();
+	createSheet("Генеалогическое древо " + dynastyName);
+	for (Person person : Persons) {
+	    savePerson(person);
+	}
+	saveSheet(fileName);
+    }
+
+    private void createSheet(String name) {
 	workbook = new HSSFWorkbook();
 	sheet = workbook.createSheet(name);
+	rowNum = 0;
 	Row row = sheet.createRow(rowNum);
 	row.createCell(0).setCellValue("id");
 	row.createCell(1).setCellValue("name");
@@ -38,29 +53,17 @@ public class ExcelWorker {
 	rowNum++;
     }
 
-    /**
-     * Сохранение персоны.
-     *
-     * @param person
-     *            the person
-     * @throws ParseException
-     *             the parse exception
-     */
-    public void savePerson(Person person) throws ParseException {
+    private void savePerson(Person person) throws ParseException {
 	Row row = sheet.createRow(rowNum);
 	row.createCell(0).setCellValue(person.getId());
 	row.createCell(1).setCellValue(person.getName());
 	row.createCell(2).setCellValue(person.getChildrens().toString());
 	row.createCell(3).setCellValue(person.getUrl());
 	rowNum++;
-
 	System.out.println(person);
     }
 
-    /**
-     * Сохраняем созданный в памяти Excel документ в файл
-     */
-    public void saveSheet(String fileName) {
+    private void saveSheet(String fileName) {
 	try {
 	    FileOutputStream out = new FileOutputStream(new File(fileName));
 	    workbook.write(out);
