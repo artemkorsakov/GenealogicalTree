@@ -29,7 +29,6 @@ public class TestPersonPage {
     @Before
     public void Start() {
 	driver = DriverFactory.GetDriver();
-	Person.ResetCount();
     }
 
     /**

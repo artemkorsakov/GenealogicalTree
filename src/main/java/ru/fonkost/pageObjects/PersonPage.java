@@ -55,6 +55,7 @@ public class PersonPage {
      */
     public List<String> GetChildrensUrl() {
 	WaitLoadPage();
+
 	driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 	List<WebElement> childrensLinks = driver.findElements(
 		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
@@ -80,6 +81,17 @@ public class PersonPage {
 	}
 
 	return childrens;
+    }
+
+    /**
+     * Переходим по урлу только если находимся на другой странице
+     * 
+     * @param url
+     */
+    public void GoToUrl(String url) {
+	if (!driver.getCurrentUrl().equals(url)) {
+	    driver.navigate().to(url);
+	}
     }
 
     /**

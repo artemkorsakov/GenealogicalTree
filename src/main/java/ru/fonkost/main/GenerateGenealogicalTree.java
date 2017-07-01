@@ -21,7 +21,7 @@ import ru.fonkost.utils.ExcelWorker;
  */
 public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
-    private static List<Person> AllPersons = new ArrayList<Person>();
+    private static List<Person> AllPersons;
 
     /**
      * Вычисляем основателя династии и добавляем его в генеалогическое древо. В
@@ -56,6 +56,8 @@ public final class GenerateGenealogicalTree {
 	driver.navigate().to(url);
 	PersonPage page = new PersonPage(driver);
 	Person AncestorOfADynasty = page.GetPerson();
+	AllPersons = new ArrayList<Person>();
+	Person.ResetCount();
 	AllPersons.add(AncestorOfADynasty);
     }
 
@@ -63,11 +65,11 @@ public final class GenerateGenealogicalTree {
      * Определение детей персоны
      */
     private static void DeterminePersonChildren(Person currentPerson) throws Exception {
-	GoToUrl(currentPerson.getUrl());
 	PersonPage page = new PersonPage(driver);
+	page.GoToUrl(currentPerson.getUrl());
 	List<String> childrensUrl = page.GetChildrensUrl();
 	for (String link : childrensUrl) {
-	    GoToUrl(link);
+	    page.GoToUrl(link);
 	    Person newPerson = page.GetPerson();
 	    int indexOf = AllPersons.indexOf(newPerson);
 	    if (indexOf == -1) {
@@ -79,18 +81,11 @@ public final class GenerateGenealogicalTree {
 	}
     }
 
-    private static void GoToUrl(String url) {
-	if (!driver.getCurrentUrl().equals(url)) {
-	    driver.navigate().to(url);
-	}
-    }
-
     private static void SaveResultAndQuit(String fileName) throws ParseException {
 	ExcelWorker excelWorker = new ExcelWorker();
 	excelWorker.savePersons(fileName, AllPersons);
 	excelWorker = null;
 	AllPersons = null;
-	Person.ResetCount();
 	driver.quit();
 	driver = null;
     }

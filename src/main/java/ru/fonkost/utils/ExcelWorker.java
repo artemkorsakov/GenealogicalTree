@@ -26,15 +26,22 @@ public class ExcelWorker {
     private int rowNum;
 
     /**
-     * Сохранение списка персон в Excel-файле
+     * Сохранение списка персон в Excel-файле.
+     *
+     * @param fileName
+     *            полное наименование файла
+     * @param Persons
+     *            список персон
+     * @throws ParseException
+     *             the parse exception
      */
     public void savePersons(String fileName, List<Person> Persons) throws ParseException {
 	if (Persons.isEmpty()) {
 	    return;
 	}
 
-	String dynastyName = Persons.get(0).getName();
-	createSheet("Генеалогическое древо " + dynastyName);
+	String dynastyName = "Генеалогическое древо " + Persons.get(0).getName();
+	createSheet(dynastyName);
 	for (Person person : Persons) {
 	    savePerson(person);
 	}
@@ -45,22 +52,21 @@ public class ExcelWorker {
 	workbook = new HSSFWorkbook();
 	sheet = workbook.createSheet(name);
 	rowNum = 0;
-	Row row = sheet.createRow(rowNum);
-	row.createCell(0).setCellValue("id");
-	row.createCell(1).setCellValue("name");
-	row.createCell(2).setCellValue("childrens");
-	row.createCell(3).setCellValue("url");
-	rowNum++;
+	saveRow("id", "name", "childrens", "url");
     }
 
     private void savePerson(Person person) throws ParseException {
-	Row row = sheet.createRow(rowNum);
-	row.createCell(0).setCellValue(person.getId());
-	row.createCell(1).setCellValue(person.getName());
-	row.createCell(2).setCellValue(person.getChildrens().toString());
-	row.createCell(3).setCellValue(person.getUrl());
-	rowNum++;
+	saveRow(String.valueOf(person.getId()), person.getName(), person.getChildrens().toString(), person.getUrl());
 	System.out.println(person);
+    }
+
+    private void saveRow(String col1, String col2, String col3, String col4) {
+	Row row = sheet.createRow(rowNum);
+	row.createCell(0).setCellValue(col1);
+	row.createCell(1).setCellValue(col2);
+	row.createCell(2).setCellValue(col3);
+	row.createCell(3).setCellValue(col4);
+	rowNum++;
     }
 
     private void saveSheet(String fileName) {

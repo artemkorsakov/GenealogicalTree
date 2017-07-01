@@ -17,10 +17,8 @@ public class DriverFactory {
     public static final int timeout = 30;
 
     /**
-     * Возвращает драйвер браузера Firefox.
+     * Возвращает драйвер браузера Firefox
      *
-     * @param timeout
-     *            лимит ожидания элементов
      * @return драйвер
      */
     public static WebDriver GetDriver() {
@@ -28,7 +26,7 @@ public class DriverFactory {
     }
 
     /**
-     * Возвращает драйвер браузера в зависимости от параметра.
+     * Возвращает драйвер в зависимости от браузера
      *
      * @param timeout
      *            лимит ожидания элементов

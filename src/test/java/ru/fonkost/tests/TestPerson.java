@@ -28,7 +28,7 @@ public class TestPerson {
     @Test
     public void testNameAndUrl() throws Exception {
 	Person person = new Person(rurickName, rurickUrl);
-	assertTrue(person.getName().equals("Рюрик"));
+	assertTrue(person.getName().equals(rurickName));
 	assertTrue(person.getUrl().equals(rurickUrl));
     }
 

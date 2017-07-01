@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Класс исторической личности.
+ * Класс представителя династии
  *
  * @author Артём Корсаков
  */
 public class Person {
-    private String url;
-    private String name;
-    private List<Integer> childrens = new ArrayList<Integer>();
     private int id;
     private static int count = 0;
+    private String name;
+    private String url;
+    private List<Integer> childrens = new ArrayList<Integer>();
 
     /**
      * Инициализация экземпляра класса по имени и урлу.
@@ -46,24 +46,12 @@ public class Person {
     }
 
     /**
-     * Возвращает список идентификаторов детей.
+     * Возвращает имя
      *
-     * @return детей персоны
+     * @return имя
      */
-    public List<Integer> getChildrens() {
-	return childrens;
-    }
-
-    /**
-     * Добавляет ребенка в список.
-     *
-     * @param person
-     *            персона
-     */
-    public void setChild(int childId) {
-	if ((childId != id) && (!childrens.contains(childId))) {
-	    childrens.add(childId);
-	}
+    public String getName() {
+	return name;
     }
 
     /**
@@ -76,16 +64,28 @@ public class Person {
     }
 
     /**
-     * Возвращает name.
+     * Возвращает список идентификаторов детей
      *
-     * @return the name
+     * @return детей персоны
      */
-    public String getName() {
-	return name;
+    public List<Integer> getChildrens() {
+	return childrens;
     }
 
     /**
-     * Обнуляет счетчик идентификаторов.
+     * Добавляет ребенка в список
+     *
+     * @param childId
+     *            идентификатор ребенка
+     */
+    public void setChild(int childId) {
+	if ((childId != id) && (!childrens.contains(childId))) {
+	    childrens.add(childId);
+	}
+    }
+
+    /**
+     * Обнуляет счетчик идентификаторов
      */
     public static void ResetCount() {
 	count = 0;
@@ -113,6 +113,6 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "name=" + name + "; count=" + count + "; id=" + id + "; url=" + url;
+	return "name=" + name + "; id=" + id + "; url=" + url;
     }
 }

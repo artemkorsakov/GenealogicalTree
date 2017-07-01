@@ -25,6 +25,7 @@ import ru.fonkost.utils.ExcelWorker;
  * @author Артём Корсаков
  */
 public class TestExcelWorker {
+
     /**
      * Тестирование создания Excel-файла со списком персон
      */
@@ -81,7 +82,7 @@ public class TestExcelWorker {
     private void assertPerson(HSSFSheet sheet, int rowNum, Person person) throws ParseException {
 	Row row = sheet.getRow(rowNum);
 
-	int id = (int) (row.getCell(0).getNumericCellValue());
+	int id = Integer.parseInt(row.getCell(0).getStringCellValue());
 	assertTrue(id == person.getId());
 
 	assertTrue(row.getCell(1).getStringCellValue().equals(person.getName()));
