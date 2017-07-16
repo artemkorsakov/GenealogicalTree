@@ -44,6 +44,21 @@ public class TestPersonPage {
     }
 
     /**
+     * Проверка формирования имени персоны с урлом, содержащим якорь
+     */
+    @Test
+    public void testGetName() throws Exception {
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Дети_Михаила_Фёдоровича#.D0.A1.D0.BE.D1.84.D1.8C.D1.8F");
+	PersonPage page = new PersonPage(driver);
+	assertTrue(page.GetName().equals("Софья"));
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Дети_Михаила_Фёдоровича");
+	assertTrue(page.GetName().equals("Дети Михаила Фёдоровича"));
+	driver.navigate().to(
+		"https://ru.wikipedia.org/wiki/Дети_Петра_I#.D0.9D.D0.B0.D1.82.D0.B0.D0.BB.D1.8C.D1.8F_.D0.9F.D0.B5.D1.82.D1.80.D0.BE.D0.B2.D0.BD.D0.B0_.281718.E2.80.941725.29");
+	assertTrue(page.GetName().equals("Дети Петра I"));
+    }
+
+    /**
      * Проверка определения урлов детей Рюрика
      */
     @Test
@@ -92,6 +107,21 @@ public class TestPersonPage {
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Юрий_Ярославич_(князь_туровский)");
 	childrens = page.GetChildrensUrl();
 	assertTrue(childrens.size() == 5);
+    }
+
+    /**
+     * Проверка определения количества детей для ссылок с якорями
+     */
+    @Test
+    public void testAnchor() throws Exception {
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович");
+	PersonPage page = new PersonPage(driver);
+	List<String> childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 5);
+
+	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович#.D0.A1.D0.B5.D0.BC.D1.8C.D1.8F");
+	childrens = page.GetChildrensUrl();
+	assertTrue(childrens.size() == 0);
     }
 
     @After

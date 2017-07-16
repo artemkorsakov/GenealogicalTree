@@ -38,9 +38,10 @@ public final class GenerateGenealogicalTree {
      */
     public static void main(String[] args) throws Exception {
 	final String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
+	final String romanovUrl = "https://ru.wikipedia.org/wiki/Михаил_Фёдорович";
 	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
-	DetermineAncestorOfADynasty(rurickUrl);
+	DetermineAncestorOfADynasty(romanovUrl);
 	int i = 0;
 	while (i < AllPersons.size()) {
 	    DeterminePersonChildren(AllPersons.get(i));
@@ -57,7 +58,6 @@ public final class GenerateGenealogicalTree {
 	PersonPage page = new PersonPage(driver);
 	Person AncestorOfADynasty = page.GetPerson();
 	AllPersons = new ArrayList<Person>();
-	Person.ResetCount();
 	AllPersons.add(AncestorOfADynasty);
     }
 
@@ -75,6 +75,7 @@ public final class GenerateGenealogicalTree {
 	    if (indexOf == -1) {
 		currentPerson.setChild(newPerson.getId());
 		AllPersons.add(newPerson);
+		System.out.println(newPerson);
 	    } else {
 		currentPerson.setChild(AllPersons.get(indexOf).getId());
 	    }

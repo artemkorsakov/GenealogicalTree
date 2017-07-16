@@ -5,7 +5,6 @@ package ru.fonkost.pageObjects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +12,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import ru.fonkost.driverHelper.DriverFactory;
 import ru.fonkost.entities.Person;
 
 /**
@@ -21,9 +19,7 @@ import ru.fonkost.entities.Person;
  *
  * @author Артём Корсаков
  */
-public class PersonPage {
-    private WebDriver driver;
-
+public class PersonPage extends Page {
     /**
      * Инициализация страницы с ожиданием загрузки
      *
@@ -31,7 +27,7 @@ public class PersonPage {
      *            the driver
      */
     public PersonPage(WebDriver driver) {
-	this.driver = driver;
+	super(driver);
 	WaitLoadPage();
     }
 
@@ -43,9 +39,26 @@ public class PersonPage {
      */
     public Person GetPerson() throws IllegalArgumentException {
 	String url = driver.getCurrentUrl();
-	String name = driver.findElement(By.cssSelector("#firstHeading")).getText();
+	String name = GetName();
 	Person person = new Person(name, url);
 	return person;
+    }
+
+    /**
+     * Возвращает имя персоны
+     * 
+     * @return имя персоны
+     */
+    public String GetName() {
+	WaitLoadPage();
+	String namePage = driver.findElement(By.cssSelector("#firstHeading")).getText();
+
+	if (!IsAnchor()) {
+	    return namePage;
+	}
+
+	List<WebElement> list = GetElements(By.id(GetAnchor()));
+	return list.size() == 0 ? namePage : list.get(0).getText();
     }
 
     /**
@@ -56,42 +69,38 @@ public class PersonPage {
     public List<String> GetChildrensUrl() {
 	WaitLoadPage();
 
-	driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-	List<WebElement> childrensLinks = driver.findElements(
-		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
-	driver.manage().timeouts().implicitlyWait(DriverFactory.timeout, TimeUnit.SECONDS);
-
-	List<String> childrens = new ArrayList<String>();
-
-	for (WebElement childrenLink : childrensLinks) {
-	    String parentTagName = childrenLink.findElement(By.xpath(".//..")).getTagName();
-	    if (parentTagName.equals("sup")) {
-		continue;
-	    }
-
-	    String name = childrenLink.getText();
-	    Pattern p = Pattern.compile("^[\\D]+.+");
-	    Matcher m = p.matcher(name);
-	    if (!m.matches()) {
-		continue;
-	    }
-
-	    String url = childrenLink.getAttribute("href");
-	    childrens.add(url);
+	if (IsAnchor()) {
+	    return new ArrayList<String>();
 	}
 
+	List<WebElement> childrensLinks = GetChildrensLinks();
+	List<String> childrens = new ArrayList<String>();
+	for (WebElement childrenLink : childrensLinks) {
+	    if (!IsSup(childrenLink) && IsCorrectName(childrenLink)) {
+		childrens.add(childrenLink.getAttribute("href"));
+	    }
+	}
 	return childrens;
     }
 
     /**
-     * Переходим по урлу только если находимся на другой странице
-     * 
-     * @param url
+     * Вернуть список элементов, которые, предположительно являются детьми
+     * персоны
      */
-    public void GoToUrl(String url) {
-	if (!driver.getCurrentUrl().equals(url)) {
-	    driver.navigate().to(url);
-	}
+    private List<WebElement> GetChildrensLinks() {
+	List<WebElement> childrensLinks = GetElements(
+		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
+	return childrensLinks;
+    }
+
+    /**
+     * Возвращает true, если текст элемента начинается не с числа
+     */
+    private boolean IsCorrectName(WebElement element) {
+	String name = element.getText();
+	Pattern p = Pattern.compile("^[\\D]+.+");
+	Matcher m = p.matcher(name);
+	return m.matches();
     }
 
     /**
