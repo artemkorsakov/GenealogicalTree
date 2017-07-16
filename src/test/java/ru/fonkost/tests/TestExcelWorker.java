@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.junit.Test;
 
 import ru.fonkost.entities.Person;
+import ru.fonkost.entities.PersonLink;
 import ru.fonkost.utils.ExcelWorker;
 
 /**
@@ -34,15 +35,19 @@ public class TestExcelWorker {
 	String fileName = "C:\\workspace\\dynasticTree.xls";
 
 	List<Person> persons = new ArrayList<Person>();
-	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик");
-	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович");
+	Person rurick = new Person("Рюрик", new PersonLink("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик"));
+	Person igor = new Person("Игорь Рюрикович",
+		new PersonLink("Игорь", "https://ru.wikipedia.org/wiki/Игорь Рюрикович"));
 	rurick.setChild(igor.getId());
-	Person svyatoslav = new Person("Святослав Игоревич", "https://ru.wikipedia.org/wiki/Святослав Игоревич");
+	Person svyatoslav = new Person("Святослав Игоревич",
+		new PersonLink("Святослав", "https://ru.wikipedia.org/wiki/Святослав Игоревич"));
 	igor.setChild(svyatoslav.getId());
-	Person yaropolk = new Person("Ярополк Святославич", "https://ru.wikipedia.org/wiki/Ярополк Святославич");
+	Person yaropolk = new Person("Ярополк Святославич",
+		new PersonLink("Ярополк", "https://ru.wikipedia.org/wiki/Ярополк Святославич"));
 	Person oleg = new Person("Олег Святославич (князь древлянский)",
-		"https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)");
-	Person vladimir = new Person("Владимир Святославич", "https://ru.wikipedia.org/wiki/Владимир Святославич");
+		new PersonLink("Олег", "https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)"));
+	Person vladimir = new Person("Владимир Святославич",
+		new PersonLink("Владимир", "https://ru.wikipedia.org/wiki/Владимир Святославич"));
 	svyatoslav.setChild(yaropolk.getId());
 	svyatoslav.setChild(oleg.getId());
 	svyatoslav.setChild(vladimir.getId());
@@ -67,6 +72,7 @@ public class TestExcelWorker {
 	assertTrue(row.getCell(1).getStringCellValue().equals("name"));
 	assertTrue(row.getCell(2).getStringCellValue().equals("childrens"));
 	assertTrue(row.getCell(3).getStringCellValue().equals("url"));
+	assertTrue(row.getCell(4).getStringCellValue().equals("urlName"));
 
 	assertPerson(sheet, 1, rurick);
 	assertPerson(sheet, 2, igor);
@@ -91,5 +97,7 @@ public class TestExcelWorker {
 	assertTrue(childrens.equals(person.getChildrens().toString()));
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
+
+	assertTrue(row.getCell(4).getStringCellValue().equals(person.getUrlName()));
     }
 }

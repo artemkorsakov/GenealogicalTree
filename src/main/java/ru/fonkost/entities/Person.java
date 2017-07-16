@@ -15,7 +15,7 @@ public class Person {
     private int id;
     private static int count = 0;
     private String name;
-    private String url;
+    private PersonLink link;
     private List<Integer> childrens = new ArrayList<Integer>();
 
     /**
@@ -26,12 +26,12 @@ public class Person {
      * @param url
      *            the url
      */
-    public Person(String name, String url) throws IllegalArgumentException {
-	if (name == null || url == null || name.isEmpty() || url.isEmpty()) {
+    public Person(String name, PersonLink link) throws IllegalArgumentException {
+	if (name == null || link == null || name.isEmpty()) {
 	    throw new IllegalArgumentException("Оба аргумента должны иметь значение");
 	}
 	this.name = name;
-	this.url = url;
+	this.link = link;
 	count++;
 	this.id = count;
     }
@@ -60,7 +60,16 @@ public class Person {
      * @return the url
      */
     public String getUrl() {
-	return url;
+	return link.getUrl();
+    }
+
+    /**
+     * Возвращает имя ссылки.
+     *
+     * @return the url
+     */
+    public String getUrlName() {
+	return link.getName();
     }
 
     /**
@@ -98,12 +107,12 @@ public class Person {
 	}
 
 	Person person = (Person) object;
-	return this.url.equals(person.url);
+	return this.link.equals(person.link);
     }
 
     @Override
     public int hashCode() {
-	return this.url.hashCode();
+	return this.link.hashCode();
     }
 
     /*
@@ -113,6 +122,6 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "name=" + name + "; id=" + id + "; url=" + url;
+	return "name=" + name + "; id=" + id + "; link=" + link;
     }
 }

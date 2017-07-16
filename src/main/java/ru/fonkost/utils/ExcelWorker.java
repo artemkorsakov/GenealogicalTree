@@ -52,20 +52,22 @@ public class ExcelWorker {
 	workbook = new HSSFWorkbook();
 	sheet = workbook.createSheet(name);
 	rowNum = 0;
-	saveRow("id", "name", "childrens", "url");
+	saveRow("id", "name", "childrens", "url", "urlName");
     }
 
     private void savePerson(Person person) throws ParseException {
-	saveRow(String.valueOf(person.getId()), person.getName(), person.getChildrens().toString(), person.getUrl());
+	saveRow(String.valueOf(person.getId()), person.getName(), person.getChildrens().toString(), person.getUrl(),
+		person.getUrlName());
 	System.out.println(person);
     }
 
-    private void saveRow(String col1, String col2, String col3, String col4) {
+    private void saveRow(String col1, String col2, String col3, String col4, String col5) {
 	Row row = sheet.createRow(rowNum);
 	row.createCell(0).setCellValue(col1);
 	row.createCell(1).setCellValue(col2);
 	row.createCell(2).setCellValue(col3);
 	row.createCell(3).setCellValue(col4);
+	row.createCell(4).setCellValue(col5);
 	rowNum++;
     }
 

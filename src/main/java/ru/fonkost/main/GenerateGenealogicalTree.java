@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 
 import ru.fonkost.driverHelper.DriverFactory;
 import ru.fonkost.entities.Person;
+import ru.fonkost.entities.PersonLink;
 import ru.fonkost.pageObjects.PersonPage;
 import ru.fonkost.utils.ExcelWorker;
 
@@ -37,7 +38,9 @@ public final class GenerateGenealogicalTree {
      *             the exception
      */
     public static void main(String[] args) throws Exception {
-	final String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
+	final String rurickUrl = "https://ru.wikipedia.org/wiki/Рюрик";
+	final String genghisKhanUrl = "https://ru.wikipedia.org/wiki/Чингисхан";
+	final String adamUrl = "https://ru.wikipedia.org/wiki/Адам";
 	final String romanovUrl = "https://ru.wikipedia.org/wiki/Михаил_Фёдорович";
 	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
@@ -56,7 +59,8 @@ public final class GenerateGenealogicalTree {
     private static void DetermineAncestorOfADynasty(String url) throws IllegalArgumentException {
 	driver.navigate().to(url);
 	PersonPage page = new PersonPage(driver);
-	Person AncestorOfADynasty = page.GetPerson();
+	PersonLink AncestorLink = new PersonLink("Родоначальник династии", url);
+	Person AncestorOfADynasty = page.GetPerson(AncestorLink);
 	AllPersons = new ArrayList<Person>();
 	AllPersons.add(AncestorOfADynasty);
     }
@@ -67,10 +71,9 @@ public final class GenerateGenealogicalTree {
     private static void DeterminePersonChildren(Person currentPerson) throws Exception {
 	PersonPage page = new PersonPage(driver);
 	page.GoToUrl(currentPerson.getUrl());
-	List<String> childrensUrl = page.GetChildrensUrl();
-	for (String link : childrensUrl) {
-	    page.GoToUrl(link);
-	    Person newPerson = page.GetPerson();
+	List<PersonLink> childrensUrl = page.GetChildrensUrl();
+	for (PersonLink link : childrensUrl) {
+	    Person newPerson = page.GetPerson(link);
 	    int indexOf = AllPersons.indexOf(newPerson);
 	    if (indexOf == -1) {
 		currentPerson.setChild(newPerson.getId());

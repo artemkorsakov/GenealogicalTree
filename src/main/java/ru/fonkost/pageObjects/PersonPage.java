@@ -5,14 +5,13 @@ package ru.fonkost.pageObjects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import ru.fonkost.entities.Person;
+import ru.fonkost.entities.PersonLink;
 
 /**
  * Страница исторического лица.
@@ -37,10 +36,10 @@ public class PersonPage extends Page {
      *
      * @return the person
      */
-    public Person GetPerson() throws IllegalArgumentException {
-	String url = driver.getCurrentUrl();
+    public Person GetPerson(PersonLink personLink) throws IllegalArgumentException {
+	GoToUrl(personLink.getUrl());
 	String name = GetName();
-	Person person = new Person(name, url);
+	Person person = new Person(name, personLink);
 	return person;
     }
 
@@ -66,18 +65,22 @@ public class PersonPage extends Page {
      *
      * @return the list
      */
-    public List<String> GetChildrensUrl() {
+    public List<PersonLink> GetChildrensUrl() {
 	WaitLoadPage();
 
 	if (IsAnchor()) {
-	    return new ArrayList<String>();
+	    return new ArrayList<PersonLink>();
 	}
 
 	List<WebElement> childrensLinks = GetChildrensLinks();
-	List<String> childrens = new ArrayList<String>();
-	for (WebElement childrenLink : childrensLinks) {
-	    if (!IsSup(childrenLink) && IsCorrectName(childrenLink)) {
-		childrens.add(childrenLink.getAttribute("href"));
+	List<PersonLink> childrens = new ArrayList<PersonLink>();
+	for (WebElement link : childrensLinks) {
+	    if (IsSup(link)) {
+		continue;
+	    }
+	    PersonLink personLink = new PersonLink(link.getText(), link.getAttribute("href"));
+	    if (personLink.IsCorrectName()) {
+		childrens.add(personLink);
 	    }
 	}
 	return childrens;
@@ -91,16 +94,6 @@ public class PersonPage extends Page {
 	List<WebElement> childrensLinks = GetElements(
 		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
 	return childrensLinks;
-    }
-
-    /**
-     * Возвращает true, если текст элемента начинается не с числа
-     */
-    private boolean IsCorrectName(WebElement element) {
-	String name = element.getText();
-	Pattern p = Pattern.compile("^[\\D]+.+");
-	Matcher m = p.matcher(name);
-	return m.matches();
     }
 
     /**
