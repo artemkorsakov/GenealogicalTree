@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.Test;
 
 import ru.fonkost.entities.Person;
-import ru.fonkost.entities.PersonLink;
 
 /**
  * Тестирование класса Person
@@ -20,20 +19,15 @@ import ru.fonkost.entities.PersonLink;
  * @author Артём Корсаков
  */
 public class TestPerson {
-    private String rurickName = "Рюрик";
-    private PersonLink rurickLink = new PersonLink("Рюрик",
-	    "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA");
-    private PersonLink notRurickLink = new PersonLink("Рюрик", "НеРюрик");
-
     /**
      * Проверка имени и урла
      */
     @Test
     public void testNameAndUrl() throws Exception {
-	Person person = new Person(rurickName, rurickLink);
-	assertTrue(person.getName().equals(rurickName));
-	assertTrue(person.getUrlName().equals("Рюрик"));
-	assertTrue(person.getUrl().equals("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA", "РюрикUrl");
+	assertTrue(rurick.getName().equals("Рюрик"));
+	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
+	assertTrue(rurick.getUrlName().equals("РюрикUrl"));
     }
 
     /**
@@ -42,13 +36,13 @@ public class TestPerson {
     @Test
     public void testIdAndResetCount() throws Exception {
 	Person.ResetCount();
-	Person person = new Person(rurickName, rurickLink);
+	Person person = new Person("Рюрик", "Рюрик", "Рюрик");
 	assertTrue(person.getId() == 1);
-	Person person2 = new Person(rurickName, rurickLink);
+	Person person2 = new Person("Рюрик", "Рюрик", "Рюрик");
 	assertTrue(person.getId() == 1);
 	assertTrue(person2.getId() == 2);
 	Person.ResetCount();
-	Person person3 = new Person(rurickName, rurickLink);
+	Person person3 = new Person("Рюрик", "Рюрик", "Рюрик");
 	assertTrue(person.getId() == 1);
 	assertTrue(person2.getId() == 2);
 	assertTrue(person3.getId() == 1);
@@ -59,13 +53,12 @@ public class TestPerson {
      */
     @Test
     public void testSetChild() throws Exception {
-	Person rurick = new Person(rurickName, rurickLink);
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 	assertTrue(rurick.getChildrens().isEmpty());
 	rurick.setChild(rurick.getId());
 	assertTrue(rurick.getChildrens().isEmpty());
 
-	PersonLink igorLink = new PersonLink("Игорь", "https://ru.wikipedia.org/wiki/Игорь Рюрикович");
-	Person igor = new Person("Игорь Рюрикович", igorLink);
+	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович", "Игорь");
 	assertTrue(rurick.getChildrens().isEmpty());
 	assertTrue(igor.getChildrens().isEmpty());
 	rurick.setChild(igor.getId());
@@ -83,14 +76,14 @@ public class TestPerson {
      */
     @Test
     public void testSetChildrens() throws Exception {
-	Person svyatoslav = new Person("Святослав Игоревич",
-		new PersonLink("Святослав", "https://ru.wikipedia.org/wiki/Святослав Игоревич"));
-	Person yaropolk = new Person("Ярополк Святославич",
-		new PersonLink("Ярополк", "https://ru.wikipedia.org/wiki/Ярополк Святославич"));
+	Person svyatoslav = new Person("Святослав Игоревич", "https://ru.wikipedia.org/wiki/Святослав Игоревич",
+		"Святослав");
+	Person yaropolk = new Person("Ярополк Святославич", "https://ru.wikipedia.org/wiki/Ярополк Святославич",
+		"Ярополк");
 	Person oleg = new Person("Олег Святославич (князь древлянский)",
-		new PersonLink("Олег", "https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)"));
-	Person vladimir = new Person("Владимир Святославич",
-		new PersonLink("Владимир", "https://ru.wikipedia.org/wiki/Владимир Святославич"));
+		"https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)", "Олег");
+	Person vladimir = new Person("Владимир Святославич", "https://ru.wikipedia.org/wiki/Владимир Святославич",
+		"Владимир");
 	assertTrue(svyatoslav.getChildrens().isEmpty());
 	assertTrue(yaropolk.getChildrens().isEmpty());
 	assertTrue(oleg.getChildrens().isEmpty());
@@ -114,21 +107,21 @@ public class TestPerson {
      */
     @Test
     public void testEquals() {
-	Person rurick = new Person(rurickName, rurickLink);
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 
 	// Сравнение с null
 	assertFalse(rurick.equals(null));
 
 	// Сравнение не с персоной
-	assertFalse(rurick.equals(rurickLink));
+	assertFalse(rurick.equals("https://ru.wikipedia.org/wiki/Рюрик"));
 	assertFalse(rurick.equals(false));
 	assertFalse(rurick.equals(1));
 
 	// Сравнение с персонами
-	assertTrue(rurick.equals(new Person(rurickName, rurickLink)));
-	assertTrue(rurick.equals(new Person("НеРюрик", rurickLink)));
-	assertFalse(rurick.equals(new Person(rurickName, notRurickLink)));
-	assertFalse(rurick.equals(new Person("НеРюрик", notRurickLink)));
+	assertTrue(rurick.equals(new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик")));
+	assertTrue(rurick.equals(new Person("НеРюрик", "https://ru.wikipedia.org/wiki/Рюрик", "НеРюрик")));
+	assertFalse(rurick.equals(new Person("НеРюрик", "НеРюрик", "НеРюрик")));
+	assertFalse(rurick.equals(new Person("Рюрик", "НеРюрик", "Рюрик")));
     }
 
     /**
@@ -136,11 +129,11 @@ public class TestPerson {
      */
     @Test
     public void testHashCode() {
-	Person rurick = new Person(rurickName, rurickLink);
-	assertTrue(rurick.hashCode() == rurickLink.hashCode());
-	assertTrue(rurick.hashCode() == new Person(rurickName, rurickLink).hashCode());
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
+	assertTrue(rurick.hashCode() == "https://ru.wikipedia.org/wiki/Рюрик".hashCode());
+	assertTrue(rurick.hashCode() == new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик").hashCode());
 	assertFalse(rurick.hashCode() == "НеРюрик".hashCode());
-	assertFalse(rurick.hashCode() == new Person("НеРюрик", notRurickLink).hashCode());
+	assertFalse(rurick.hashCode() == new Person("НеРюрик", "НеРюрик", "НеРюрик").hashCode());
     }
 
     /**
@@ -148,10 +141,10 @@ public class TestPerson {
      */
     @Test
     public void testContains() {
-	Person rurick = new Person(rurickName, rurickLink);
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 	List<Person> AllPersons = new ArrayList<Person>();
 	assertFalse(AllPersons.contains(rurick));
-	AllPersons.add(new Person("НеРюрик", notRurickLink));
+	AllPersons.add(new Person("НеРюрик", "НеРюрик", "НеРюрик"));
 	assertFalse(AllPersons.contains(rurick));
 	AllPersons.add(rurick);
 	assertTrue(AllPersons.contains(rurick));
@@ -164,10 +157,10 @@ public class TestPerson {
      */
     @Test
     public void testIndexOf() {
-	Person rurick = new Person(rurickName, rurickLink);
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 	List<Person> AllPersons = new ArrayList<Person>();
 	AllPersons.add(rurick);
 	assertTrue(AllPersons.indexOf(rurick) == 0);
-	assertTrue(AllPersons.indexOf(new Person("НеРюрик", notRurickLink)) == -1);
+	assertTrue(AllPersons.indexOf(new Person("НеРюрик", "НеРюрик", "НеРюрик")) == -1);
     }
 }

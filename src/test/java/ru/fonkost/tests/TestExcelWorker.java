@@ -17,7 +17,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.junit.Test;
 
 import ru.fonkost.entities.Person;
-import ru.fonkost.entities.PersonLink;
 import ru.fonkost.utils.ExcelWorker;
 
 /**
@@ -35,19 +34,18 @@ public class TestExcelWorker {
 	String fileName = "C:\\workspace\\dynasticTree.xls";
 
 	List<Person> persons = new ArrayList<Person>();
-	Person rurick = new Person("Рюрик", new PersonLink("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик"));
-	Person igor = new Person("Игорь Рюрикович",
-		new PersonLink("Игорь", "https://ru.wikipedia.org/wiki/Игорь Рюрикович"));
+	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
+	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович", "Игорь");
 	rurick.setChild(igor.getId());
-	Person svyatoslav = new Person("Святослав Игоревич",
-		new PersonLink("Святослав", "https://ru.wikipedia.org/wiki/Святослав Игоревич"));
+	Person svyatoslav = new Person("Святослав Игоревич", "https://ru.wikipedia.org/wiki/Святослав Игоревич",
+		"Святослав");
 	igor.setChild(svyatoslav.getId());
-	Person yaropolk = new Person("Ярополк Святославич",
-		new PersonLink("Ярополк", "https://ru.wikipedia.org/wiki/Ярополк Святославич"));
+	Person yaropolk = new Person("Ярополк Святославич", "https://ru.wikipedia.org/wiki/Ярополк Святославич",
+		"Ярополк");
 	Person oleg = new Person("Олег Святославич (князь древлянский)",
-		new PersonLink("Олег", "https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)"));
-	Person vladimir = new Person("Владимир Святославич",
-		new PersonLink("Владимир", "https://ru.wikipedia.org/wiki/Владимир Святославич"));
+		"https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)", "Олег");
+	Person vladimir = new Person("Владимир Святославич", "https://ru.wikipedia.org/wiki/Владимир Святославич",
+		"Владимир");
 	svyatoslav.setChild(yaropolk.getId());
 	svyatoslav.setChild(oleg.getId());
 	svyatoslav.setChild(vladimir.getId());

@@ -38,8 +38,10 @@ public class PersonPage extends Page {
      */
     public Person GetPerson(PersonLink personLink) throws IllegalArgumentException {
 	GoToUrl(personLink.getUrl());
+	WaitLoadPage();
 	String name = GetName();
-	Person person = new Person(name, personLink);
+	String url = driver.getCurrentUrl();
+	Person person = new Person(name, url, personLink.getName());
 	return person;
     }
 
