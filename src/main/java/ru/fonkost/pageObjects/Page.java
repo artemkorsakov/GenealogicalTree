@@ -25,17 +25,6 @@ abstract class Page {
     }
 
     /**
-     * Переходим по урлу только если находимся на другой странице
-     * 
-     * @param url
-     */
-    public void GoToUrl(String url) {
-	if (!driver.getCurrentUrl().equals(url)) {
-	    driver.navigate().to(url);
-	}
-    }
-
-    /**
      * Возвращает true, если текущий урл содержит "якорь"
      */
     protected boolean IsAnchor() {

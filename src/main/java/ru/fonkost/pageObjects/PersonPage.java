@@ -27,7 +27,6 @@ public class PersonPage extends Page {
      */
     public PersonPage(WebDriver driver) {
 	super(driver);
-	WaitLoadPage();
     }
 
     /**
@@ -37,7 +36,7 @@ public class PersonPage extends Page {
      * @return the person
      */
     public Person GetPerson(PersonLink personLink) throws IllegalArgumentException {
-	GoToUrl(personLink.getUrl());
+	driver.navigate().to(personLink.getUrl());
 	WaitLoadPage();
 	String name = GetName();
 	String url = driver.getCurrentUrl();

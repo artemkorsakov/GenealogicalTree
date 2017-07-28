@@ -22,7 +22,8 @@ import ru.fonkost.utils.ExcelWorker;
  */
 public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
-    private static List<Person> AllPersons;
+    private static List<Person> AllPersons = new ArrayList<Person>();;
+    private static List<PersonLink> AllLinks = new ArrayList<PersonLink>();;
 
     /**
      * Вычисляем основателя династии и добавляем его в генеалогическое древо. В
@@ -44,44 +45,46 @@ public final class GenerateGenealogicalTree {
 	final String romanovUrl = "https://ru.wikipedia.org/wiki/Михаил_Фёдорович";
 	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
-	DetermineAncestorOfADynasty(romanovUrl);
+	AllLinks.add(new PersonLink("Родоначальник династии", romanovUrl));
 	int i = 0;
-	while (i < AllPersons.size()) {
-	    DeterminePersonChildren(AllPersons.get(i));
+	while (i < AllLinks.size()) {
+	    DeterminePersonChildren(AllLinks.get(i));
 	    i++;
 	}
+	UpdateChildrensLink();
 	SaveResultAndQuit(fileName);
     }
 
-    /*
-     * Определение родоначальника династии
-     */
-    private static void DetermineAncestorOfADynasty(String url) throws IllegalArgumentException {
-	driver.navigate().to(url);
+    private static void DeterminePersonChildren(PersonLink currentPerson) throws Exception {
 	PersonPage page = new PersonPage(driver);
-	PersonLink AncestorLink = new PersonLink("Родоначальник династии", url);
-	Person AncestorOfADynasty = page.GetPerson(AncestorLink);
-	AllPersons = new ArrayList<Person>();
-	AllPersons.add(AncestorOfADynasty);
-    }
+	Person newPerson = page.GetPerson(currentPerson);
+	int indexOfPerson = AllPersons.indexOf(newPerson);
+	if (indexOfPerson == -1) {
+	    AllPersons.add(newPerson);
+	    indexOfPerson = AllPersons.size() - 1;
+	}
+	currentPerson.setName(indexOfPerson + "");
 
-    /*
-     * Определение детей персоны
-     */
-    private static void DeterminePersonChildren(Person currentPerson) throws Exception {
-	PersonPage page = new PersonPage(driver);
-	page.GoToUrl(currentPerson.getUrl());
 	List<PersonLink> childrensUrl = page.GetChildrensUrl();
 	for (PersonLink link : childrensUrl) {
-	    Person newPerson = page.GetPerson(link);
-	    int indexOf = AllPersons.indexOf(newPerson);
+	    int indexOf = AllLinks.indexOf(link);
 	    if (indexOf == -1) {
-		currentPerson.setChild(newPerson.getId());
-		AllPersons.add(newPerson);
-		System.out.println(newPerson);
-	    } else {
-		currentPerson.setChild(AllPersons.get(indexOf).getId());
+		AllLinks.add(link);
+		indexOf = AllLinks.size() - 1;
 	    }
+	    newPerson.setChild(indexOf);
+	}
+    }
+
+    private static void UpdateChildrensLink() {
+	for (Person person : AllPersons) {
+	    List<Integer> childrensId = person.getChildrens();
+	    for (int i = 0; i < childrensId.size(); i++) {
+		int temp = childrensId.get(i);
+		String name = AllLinks.get(temp).getName();
+		childrensId.set(i, Integer.getInteger(name));
+	    }
+	    person.setChildrens(childrensId);
 	}
     }
 
@@ -89,6 +92,7 @@ public final class GenerateGenealogicalTree {
 	ExcelWorker excelWorker = new ExcelWorker();
 	excelWorker.savePersons(fileName, AllPersons);
 	excelWorker = null;
+	AllLinks = null;
 	AllPersons = null;
 	driver.quit();
 	driver = null;

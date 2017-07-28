@@ -51,6 +51,10 @@ public class PersonLink {
 	return name;
     }
 
+    public void setName(String name) {
+	this.name = name;
+    }
+
     /**
      * Возвращает url.
      *

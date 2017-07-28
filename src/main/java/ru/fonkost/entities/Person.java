@@ -83,6 +83,10 @@ public class Person {
 	return childrens;
     }
 
+    public void setChildrens(List<Integer> childrens) {
+	this.childrens = childrens;
+    }
+
     /**
      * Добавляет ребенка в список
      *
