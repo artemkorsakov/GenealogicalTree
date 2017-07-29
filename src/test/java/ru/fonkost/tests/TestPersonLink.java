@@ -5,6 +5,7 @@ package ru.fonkost.tests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.junit.Test;
 import ru.fonkost.entities.PersonLink;
 
 /**
- * Тестирование класса PersonLink
+ * Тесты, покрывающие класс PersonLink
  *
  * @author Артём Корсаков
  */
@@ -24,30 +25,51 @@ public class TestPersonLink {
     private String rurickName = "Рюрик";
     private String rurickUrl = "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA";
 
-    /**
-     * Проверка имени и урла
-     */
     @Test
-    public void testNameAndUrl() throws Exception {
+    public void testInvalidUrl() throws Exception {
+	try {
+	    new PersonLink(Text, null);
+	    fail("Создалась ссылка с url равным null");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	}
+	try {
+	    new PersonLink(Text, "");
+	    fail("Создалась ссылка с пустым url");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	}
+	try {
+	    new PersonLink(Text, "   ");
+	    fail("Создалась ссылка с пустым url");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	}
+    }
+
+    @Test
+    public void testInvalidName() throws Exception {
+	PersonLink pl = new PersonLink(null, Url);
+	assertTrue(pl.getName().equals("Неизвестно"));
+	pl = new PersonLink("", Url);
+	assertTrue(pl.getName().equals("Неизвестно"));
+	pl = new PersonLink("   ", Url);
+	assertTrue(pl.getName().equals("Неизвестно"));
+    }
+
+    @Test
+    public void testGetNameAndGetUrl() throws Exception {
 	PersonLink personLink = new PersonLink(Text, Url);
 	assertTrue(personLink.getName().equals(Text));
 	assertTrue(personLink.getUrl().equals(Url));
     }
 
-    /**
-     * Проверка текста ссылки на корректность
-     * 
-     * @throws Exception
-     */
     @Test
     public void testIsCorrectName() throws Exception {
 	assertTrue(new PersonLink("Александр 1", Url).IsCorrectName());
 	assertFalse(new PersonLink("1 Александр", Url).IsCorrectName());
     }
 
-    /**
-     * Проверка эквивалентности
-     */
     @Test
     public void testEquals() {
 	PersonLink rurick = new PersonLink(rurickName, rurickUrl);
@@ -67,9 +89,6 @@ public class TestPersonLink {
 	assertFalse(rurick.equals(new PersonLink("НеРюрик", "НеРюрик")));
     }
 
-    /**
-     * Проверка хэш-суммы
-     */
     @Test
     public void testHashCode() {
 	PersonLink rurick = new PersonLink(rurickName, rurickUrl);
@@ -79,9 +98,6 @@ public class TestPersonLink {
 	assertFalse(rurick.hashCode() == new PersonLink("НеРюрик", "НеРюрик").hashCode());
     }
 
-    /**
-     * Проверка поиска по массиву
-     */
     @Test
     public void testContains() {
 	PersonLink rurick = new PersonLink(rurickName, rurickUrl);
@@ -95,9 +111,6 @@ public class TestPersonLink {
 	assertFalse(list.contains(rurick));
     }
 
-    /**
-     * Проверка индекса в массиве
-     */
     @Test
     public void testIndexOf() {
 	PersonLink rurick = new PersonLink(rurickName, rurickUrl);
@@ -105,5 +118,11 @@ public class TestPersonLink {
 	list.add(rurick);
 	assertTrue(list.indexOf(rurick) == 0);
 	assertTrue(list.indexOf(new PersonLink("НеРюрик", "НеРюрик")) == -1);
+    }
+
+    @Test
+    public void testToString() {
+	PersonLink rurick = new PersonLink("Имя", "Ссылка");
+	assertTrue(rurick.toString().equals("linkName=Имя; linkUrl=Ссылка"));
     }
 }

@@ -22,8 +22,9 @@ import ru.fonkost.utils.ExcelWorker;
  */
 public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
-    private static List<Person> AllPersons = new ArrayList<Person>();;
-    private static List<PersonLink> AllLinks = new ArrayList<PersonLink>();;
+    private static List<Person> AllPersons = new ArrayList<Person>();
+    private static List<PersonLink> AllLinks = new ArrayList<PersonLink>();
+    private static List<Integer> Relations = new ArrayList<Integer>();
 
     /**
      * Вычисляем основателя династии и добавляем его в генеалогическое древо. В
@@ -48,14 +49,15 @@ public final class GenerateGenealogicalTree {
 	AllLinks.add(new PersonLink("Родоначальник династии", romanovUrl));
 	int i = 0;
 	while (i < AllLinks.size()) {
-	    DeterminePersonChildren(AllLinks.get(i));
+	    DeterminePersonChildren(i);
 	    i++;
 	}
 	UpdateChildrensLink();
 	SaveResultAndQuit(fileName);
     }
 
-    private static void DeterminePersonChildren(PersonLink currentPerson) throws Exception {
+    private static void DeterminePersonChildren(int i) throws Exception {
+	PersonLink currentPerson = AllLinks.get(i);
 	PersonPage page = new PersonPage(driver);
 	Person newPerson = page.GetPerson(currentPerson);
 	int indexOfPerson = AllPersons.indexOf(newPerson);
@@ -63,7 +65,7 @@ public final class GenerateGenealogicalTree {
 	    AllPersons.add(newPerson);
 	    indexOfPerson = AllPersons.size() - 1;
 	}
-	currentPerson.setName(indexOfPerson + "");
+	Relations.set(i, indexOfPerson);
 
 	List<PersonLink> childrensUrl = page.GetChildrensUrl();
 	for (PersonLink link : childrensUrl) {
@@ -80,9 +82,9 @@ public final class GenerateGenealogicalTree {
 	for (Person person : AllPersons) {
 	    List<Integer> childrensId = person.getChildrens();
 	    for (int i = 0; i < childrensId.size(); i++) {
-		int temp = childrensId.get(i);
-		String name = AllLinks.get(temp).getName();
-		childrensId.set(i, Integer.getInteger(name));
+		int relId = childrensId.get(i);
+		Integer perId = Relations.get(relId);
+		childrensId.set(i, AllPersons.get(perId).getId());
 	    }
 	    person.setChildrens(childrensId);
 	}

@@ -7,7 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Класс ссылки на персону
+ * В классе описывается ссылка на персону, состоящая из имени и урла. Например,
+ * строки "Пётр" и "https://ru.wikipedia.org/wiki/%D0%9F%D1%91%D1%82%D1%80_I"
+ * могут задавать ссылку на Петра I
  *
  * @author Артём Корсаков
  */
@@ -16,25 +18,32 @@ public class PersonLink {
     private String url;
 
     /**
-     * Instantiates a new person link.
+     * Инициализация ссылки на персону.
+     * 
      *
      * @param name
-     *            the name
+     *            имя ссылки. При пустом или null значении присваивается
+     *            "Неизвестно"
      * @param url
      *            the url
      * @throws IllegalArgumentException
-     *             the illegal argument exception
+     *             выдается в случае, если url пустой или null
      */
     public PersonLink(String name, String url) throws IllegalArgumentException {
-	if (name == null || url == null || name.isEmpty() || url.isEmpty()) {
-	    throw new IllegalArgumentException("Оба аргумента должны иметь значение");
+	if (url == null || url.trim().isEmpty()) {
+	    throw new IllegalArgumentException("Url должен иметь непустое значение");
 	}
-	this.name = name;
 	this.url = url;
+
+	if (name == null || name.trim().isEmpty()) {
+	    this.name = "Неизвестно";
+	} else {
+	    this.name = name;
+	}
     }
 
     /**
-     * Возвращает true, если текст элемента начинается не с числа
+     * Возвращает true, если имя ссылки начинается не с числа
      */
     public boolean IsCorrectName() {
 	Pattern p = Pattern.compile("^[\\D]+.+");
@@ -42,24 +51,10 @@ public class PersonLink {
 	return m.matches();
     }
 
-    /**
-     * Возвращает имя.
-     *
-     * @return the name
-     */
     public String getName() {
 	return name;
     }
 
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    /**
-     * Возвращает url.
-     *
-     * @return the url
-     */
     public String getUrl() {
 	return url;
     }
@@ -79,11 +74,6 @@ public class PersonLink {
 	return this.url.hashCode();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
 	return "linkName=" + name + "; linkUrl=" + url;

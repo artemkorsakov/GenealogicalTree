@@ -94,7 +94,7 @@ public class Person {
      *            идентификатор ребенка
      */
     public void setChild(int childId) {
-	if ((childId != id) && (!childrens.contains(childId))) {
+	if (!childrens.contains(childId)) {
 	    childrens.add(childId);
 	}
     }
@@ -128,6 +128,6 @@ public class Person {
      */
     @Override
     public String toString() {
-	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl;
+	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl + "; childrens=" + childrens;
     }
 }

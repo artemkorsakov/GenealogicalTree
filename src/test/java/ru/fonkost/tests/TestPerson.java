@@ -56,18 +56,22 @@ public class TestPerson {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 	assertTrue(rurick.getChildrens().isEmpty());
 	rurick.setChild(rurick.getId());
-	assertTrue(rurick.getChildrens().isEmpty());
+	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
+	assertTrue(rurick.getChildrens().size() == 1);
 
 	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович", "Игорь");
-	assertTrue(rurick.getChildrens().isEmpty());
-	assertTrue(igor.getChildrens().isEmpty());
-	rurick.setChild(igor.getId());
-	assertTrue(rurick.getChildrens().get(0) == igor.getId());
+	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
 	assertTrue(rurick.getChildrens().size() == 1);
 	assertTrue(igor.getChildrens().isEmpty());
 	rurick.setChild(igor.getId());
-	assertTrue(rurick.getChildrens().get(0) == igor.getId());
-	assertTrue(rurick.getChildrens().size() == 1);
+	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
+	assertTrue(rurick.getChildrens().get(1) == igor.getId());
+	assertTrue(rurick.getChildrens().size() == 2);
+	assertTrue(igor.getChildrens().isEmpty());
+	rurick.setChild(igor.getId());
+	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
+	assertTrue(rurick.getChildrens().get(1) == igor.getId());
+	assertTrue(rurick.getChildrens().size() == 2);
 	assertTrue(igor.getChildrens().isEmpty());
     }
 
