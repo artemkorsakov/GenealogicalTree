@@ -5,6 +5,7 @@ package ru.fonkost.tests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +20,69 @@ import ru.fonkost.entities.Person;
  * @author Артём Корсаков
  */
 public class TestPerson {
+    @Test
+    public void testInvalidName() throws Exception {
+	try {
+	    new Person(null, "Url", "NameUrl");
+	    fail("Создалась персона с именем равным null");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Имя должно иметь непустое значение"));
+	}
+	try {
+	    new Person("", "Url", "NameUrl");
+	    fail("Создалась персона с пустым именем");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Имя должно иметь непустое значение"));
+	}
+	try {
+	    new Person("   ", "Url", "NameUrl");
+	    fail("Создалась персона с пробельным именем");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Имя должно иметь непустое значение"));
+	}
+    }
+
+    @Test
+    public void testInvalidUrl() throws Exception {
+	try {
+	    new Person("Name", null, "NameUrl");
+	    fail("Создалась персона с url равным null");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	}
+	try {
+	    new Person("Name", "", "NameUrl");
+	    fail("Создалась персона с пустым url");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	}
+	try {
+	    new Person("Name", "   ", "NameUrl");
+	    fail("Создалась персона с пробельным url");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	}
+    }
+
+    @Test
+    public void testInvalidNameUrl() throws Exception {
+	Person pl = new Person("Name", "Url", null);
+	assertTrue(pl.getNameUrl().equals("Неизвестно"));
+	pl = new Person("Name", "Url", "");
+	assertTrue(pl.getNameUrl().equals("Неизвестно"));
+	pl = new Person("Name", "Url", "   ");
+	assertTrue(pl.getNameUrl().equals("Неизвестно"));
+    }
+
     /**
-     * Проверка имени и урла
+     * Проверка создания персоны с корректными данными
      */
     @Test
-    public void testNameAndUrl() throws Exception {
+    public void testCorrectPerson() throws Exception {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA", "РюрикUrl");
 	assertTrue(rurick.getName().equals("Рюрик"));
 	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
-	assertTrue(rurick.getUrlName().equals("РюрикUrl"));
+	assertTrue(rurick.getNameUrl().equals("РюрикUrl"));
     }
 
     /**
@@ -55,28 +110,22 @@ public class TestPerson {
     public void testSetChild() throws Exception {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 	assertTrue(rurick.getChildrens().isEmpty());
-	rurick.setChild(rurick.getId());
-	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
-	assertTrue(rurick.getChildrens().size() == 1);
 
 	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович", "Игорь");
-	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
+	assertTrue(rurick.getChildrens().isEmpty());
+	assertTrue(igor.getChildrens().isEmpty());
+	rurick.setChild(igor.getId());
+	assertTrue(rurick.getChildrens().get(0) == igor.getId());
 	assertTrue(rurick.getChildrens().size() == 1);
 	assertTrue(igor.getChildrens().isEmpty());
 	rurick.setChild(igor.getId());
-	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
-	assertTrue(rurick.getChildrens().get(1) == igor.getId());
-	assertTrue(rurick.getChildrens().size() == 2);
-	assertTrue(igor.getChildrens().isEmpty());
-	rurick.setChild(igor.getId());
-	assertTrue(rurick.getChildrens().get(0) == rurick.getId());
-	assertTrue(rurick.getChildrens().get(1) == igor.getId());
-	assertTrue(rurick.getChildrens().size() == 2);
+	assertTrue(rurick.getChildrens().get(0) == igor.getId());
+	assertTrue(rurick.getChildrens().size() == 1);
 	assertTrue(igor.getChildrens().isEmpty());
     }
 
     /**
-     * Проверка добавления детей к персоне
+     * Проверка добавления нескольких детей к персоне
      */
     @Test
     public void testSetChildrens() throws Exception {
@@ -106,9 +155,6 @@ public class TestPerson {
 	assertTrue(vladimir.getChildrens().isEmpty());
     }
 
-    /**
-     * Проверка эквивалентности
-     */
     @Test
     public void testEquals() {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
@@ -123,26 +169,24 @@ public class TestPerson {
 
 	// Сравнение с персонами
 	assertTrue(rurick.equals(new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик")));
+	assertTrue(rurick.equals(new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "НеРюрик")));
+	assertTrue(rurick.equals(new Person("НеРюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик")));
 	assertTrue(rurick.equals(new Person("НеРюрик", "https://ru.wikipedia.org/wiki/Рюрик", "НеРюрик")));
 	assertFalse(rurick.equals(new Person("НеРюрик", "НеРюрик", "НеРюрик")));
 	assertFalse(rurick.equals(new Person("Рюрик", "НеРюрик", "Рюрик")));
     }
 
-    /**
-     * Проверка хэш-суммы
-     */
     @Test
     public void testHashCode() {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
 	assertTrue(rurick.hashCode() == "https://ru.wikipedia.org/wiki/Рюрик".hashCode());
+	assertTrue(rurick.hashCode() == new Person("НеРюрик", "https://ru.wikipedia.org/wiki/Рюрик", "НеРюрик")
+		.hashCode());
 	assertTrue(rurick.hashCode() == new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик").hashCode());
 	assertFalse(rurick.hashCode() == "НеРюрик".hashCode());
 	assertFalse(rurick.hashCode() == new Person("НеРюрик", "НеРюрик", "НеРюрик").hashCode());
     }
 
-    /**
-     * Проверка поиска по массиву
-     */
     @Test
     public void testContains() {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
@@ -156,9 +200,6 @@ public class TestPerson {
 	assertFalse(AllPersons.contains(rurick));
     }
 
-    /**
-     * Проверка индекса в массиве
-     */
     @Test
     public void testIndexOf() {
 	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
@@ -166,5 +207,12 @@ public class TestPerson {
 	AllPersons.add(rurick);
 	assertTrue(AllPersons.indexOf(rurick) == 0);
 	assertTrue(AllPersons.indexOf(new Person("НеРюрик", "НеРюрик", "НеРюрик")) == -1);
+    }
+
+    @Test
+    public void testToString() {
+	Person.ResetCount();
+	Person rurick = new Person("Имя", "Ссылка", "ИмяСсылки");
+	assertTrue(rurick.toString().equals("name=Имя; id=1; url=Ссылка; nameUrl=ИмяСсылки; childrens=[]"));
     }
 }

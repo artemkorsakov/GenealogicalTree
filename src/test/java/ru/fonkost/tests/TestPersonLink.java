@@ -41,7 +41,7 @@ public class TestPersonLink {
 	}
 	try {
 	    new PersonLink(Text, "   ");
-	    fail("Создалась ссылка с пустым url");
+	    fail("Создалась ссылка с пробельным url");
 	} catch (IllegalArgumentException ex) {
 	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
 	}

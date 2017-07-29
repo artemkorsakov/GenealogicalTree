@@ -20,78 +20,67 @@ public class Person {
     private List<Integer> childrens = new ArrayList<Integer>();
 
     /**
-     * Инициализация экземпляра класса по имени и урлу.
+     * Инициализация представителя династии по имени, урлу и наименовании урла
      *
      * @param name
-     *            the name
+     *            имя персоны
      * @param url
      *            the url
+     * @param nameUrl
+     *            имя ссылки
      */
     public Person(String name, String url, String nameUrl) throws IllegalArgumentException {
-	if (name == null || url == null || nameUrl == null || name.isEmpty() || url.isEmpty()) {
-	    throw new IllegalArgumentException("Аргументы должны иметь значение");
-	}
-	this.name = name;
-	this.url = url;
-	this.nameUrl = nameUrl;
+	setName(name);
+	setUrl(url);
+	setNameUrl(nameUrl);
 	count++;
 	this.id = count;
     }
 
-    /**
-     * Возвращает идентификатор персоны.
-     *
-     * @return идентификатор
-     */
     public int getId() {
 	return id;
     }
 
-    /**
-     * Возвращает имя
-     *
-     * @return имя
-     */
     public String getName() {
 	return name;
     }
 
-    /**
-     * Возвращает url.
-     *
-     * @return the url
-     */
     public String getUrl() {
 	return url;
     }
 
-    /**
-     * Возвращает имя ссылки.
-     *
-     * @return the url
-     */
-    public String getUrlName() {
+    public String getNameUrl() {
 	return nameUrl;
     }
 
-    /**
-     * Возвращает список идентификаторов детей
-     *
-     * @return детей персоны
-     */
+    private void setName(String name) {
+	if (name == null || name.trim().isEmpty()) {
+	    throw new IllegalArgumentException("Имя должно иметь непустое значение");
+	}
+	this.name = name;
+    }
+
+    private void setUrl(String url) {
+	if (url == null || url.trim().isEmpty()) {
+	    throw new IllegalArgumentException("Url должен иметь непустое значение");
+	}
+	this.url = url;
+    }
+
+    private void setNameUrl(String nameUrl) {
+	if (nameUrl == null || nameUrl.trim().isEmpty()) {
+	    this.nameUrl = "Неизвестно";
+	} else {
+	    this.nameUrl = nameUrl;
+	}
+    }
+
     public List<Integer> getChildrens() {
 	return childrens;
     }
 
-    public void setChildrens(List<Integer> childrens) {
-	this.childrens = childrens;
-    }
-
     /**
-     * Добавляет ребенка в список
-     *
-     * @param childId
-     *            идентификатор ребенка
+     * Добавляет ребенка в список только если ребенка там ещё нет
      */
     public void setChild(int childId) {
 	if (!childrens.contains(childId)) {
@@ -121,11 +110,6 @@ public class Person {
 	return this.url.hashCode();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
 	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl + "; childrens=" + childrens;

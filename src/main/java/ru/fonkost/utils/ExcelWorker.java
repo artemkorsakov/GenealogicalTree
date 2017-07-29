@@ -57,7 +57,7 @@ public class ExcelWorker {
 
     private void savePerson(Person person) throws ParseException {
 	saveRow(String.valueOf(person.getId()), person.getName(), person.getChildrens().toString(), person.getUrl(),
-		person.getUrlName());
+		person.getNameUrl());
 	System.out.println(person);
     }
 

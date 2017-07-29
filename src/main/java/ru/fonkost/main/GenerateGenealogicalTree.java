@@ -24,7 +24,8 @@ public final class GenerateGenealogicalTree {
     private static WebDriver driver = DriverFactory.GetDriver();
     private static List<Person> AllPersons = new ArrayList<Person>();
     private static List<PersonLink> AllLinks = new ArrayList<PersonLink>();
-    private static List<Integer> Relations = new ArrayList<Integer>();
+    private static List<Integer> RelationsAllLinks = new ArrayList<Integer>();
+    private static List<String> RelationsAllPersons = new ArrayList<String>();
 
     /**
      * Вычисляем основателя династии и добавляем его в генеалогическое древо. В
@@ -46,47 +47,60 @@ public final class GenerateGenealogicalTree {
 	final String romanovUrl = "https://ru.wikipedia.org/wiki/Михаил_Фёдорович";
 	final String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 
-	AllLinks.add(new PersonLink("Родоначальник династии", romanovUrl));
+	AllLinks.add(new PersonLink(null, romanovUrl));
+	RelationsAllLinks.add(-1);
 	int i = 0;
 	while (i < AllLinks.size()) {
-	    DeterminePersonChildren(i);
+	    VisitingAllLinks(i);
 	    i++;
 	}
-	UpdateChildrensLink();
+	UpdateChildrens();
 	SaveResultAndQuit(fileName);
     }
 
-    private static void DeterminePersonChildren(int i) throws Exception {
-	PersonLink currentPerson = AllLinks.get(i);
+    /*
+     * Посещение всех ссылок и формирование списка персон без списка детей
+     */
+    private static void VisitingAllLinks(int i) throws Exception {
+	PersonLink currentLink = AllLinks.get(i);
 	PersonPage page = new PersonPage(driver);
-	Person newPerson = page.GetPerson(currentPerson);
+	Person newPerson = page.GetPerson(currentLink);
 	int indexOfPerson = AllPersons.indexOf(newPerson);
 	if (indexOfPerson == -1) {
 	    AllPersons.add(newPerson);
+	    RelationsAllPersons.add("");
 	    indexOfPerson = AllPersons.size() - 1;
 	}
-	Relations.set(i, indexOfPerson);
+	RelationsAllLinks.set(i, indexOfPerson);
 
 	List<PersonLink> childrensUrl = page.GetChildrensUrl();
+	RelationsAllPersons.set(indexOfPerson, "");
 	for (PersonLink link : childrensUrl) {
-	    int indexOf = AllLinks.indexOf(link);
-	    if (indexOf == -1) {
+	    int indexOfLink = AllLinks.indexOf(link);
+	    if (indexOfLink == -1) {
 		AllLinks.add(link);
-		indexOf = AllLinks.size() - 1;
+		RelationsAllLinks.add(-1);
+		indexOfLink = AllLinks.size() - 1;
 	    }
-	    newPerson.setChild(indexOf);
+	    String linkIds = RelationsAllPersons.get(indexOfPerson);
+	    RelationsAllPersons.set(indexOfPerson, linkIds + " " + indexOfLink);
 	}
     }
 
-    private static void UpdateChildrensLink() {
-	for (Person person : AllPersons) {
-	    List<Integer> childrensId = person.getChildrens();
-	    for (int i = 0; i < childrensId.size(); i++) {
-		int relId = childrensId.get(i);
-		Integer perId = Relations.get(relId);
-		childrensId.set(i, AllPersons.get(perId).getId());
+    /*
+     * Заполнение списка детей для всех персон
+     */
+    private static void UpdateChildrens() {
+	for (int i = 0; i < RelationsAllPersons.size(); i++) {
+	    String[] arr = RelationsAllPersons.get(i).split(" ");
+	    for (String npalId : arr) {
+		try {
+		    int alId = Integer.parseInt(npalId);
+		    Integer apId = RelationsAllLinks.get(alId);
+		    AllPersons.get(i).setChild(AllPersons.get(apId).getId());
+		} catch (NumberFormatException ex) {
+		}
 	    }
-	    person.setChildrens(childrensId);
 	}
     }
 

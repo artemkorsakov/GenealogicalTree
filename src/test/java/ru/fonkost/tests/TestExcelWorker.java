@@ -96,6 +96,6 @@ public class TestExcelWorker {
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
 
-	assertTrue(row.getCell(4).getStringCellValue().equals(person.getUrlName()));
+	assertTrue(row.getCell(4).getStringCellValue().equals(person.getNameUrl()));
     }
 }

@@ -43,7 +43,7 @@ public class TestPersonPage {
 	Person person = page.GetPerson(rurickLink);
 	assertTrue(person.getUrl().equals(rurickUrl));
 	assertTrue(person.getName().equals(rurickName));
-	assertTrue(person.getUrlName().equals(rurickName));
+	assertTrue(person.getNameUrl().equals(rurickName));
     }
 
     /**
