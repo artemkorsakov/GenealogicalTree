@@ -36,7 +36,7 @@ abstract class Page {
      */
     protected String GetAnchor() {
 	int idx = driver.getCurrentUrl().indexOf("#");
-	return idx == -1 ? "" : driver.getCurrentUrl().substring(idx + 1);
+	return driver.getCurrentUrl().substring(idx + 1);
     }
 
     /**

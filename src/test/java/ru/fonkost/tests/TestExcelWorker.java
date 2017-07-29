@@ -25,7 +25,6 @@ import ru.fonkost.utils.ExcelWorker;
  * @author Артём Корсаков
  */
 public class TestExcelWorker {
-
     /**
      * Тестирование создания Excel-файла со списком персон
      */
