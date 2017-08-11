@@ -11,7 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import ru.fonkost.entities.Person;
-import ru.fonkost.entities.PersonLink;
 
 /**
  * Страница исторического лица.
@@ -27,21 +26,6 @@ public class PersonPage extends Page {
      */
     public PersonPage(WebDriver driver) {
 	super(driver);
-    }
-
-    /**
-     * Возвращает экземпляр класса Person с данными персоны, на странице которой
-     * находимся в текущий момент.
-     *
-     * @return the person
-     */
-    public Person GetPerson(PersonLink personLink) throws IllegalArgumentException {
-	driver.navigate().to(personLink.getUrl());
-	WaitLoadPage();
-	String name = GetName();
-	String url = driver.getCurrentUrl();
-	Person person = new Person(name, url, personLink.getName());
-	return person;
     }
 
     /**
@@ -66,22 +50,23 @@ public class PersonPage extends Page {
      *
      * @return the list
      */
-    public List<PersonLink> GetChildrensUrl() {
+    public List<Person> GetChildrensUrl() {
 	WaitLoadPage();
 
 	if (IsAnchor()) {
-	    return new ArrayList<PersonLink>();
+	    return new ArrayList<Person>();
 	}
 
 	List<WebElement> childrensLinks = GetChildrensLinks();
-	List<PersonLink> childrens = new ArrayList<PersonLink>();
+	List<Person> childrens = new ArrayList<Person>();
 	for (WebElement link : childrensLinks) {
 	    if (IsSup(link)) {
 		continue;
 	    }
-	    PersonLink personLink = new PersonLink(link.getText(), link.getAttribute("href"));
-	    if (personLink.IsCorrectName()) {
-		childrens.add(personLink);
+	    Person person = new Person(link.getAttribute("href"));
+	    person.setNameUrl(link.getText());
+	    if (person.IsCorrectNameUrl()) {
+		childrens.add(person);
 	    }
 	}
 	return childrens;

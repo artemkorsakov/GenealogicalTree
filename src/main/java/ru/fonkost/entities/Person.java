@@ -5,6 +5,8 @@ package ru.fonkost.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Класс представителя династии
@@ -29,10 +31,8 @@ public class Person {
      * @param nameUrl
      *            имя ссылки
      */
-    public Person(String name, String url, String nameUrl) throws IllegalArgumentException {
-	setName(name);
+    public Person(String url) throws IllegalArgumentException {
 	setUrl(url);
-	setNameUrl(nameUrl);
 	count++;
 	this.id = count;
     }
@@ -41,33 +41,39 @@ public class Person {
 	return id;
     }
 
-    public String getName() {
-	return name;
-    }
-
     public String getUrl() {
 	return url;
     }
 
-    public String getNameUrl() {
-	return nameUrl;
-    }
-
-    private void setName(String name) {
-	if (name == null || name.trim().isEmpty()) {
-	    throw new IllegalArgumentException("Имя должно иметь непустое значение");
-	}
-	this.name = name;
-    }
-
-    private void setUrl(String url) {
+    public void setUrl(String url) {
 	if (url == null || url.trim().isEmpty()) {
 	    throw new IllegalArgumentException("Url должен иметь непустое значение");
 	}
 	this.url = url;
     }
 
-    private void setNameUrl(String nameUrl) {
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	if (name == null || name.trim().isEmpty()) {
+	    throw new IllegalArgumentException("Имя должно иметь непустое значение");
+	}
+	this.name = name;
+    }
+
+    public boolean IsCorrectNameUrl() {
+	Pattern p = Pattern.compile("^[\\D]+.+");
+	Matcher m = p.matcher(nameUrl);
+	return m.matches();
+    }
+
+    public String getNameUrl() {
+	return nameUrl;
+    }
+
+    public void setNameUrl(String nameUrl) {
 	if (nameUrl == null || nameUrl.trim().isEmpty()) {
 	    this.nameUrl = "Неизвестно";
 	} else {
@@ -86,6 +92,21 @@ public class Person {
 	if (!childrens.contains(childId)) {
 	    childrens.add(childId);
 	}
+    }
+
+    /**
+     * Заменяет идентификатор одного ребенка на идентификатор другого. Если в
+     * списке нет заменяемого идентификатора, то ничего не происходит.
+     */
+    public void replaceChild(int oldId, int newId) {
+	if (oldId == newId) {
+	    return;
+	}
+	if (!childrens.contains(oldId)) {
+	    return;
+	}
+	childrens.remove((Object) oldId);
+	setChild(newId);
     }
 
     /**

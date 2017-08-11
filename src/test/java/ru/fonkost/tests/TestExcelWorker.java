@@ -33,18 +33,26 @@ public class TestExcelWorker {
 	String fileName = "C:\\workspace\\dynasticTree.xls";
 
 	List<Person> persons = new ArrayList<Person>();
-	Person rurick = new Person("Рюрик", "https://ru.wikipedia.org/wiki/Рюрик", "Рюрик");
-	Person igor = new Person("Игорь Рюрикович", "https://ru.wikipedia.org/wiki/Игорь Рюрикович", "Игорь");
+	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
+	rurick.setName("Рюрик");
+	rurick.setNameUrl("Рюрик");
+	Person igor = new Person("https://ru.wikipedia.org/wiki/Игорь Рюрикович");
+	igor.setName("Игорь Рюрикович");
+	igor.setNameUrl("Игорь");
 	rurick.setChild(igor.getId());
-	Person svyatoslav = new Person("Святослав Игоревич", "https://ru.wikipedia.org/wiki/Святослав Игоревич",
-		"Святослав");
+	Person svyatoslav = new Person("https://ru.wikipedia.org/wiki/Святослав Игоревич");
+	svyatoslav.setName("Святослав Игоревич");
+	svyatoslav.setNameUrl("Святослав");
 	igor.setChild(svyatoslav.getId());
-	Person yaropolk = new Person("Ярополк Святославич", "https://ru.wikipedia.org/wiki/Ярополк Святославич",
-		"Ярополк");
-	Person oleg = new Person("Олег Святославич (князь древлянский)",
-		"https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)", "Олег");
-	Person vladimir = new Person("Владимир Святославич", "https://ru.wikipedia.org/wiki/Владимир Святославич",
-		"Владимир");
+	Person yaropolk = new Person("https://ru.wikipedia.org/wiki/Ярополк Святославич");
+	yaropolk.setName("Ярополк Святославич");
+	yaropolk.setNameUrl("Ярополк");
+	Person oleg = new Person("https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)");
+	oleg.setName("Олег Святославич (князь древлянский)");
+	oleg.setNameUrl("Олег");
+	Person vladimir = new Person("https://ru.wikipedia.org/wiki/Владимир Святославич");
+	vladimir.setName("Владимир Святославич");
+	vladimir.setNameUrl("Владимир");
 	svyatoslav.setChild(yaropolk.getId());
 	svyatoslav.setChild(oleg.getId());
 	svyatoslav.setChild(vladimir.getId());
