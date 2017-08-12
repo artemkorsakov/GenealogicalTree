@@ -118,6 +118,15 @@ public class TestPersonPage {
 	assertTrue(childrens.size() == 0);
     }
 
+    @Test
+    public void testGetPerson() throws Exception {
+	PersonPage page = new PersonPage(driver);
+	Person person = page.getPerson("https://ru.wikipedia.org/wiki/Владимир_Александрович");
+	assertTrue(person.getName().equals("Владимир Александрович"));
+	assertTrue(person.getUrl().equals(
+		"https://ru.wikipedia.org/wiki/%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80_%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B0%D0%BD%D0%B4%D1%80%D0%BE%D0%B2%D0%B8%D1%87"));
+    }
+
     @After
     public void Stop() {
 	driver.quit();

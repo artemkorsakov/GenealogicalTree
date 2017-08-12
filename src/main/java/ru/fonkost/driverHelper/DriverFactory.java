@@ -50,7 +50,7 @@ public final class DriverFactory {
 	    driver = new ChromeDriver();
 	    break;
 	default:
-	    driver = new FirefoxDriver();
+	    driver = new ChromeDriver();
 	    break;
 	}
 

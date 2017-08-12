@@ -3,6 +3,7 @@
  */
 package ru.fonkost.pageObjects;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +29,23 @@ public class PersonPage extends Page {
 	super(driver);
     }
 
+    public Person getPerson(String url) throws MalformedURLException {
+	driver.navigate().to(url);
+
+	String name = GetName();
+
+	Person person = new Person(driver.getCurrentUrl());
+	person.setName(name);
+	return person;
+    }
+
     /**
      * Возвращает имя персоны
      * 
      * @return имя персоны
+     * @throws MalformedURLException
      */
-    public String GetName() {
+    public String GetName() throws MalformedURLException {
 	WaitLoadPage();
 	String namePage = driver.findElement(By.cssSelector("#firstHeading")).getText();
 
@@ -49,8 +61,9 @@ public class PersonPage extends Page {
      * Возвращает список урлов страниц детей персоны
      *
      * @return the list
+     * @throws MalformedURLException
      */
-    public List<Person> GetChildrensUrl() {
+    public List<Person> GetChildrensUrl() throws MalformedURLException {
 	WaitLoadPage();
 
 	if (IsAnchor()) {

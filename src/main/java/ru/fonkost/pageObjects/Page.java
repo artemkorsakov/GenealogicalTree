@@ -3,6 +3,8 @@
  */
 package ru.fonkost.pageObjects;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,17 +28,22 @@ abstract class Page {
 
     /**
      * Возвращает true, если текущий урл содержит "якорь"
+     * 
+     * @throws MalformedURLException
      */
-    protected boolean IsAnchor() {
-	return driver.getCurrentUrl().contains("#");
+    protected boolean IsAnchor() throws MalformedURLException {
+	URL url = new URL(driver.getCurrentUrl());
+	return url.getRef() != null;
     }
 
     /**
      * Возвращает значение "якоря"
+     * 
+     * @throws MalformedURLException
      */
-    protected String GetAnchor() {
-	int idx = driver.getCurrentUrl().indexOf("#");
-	return driver.getCurrentUrl().substring(idx + 1);
+    protected String GetAnchor() throws MalformedURLException {
+	URL url = new URL(driver.getCurrentUrl());
+	return url.getRef();
     }
 
     /**

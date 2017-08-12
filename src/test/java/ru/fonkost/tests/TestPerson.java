@@ -7,6 +7,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,56 +23,50 @@ import ru.fonkost.entities.Person;
 public class TestPerson {
     @Test
     public void testCreatePerson() throws Exception {
-	Person rurick = new Person("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA");
-	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
+	Person rurick = new Person("https://ru.wikipedia.org");
+	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org"));
 	try {
 	    new Person(null);
-	    fail("Создалась персона с url равным null");
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	    fail("Создалась персона с нулевым url");
+	} catch (MalformedURLException ex) {
 	}
 	try {
 	    new Person("");
-	    fail("Создалась персона с пустым url");
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	    fail("Создалась персона с url равным пустой строке");
+	} catch (MalformedURLException ex) {
 	}
 	try {
-	    new Person("   ");
-	    fail("Создалась персона с пробельным url");
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	    new Person("ru.wikipedia.org");
+	    fail("Создалась персона с некорректным url");
+	} catch (MalformedURLException ex) {
 	}
     }
 
     @Test
     public void testSetUrl() throws Exception {
-	Person rurick = new Person("Рюрик");
-	rurick.setUrl("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA");
-	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setUrl("https://ru.wikipedia.org/wiki/Рюрик");
+	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org/wiki/Рюрик"));
 	try {
 	    rurick.setUrl(null);
 	    fail("Для персоны удалось установить url равным null");
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	} catch (MalformedURLException ex) {
 	}
 	try {
 	    rurick.setUrl("");
-	    fail("Для персоны удалось установить пустой url");
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	    fail("Создалась персона с url равным пустой строке");
+	} catch (MalformedURLException ex) {
 	}
 	try {
-	    rurick.setUrl("   ");
-	    fail("Для персоны удалось установить пробельный url");
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals("Url должен иметь непустое значение"));
+	    rurick.setUrl("ru.wikipedia.org");
+	    fail("Создалась персона с некорректным url");
+	} catch (MalformedURLException ex) {
 	}
     }
 
     @Test
     public void testSetName() throws Exception {
-	Person p = new Person("Url");
+	Person p = new Person("https://ru.wikipedia.org");
 	p.setName("Рюрик");
 	assertTrue(p.getName().equals("Рюрик"));
 	try {
@@ -96,28 +91,28 @@ public class TestPerson {
 
     @Test
     public void testSetNameUrl() throws Exception {
-	Person p = new Person("Url");
+	Person p = new Person("https://ru.wikipedia.org");
 	p.setNameUrl(null);
-	assertTrue(p.getNameUrl().equals("Неизвестно"));
+	assertTrue(p.getNameUrl().equals(""));
 	p.setNameUrl("");
-	assertTrue(p.getNameUrl().equals("Неизвестно"));
+	assertTrue(p.getNameUrl().equals(""));
 	p.setNameUrl("   ");
-	assertTrue(p.getNameUrl().equals("Неизвестно"));
+	assertTrue(p.getNameUrl().equals(""));
     }
 
     @Test
     public void testCorrectPerson() throws Exception {
-	Person rurick = new Person("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA");
+	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setName("Рюрик");
 	rurick.setNameUrl("РюрикUrl");
 	assertTrue(rurick.getName().equals("Рюрик"));
-	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA"));
+	assertTrue(rurick.getUrl().equals("https://ru.wikipedia.org"));
 	assertTrue(rurick.getNameUrl().equals("РюрикUrl"));
     }
 
     @Test
     public void testCorrectNameUrl() throws Exception {
-	Person rurick = new Person("Рюрик");
+	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setNameUrl("Александр 1");
 	assertTrue(rurick.IsCorrectNameUrl());
 	rurick.setNameUrl("1 Александр");
@@ -126,27 +121,21 @@ public class TestPerson {
 	assertFalse(rurick.IsCorrectNameUrl());
     }
 
-    /**
-     * Проверка формирования идентификаторов и их обнуление
-     */
     @Test
     public void testIdAndResetCount() throws Exception {
 	Person.ResetCount();
-	Person person = new Person("Рюрик");
+	Person person = new Person("https://ru.wikipedia.org");
 	assertTrue(person.getId() == 1);
-	Person person2 = new Person("Рюрик");
+	Person person2 = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	assertTrue(person.getId() == 1);
 	assertTrue(person2.getId() == 2);
 	Person.ResetCount();
-	Person person3 = new Person("Рюрик");
+	Person person3 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	assertTrue(person.getId() == 1);
 	assertTrue(person2.getId() == 2);
 	assertTrue(person3.getId() == 1);
     }
 
-    /**
-     * Проверка добавления одного ребенка к персоне
-     */
     @Test
     public void testSetChild() throws Exception {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
@@ -165,9 +154,6 @@ public class TestPerson {
 	assertTrue(igor.getChildrens().isEmpty());
     }
 
-    /**
-     * Проверка добавления нескольких детей к персоне
-     */
     @Test
     public void testSetChildrens() throws Exception {
 	Person svyatoslav = new Person("https://ru.wikipedia.org/wiki/Святослав Игоревич");
@@ -193,8 +179,8 @@ public class TestPerson {
     }
 
     @Test
-    public void testReplaceChild() {
-	Person person = new Person("Рюрик");
+    public void testReplaceChild() throws MalformedURLException {
+	Person person = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 
 	// Пустой список
 	person.replaceChild(1, 2);
@@ -249,7 +235,7 @@ public class TestPerson {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws MalformedURLException {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 
 	// Сравнение с null
@@ -262,24 +248,23 @@ public class TestPerson {
 
 	// Сравнение с персонами
 	assertTrue(rurick.equals(new Person("https://ru.wikipedia.org/wiki/Рюрик")));
-	assertFalse(rurick.equals(new Person("НеРюрик")));
+	assertFalse(rurick.equals(new Person("https://ru.wikipedia.org/wiki/НеРюрик")));
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws MalformedURLException {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	assertTrue(rurick.hashCode() == "https://ru.wikipedia.org/wiki/Рюрик".hashCode());
 	assertTrue(rurick.hashCode() == new Person("https://ru.wikipedia.org/wiki/Рюрик").hashCode());
-	assertFalse(rurick.hashCode() == "НеРюрик".hashCode());
-	assertFalse(rurick.hashCode() == new Person("НеРюрик").hashCode());
+	assertFalse(rurick.hashCode() == new Person("https://ru.wikipedia.org/wiki/НеРюрик").hashCode());
     }
 
     @Test
-    public void testContains() {
+    public void testContains() throws MalformedURLException {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	List<Person> AllPersons = new ArrayList<Person>();
 	assertFalse(AllPersons.contains(rurick));
-	AllPersons.add(new Person("НеРюрик"));
+	AllPersons.add(new Person("https://ru.wikipedia.org/wiki/НеРюрик"));
 	assertFalse(AllPersons.contains(rurick));
 	AllPersons.add(rurick);
 	assertTrue(AllPersons.contains(rurick));
@@ -288,20 +273,49 @@ public class TestPerson {
     }
 
     @Test
-    public void testIndexOf() {
+    public void testIndexOf() throws MalformedURLException {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	List<Person> AllPersons = new ArrayList<Person>();
 	AllPersons.add(rurick);
 	assertTrue(AllPersons.indexOf(rurick) == 0);
-	assertTrue(AllPersons.indexOf(new Person("НеРюрик")) == -1);
+	assertTrue(AllPersons.indexOf(new Person("https://ru.wikipedia.org/wiki/НеРюрик")) == -1);
     }
 
     @Test
-    public void testToString() {
+    public void testToString() throws MalformedURLException {
 	Person.ResetCount();
-	Person rurick = new Person("Ссылка");
+	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	rurick.setName("Имя");
 	rurick.setNameUrl("ИмяСсылки");
-	assertTrue(rurick.toString().equals("name=Имя; id=1; url=Ссылка; nameUrl=ИмяСсылки; childrens=[]"));
+	assertTrue(rurick.toString()
+		.equals("name=Имя; id=1; url=https://ru.wikipedia.org/wiki/Рюрик; nameUrl=ИмяСсылки; childrens=[]"));
+    }
+
+    @Test
+    public void testCopyWithoutNameUrlAndChildrens() throws MalformedURLException {
+	Person.ResetCount();
+	Person first = new Person("https://ru.wikipedia.org/wiki/Рюрик");
+	first.setName("Name_first");
+	first.setNameUrl("NameUrl_first");
+	first.setChild(3);
+	Person second = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
+	second.setName("Name_second");
+	second.setNameUrl("NameUrl_second");
+	second.setChild(4);
+
+	first.copyMainData(second);
+
+	assertTrue(first.getName().equals(second.getName()));
+	assertTrue(second.getName().equals("Name_second"));
+	assertTrue(first.getUrl().equals(second.getUrl()));
+	assertTrue(second.getUrl().equals("https://ru.wikipedia.org/wiki/Рюрик2"));
+	assertTrue(first.getId() == 1);
+	assertTrue(second.getId() == 2);
+	assertTrue(first.getNameUrl().equals("NameUrl_first"));
+	assertTrue(second.getNameUrl().equals("NameUrl_second"));
+	assertTrue(first.getChildrens().get(0) == 3);
+	assertTrue(first.getChildrens().size() == 1);
+	assertTrue(second.getChildrens().get(0) == 4);
+	assertTrue(second.getChildrens().size() == 1);
     }
 }
