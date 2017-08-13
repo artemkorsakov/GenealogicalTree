@@ -1,6 +1,4 @@
-/**
- * http://fonkost.ru
- */
+/** http://fonkost.ru */
 package ru.fonkost.utils;
 
 import java.io.File;
@@ -16,25 +14,15 @@ import org.apache.poi.ss.usermodel.Row;
 import ru.fonkost.entities.Person;
 
 /**
- * Работа с таблицами Excel.
- *
- * @author Артём Корсаков
+ * Класс сохранения родословного древа в виде Excel-таблицы. <br>
+ * После реализации сохранения в БД, данный класс использоваться не будет и
+ * будет оставлен в качестве Deprecated
  */
 public class ExcelWorker {
     private HSSFWorkbook workbook;
     private HSSFSheet sheet;
     private int rowNum;
 
-    /**
-     * Сохранение списка персон в Excel-файле.
-     *
-     * @param fileName
-     *            полное наименование файла
-     * @param Persons
-     *            список персон
-     * @throws ParseException
-     *             the parse exception
-     */
     public void savePersons(String fileName, List<Person> Persons) throws ParseException {
 	if (Persons.isEmpty()) {
 	    return;

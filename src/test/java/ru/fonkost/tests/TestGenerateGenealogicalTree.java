@@ -1,6 +1,4 @@
-/**
- * http://fonkost.ru
- */
+/** http://fonkost.ru */
 package ru.fonkost.tests;
 
 import static org.junit.Assert.assertTrue;
@@ -17,19 +15,8 @@ import org.junit.Test;
 import ru.fonkost.entities.Person;
 import ru.fonkost.main.GenerateGenealogicalTree;
 
-/**
- * The Class TestGenerateGenealogicalTree.
- *
- * @author Артём Корсаков
- */
+/** Тестирование генерации родословного древа */
 public class TestGenerateGenealogicalTree {
-
-    /**
-     * Test incorrect arguments.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void testIncorrectArguments() throws Exception {
 	new GenerateGenealogicalTree();
@@ -50,14 +37,15 @@ public class TestGenerateGenealogicalTree {
 	} catch (IllegalArgumentException ex) {
 	    assertTrue(ex.getMessage().equals("Некорректный урл first"));
 	}
+
+	try {
+	    GenerateGenealogicalTree.main(new String[] { "http://fonkost.ru/" });
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals(
+		    "Алгоритм предназначен для генерации родословного древа только на основе данных Wikipedia"));
+	}
     }
 
-    /**
-     * Test generate genealogical tree.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void testGenerateGenealogicalTree() throws Exception {
 	Person.resetCount();
@@ -113,14 +101,8 @@ public class TestGenerateGenealogicalTree {
 	file.close();
     }
 
-    /**
-     * Test duplicate persons.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
-    public void testDuplicatePersons() throws Exception {
+    public void testGenerateWhenThereAreDuplicates() throws Exception {
 	Person.resetCount();
 	String url = "https://ru.wikipedia.org/wiki/%D0%A4%D1%80%D0%B8%D0%B7%D0%BE_%D0%9E%D1%80%D0%B0%D0%BD%D1%81%D0%BA%D0%BE-%D0%9D%D0%B0%D1%81%D1%81%D0%B0%D1%83%D1%81%D0%BA%D0%B8%D0%B9";
 	GenerateGenealogicalTree.main(new String[] { url });

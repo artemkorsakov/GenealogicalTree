@@ -47,9 +47,10 @@ public class TestDriverHelper {
     }
 
     /**
-     * Данный тест проверяет, что метод DriverHelper.getElements() не только
-     * выдает корректные результаты, но и то, что при его ызове не происходит
-     * потери времени на неявное ожидание.
+     * Данный тест проверяет, что метод
+     * {@link ru.fonkost.driverHelper.DriverHelper#getElements(WebDriver, By)
+     * DriverHelper.getElements()} не только выдает корректные результаты, но и
+     * то, что при его вызове не происходит потеря времени на неявное ожидание.
      */
     @Test
     public void testGetElements() {

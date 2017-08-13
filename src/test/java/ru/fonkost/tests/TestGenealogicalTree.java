@@ -68,8 +68,7 @@ public class TestGenealogicalTree {
     }
 
     /**
-     * Проверка установки в качестве текущей ту персону, которая как раз-таки
-     * стоит в качестве текущей.
+     * Проверка установки в качестве текущей персоны саму себя.
      */
     @Test
     public void testSetCurrentPerson() throws MalformedURLException {
@@ -138,7 +137,7 @@ public class TestGenealogicalTree {
     /**
      * Проверка корректного удаления персоны, если она встречается в списке
      * детей у "посещенных" персон, но при этом "дубликат" также встречается в
-     * этом же списке. При этом идентификатор удаляемой персоны "не новый".
+     * этом же списке. Идентификатор удаляемой персоны "не новый".
      */
     @Test
     public void testRemovePersonWhenSheIsChild() throws MalformedURLException {
@@ -225,7 +224,7 @@ public class TestGenealogicalTree {
 	assertTrue(allPersons.get(1).getChildren().isEmpty());
     }
 
-    /** Проверка установки детей удаленной персоне */
+    /** Проверка невозможности установки детей удаленной персоне */
     @Test
     public void testSetChildrenDeletedPerson() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
@@ -245,7 +244,7 @@ public class TestGenealogicalTree {
 
     /** Проверка установки детей, которые уже есть в родословном древе */
     @Test
-    public void testSetChildrensWhenChildContains() throws MalformedURLException {
+    public void testSetChildrenWhenChildContains() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
 	persons.add(rurick);
 	GenealogicalTree tree = new GenealogicalTree(rurick);

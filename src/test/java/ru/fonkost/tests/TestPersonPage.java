@@ -24,7 +24,7 @@ public class TestPersonPage {
     }
 
     /**
-     * Проверка формирования персоны:
+     * Проверка формирования персоны.
      * <ul>
      * <li>Вычислилось имя персоны</li>
      * <li>Url равен текущему урлу, а не заданной строке</li>
@@ -40,7 +40,7 @@ public class TestPersonPage {
     }
 
     /**
-     * Проверка формирования имени персоны, три случая:
+     * Проверка формирования имени персоны.
      * <ul>
      * <li>Урл с существующим "якорем": имя равно наименованию блока с якорем
      * </li>
@@ -62,27 +62,27 @@ public class TestPersonPage {
     }
 
     /**
-     * Проверка определения урлов и их наименований, два случая:
+     * Проверка определения урлов и их наименований.
      * <ul>
      * <li>url перенаправляет на другую страницу</li>
      * <li>url с "якорем" перенапрявляет на заданный блок текущей страницы</li>
      * </ul>
      */
     @Test
-    public void testGetChildrensUrl() throws Exception {
+    public void testGetChildrenUrl() throws Exception {
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Рюрик");
 	PersonPage page = new PersonPage(driver);
-	List<Person> childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 1);
-	Person person = childrens.get(0);
+	List<Person> children = page.getChildrenUrl();
+	assertTrue(children.size() == 1);
+	Person person = children.get(0);
 	assertTrue(person.getNameUrl().equals("Игорь"));
 	assertTrue(person.getUrl().equals(
 		"https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D0%BE%D1%80%D1%8C_%D0%A0%D1%8E%D1%80%D0%B8%D0%BA%D0%BE%D0%B2%D0%B8%D1%87"));
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 5);
-	person = childrens.get(0);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 5);
+	person = children.get(0);
 	assertTrue(person.getNameUrl().equals("Александр"));
 	assertTrue(person.getUrl().equals(
 		"https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B0%D0%BD%D0%B4%D1%80_%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B8%D1%87"));
@@ -92,63 +92,67 @@ public class TestPersonPage {
      * Проверка определения количества детей. <br>
      * Случаи:
      * <ul>
-     * <li><a href="https://ru.wikipedia.org/wiki/Рюрик">Рюрик</a> с
-     * единственным ребенком</li>
-     * <li><a href="https://ru.wikipedia.org/wiki/Владимир_Святославич">Владимир
-     * Святославич</a>, где в списке детей нераспарсенная информация
+     * <li><a href=
+     * "https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA">Рюрик</a>
+     * с единственным ребенком</li>
+     * <li><a href=
+     * "https://ru.wikipedia.org/wiki/%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80_%D0%A1%D0%B2%D1%8F%D1%82%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%B8%D1%87">
+     * Владимир Святославич</a>, где в списке детей нераспарсенная информация
      * "5 неизвестных по имени дочерей"</li>
      * <li><a href=
-     * "https://ru.wikipedia.org/wiki/Владимир_Ярославич_(князь_галицкий)">
+     * "https://ru.wikipedia.org/wiki/%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80_%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%B8%D1%87_(%D0%BA%D0%BD%D1%8F%D0%B7%D1%8C_%D0%B3%D0%B0%D0%BB%D0%B8%D1%86%D0%BA%D0%B8%D0%B9)">
      * Владимир Ярославич (князь галицкий)</a>, у которого информация о детях
      * расположена в основной области</li>
-     * <li><a href="https://ru.wikipedia.org/wiki/Мария_Добронега">Мария
-     * Добронега</a> - аналогично предыдущему пункту</li>
-     * <li><a href="https://ru.wikipedia.org/wiki/Ярослав_Святославич">Ярослав
-     * Святослави</a>, у которого в списке детей также присутствуют ссылки на
-     * года</li>
-     * <li>Несколько персон с уточняющими ссылками в списке детей:
-     * <a href="https://ru.wikipedia.org/wiki/Людовик_VII">Людовик VII</a>,
-     * <a href=
-     * "https://ru.wikipedia.org/wiki/Галеран_IV_де_Бомон,_граф_де_Мёлан">
-     * Галеран IV де Бомон</a>,
-     * <a href="https://ru.wikipedia.org/wiki/Юрий_Ярославич_(князь_туровский)">
+     * <li><a href=
+     * "https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%80%D0%B8%D1%8F_%D0%94%D0%BE%D0%B1%D1%80%D0%BE%D0%BD%D0%B5%D0%B3%D0%B0">
+     * Мария Добронега</a> - аналогично предыдущему пункту</li>
+     * <li><a href=
+     * "https://ru.wikipedia.org/wiki/%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2_%D0%A1%D0%B2%D1%8F%D1%82%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%B8%D1%87">
+     * Ярослав Святослави</a>, у которого в списке детей также присутствуют
+     * ссылки на года</li>
+     * <li>Несколько персон с уточняющими ссылками в списке детей: <a href=
+     * "https://ru.wikipedia.org/wiki/%D0%9B%D1%8E%D0%B4%D0%BE%D0%B2%D0%B8%D0%BA_VII">
+     * Людовик VII</a>, <a href=
+     * "https://ru.wikipedia.org/wiki/%D0%93%D0%B0%D0%BB%D0%B5%D1%80%D0%B0%D0%BD_IV_%D0%B4%D0%B5_%D0%91%D0%BE%D0%BC%D0%BE%D0%BD,_%D0%B3%D1%80%D0%B0%D1%84_%D0%B4%D0%B5_%D0%9C%D1%91%D0%BB%D0%B0%D0%BD">
+     * Галеран IV де Бомон</a>, <a href=
+     * "https://ru.wikipedia.org/wiki/%D0%AE%D1%80%D0%B8%D0%B9_%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%B8%D1%87_(%D0%BA%D0%BD%D1%8F%D0%B7%D1%8C_%D1%82%D1%83%D1%80%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9)">
      * Юрий Ярославич (князь туровский)</a></li>
      * </ul>
      */
     @Test
-    public void testChildrensSize() throws Exception {
+    public void testChildrenSize() throws Exception {
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Рюрик");
 	PersonPage page = new PersonPage(driver);
-	List<Person> childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 1);
+	List<Person> children = page.getChildrenUrl();
+	assertTrue(children.size() == 1);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Святославич");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 16);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 16);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Ярославич_(князь_галицкий)");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 0);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 0);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Мария_Добронега");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 0);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 0);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Ярослав_Святославич");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 3);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 3);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Людовик_VII");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 5);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 5);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Галеран_IV_де_Бомон,_граф_де_Мёлан");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 0);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 0);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Юрий_Ярославич_(князь_туровский)");
-	childrens = page.getChildrensUrl();
-	assertTrue(childrens.size() == 5);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 5);
     }
 
     /**
@@ -159,11 +163,11 @@ public class TestPersonPage {
     public void testEmptyChildrenInPersonWithAnchor() throws Exception {
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович");
 	PersonPage page = new PersonPage(driver);
-	List<Person> childrens = page.getChildrensUrl();
+	List<Person> childrens = page.getChildrenUrl();
 	assertTrue(childrens.size() == 5);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович#.D0.A1.D0.B5.D0.BC.D1.8C.D1.8F");
-	childrens = page.getChildrensUrl();
+	childrens = page.getChildrenUrl();
 	assertTrue(childrens.size() == 0);
     }
 

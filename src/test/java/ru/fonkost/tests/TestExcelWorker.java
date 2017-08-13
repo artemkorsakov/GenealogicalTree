@@ -1,6 +1,4 @@
-/**
- * http://fonkost.ru
- */
+/** http://fonkost.ru */
 package ru.fonkost.tests;
 
 import static org.junit.Assert.assertTrue;
@@ -19,19 +17,7 @@ import org.junit.Test;
 import ru.fonkost.entities.Person;
 import ru.fonkost.utils.ExcelWorker;
 
-/**
- * Тестирование создания файла-Excel.
- *
- * @author Артём Корсаков
- */
 public class TestExcelWorker {
-    
-    /**
-     * Тестирование создания Excel-файла со списком персон.
-     *
-     * @throws Exception
-     *             the exception
-     */
     @Test
     public void testExcelWorker() throws Exception {
 	String fileName = "C:\\workspace\\dynasticTree.xls";

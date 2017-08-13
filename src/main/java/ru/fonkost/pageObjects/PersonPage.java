@@ -14,7 +14,8 @@ import ru.fonkost.entities.Person;
 
 /**
  * Страница исторического лица на Wikipedia. Например,
- * https://ru.wikipedia.org/wiki/Рюрик
+ * <a href="https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA">Рюрика
+ * </a>
  */
 public class PersonPage {
     private WebDriver driver;
@@ -58,7 +59,7 @@ public class PersonPage {
      * результате будут повторно вычислены дети родителя, т.е. братья и сестры
      * текущей персоны.
      */
-    public List<Person> getChildrensUrl() throws MalformedURLException {
+    public List<Person> getChildrenUrl() throws MalformedURLException {
 	waitLoadPage();
 
 	if (DriverHelper.hasAnchor(driver)) {
