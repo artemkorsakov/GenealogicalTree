@@ -1,6 +1,4 @@
-/**
- * http://fonkost.ru
- */
+/** http://fonkost.ru */
 package ru.fonkost.tests;
 
 import static org.junit.Assert.assertFalse;
@@ -17,6 +15,7 @@ import org.junit.Test;
 import ru.fonkost.entities.GenealogicalTree;
 import ru.fonkost.entities.Person;
 
+/** Проверка класса GenealogicalTree */
 public class TestGenealogicalTree {
     private Person rurick;
 
@@ -25,6 +24,16 @@ public class TestGenealogicalTree {
 	rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
     }
 
+    /**
+     * Проверка создания родословного древа.<br>
+     * Проверка, что родословное древо не создается с персоной равной null.<br>
+     * Для корректно созданного родословного древа проверяется следующее:
+     * <ul>
+     * <li>Текущая персона не удалена</li>
+     * <li>В родословном древе есть "непосещенные" персоны.</li>
+     * <li>Родословное древо состоит только из родоночальника династии</li>
+     * </ul>
+     */
     @Test
     public void testCreateGenealogicalTree() {
 	try {
@@ -37,43 +46,55 @@ public class TestGenealogicalTree {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	assertFalse(tree.isCurrentPersonDeleted());
 	assertTrue(tree.hasUnvisitingPerson());
-	assertTrue(tree.getAllPersons().size() == 1);
-	assertTrue(tree.getAllPersons().get(0).equals(rurick));
+	assertTrue(tree.getGenealogicalTree().size() == 1);
+	assertTrue(tree.getGenealogicalTree().get(0).equals(rurick));
     }
 
+    /**
+     * Проверка установки в качестве текущей ту персону, которая ещё не
+     * встречалась в родословном древе.
+     */
     @Test
     public void testSetNotContainsPerson() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	Person rurick2 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	rurick2.setName("Рюрик2");
 	tree.setCurrentPerson(rurick2);
-	List<Person> persons = tree.getAllPersons();
+	List<Person> persons = tree.getGenealogicalTree();
 
 	assertFalse(tree.isCurrentPersonDeleted());
 	assertTrue(persons.size() == 1);
 	assertTrue(persons.get(0).equals(rurick2));
     }
 
+    /**
+     * Проверка установки в качестве текущей ту персону, которая как раз-таки
+     * стоит в качестве текущей.
+     */
     @Test
     public void testSetCurrentPerson() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	tree.setCurrentPerson(rurick);
-	List<Person> persons = tree.getAllPersons();
+	List<Person> persons = tree.getGenealogicalTree();
 
 	assertFalse(tree.isCurrentPersonDeleted());
 	assertTrue(persons.size() == 1);
 	assertTrue(persons.get(0).equals(rurick));
     }
 
+    /**
+     * Проверка установки в качестве текущей ту персону, которая встречается в
+     * родословном древе, но после текущей персоны.
+     */
     @Test
     public void testSetUnvisitedPerson() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	Person rurick2 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	List<Person> children = new ArrayList<Person>();
 	children.add(rurick2);
-	tree.setChildrens(children);
+	tree.setChildren(children);
 	tree.setCurrentPerson(rurick2);
-	List<Person> persons = tree.getAllPersons();
+	List<Person> persons = tree.getGenealogicalTree();
 
 	assertFalse(tree.isCurrentPersonDeleted());
 	assertTrue(persons.size() == 2);
@@ -81,6 +102,10 @@ public class TestGenealogicalTree {
 	assertTrue(persons.get(1).equals(rurick2));
     }
 
+    /**
+     * Проверка корректного удаления персоны, если она не встречается в списке
+     * детей у "посещенных" персон.
+     */
     @Test
     public void testRemovePerson() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
@@ -91,18 +116,18 @@ public class TestGenealogicalTree {
 	children.add(rurick2);
 	children.add(rurick3);
 	children.add(rurick4);
-	tree.setChildrens(children);
-	tree.calculateNextUnvisitingPerson();
+	tree.setChildren(children);
+	tree.updatingCurrentPerson();
 
 	tree.setCurrentPerson(rurick);
 
 	assertTrue(tree.isCurrentPersonDeleted());
-	List<Person> allPersons = tree.getAllPersons();
+	List<Person> allPersons = tree.getGenealogicalTree();
 	assertTrue(allPersons.size() == 3);
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick3));
 	assertTrue(allPersons.get(2).equals(rurick4));
-	List<Integer> childrens = allPersons.get(0).getChildrens();
+	List<Integer> childrens = allPersons.get(0).getChildren();
 	assertTrue(childrens.size() == 3);
 	assertTrue(childrens.contains(rurick.getId()));
 	assertFalse(childrens.contains(rurick2.getId()));
@@ -110,6 +135,11 @@ public class TestGenealogicalTree {
 	assertTrue(childrens.contains(rurick4.getId()));
     }
 
+    /**
+     * Проверка корректного удаления персоны, если она встречается в списке
+     * детей у "посещенных" персон, но при этом "дубликат" также встречается в
+     * этом же списке. При этом идентификатор удаляемой персоны "не новый".
+     */
     @Test
     public void testRemovePersonWhenSheIsChild() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
@@ -120,25 +150,31 @@ public class TestGenealogicalTree {
 	children.add(rurick2);
 	children.add(rurick3);
 	children.add(rurick4);
-	tree.setChildrens(children);
-	tree.calculateNextUnvisitingPerson();
-	tree.calculateNextUnvisitingPerson();
+	tree.setChildren(children);
+	tree.updatingCurrentPerson();
+	tree.updatingCurrentPerson();
 
 	tree.setCurrentPerson(rurick2);
 
 	assertTrue(tree.isCurrentPersonDeleted());
-	List<Person> allPersons = tree.getAllPersons();
+	List<Person> allPersons = tree.getGenealogicalTree();
 	assertTrue(allPersons.size() == 3);
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick2));
 	assertTrue(allPersons.get(2).equals(rurick4));
-	List<Integer> childrens = allPersons.get(0).getChildrens();
+	List<Integer> childrens = allPersons.get(0).getChildren();
 	assertTrue(childrens.size() == 2);
 	assertTrue(childrens.contains(rurick2.getId()));
 	assertFalse(childrens.contains(rurick3.getId()));
 	assertTrue(childrens.contains(rurick4.getId()));
     }
 
+    /**
+     * Проверка корректного удаления персоны, если она встречается в списке
+     * детей у "посещенных" персон. При этом идентификатор удаляемой персоны
+     * "новый", который ещё не встречался в списке. Проверка, что "новый"
+     * идентификатор удаляемой персоны не добавился в список детей.
+     */
     @Test
     public void testRemovePersonWhenSheIsChildButAnotherId() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
@@ -149,20 +185,20 @@ public class TestGenealogicalTree {
 	children.add(rurick2);
 	children.add(rurick3);
 	children.add(rurick4);
-	tree.setChildrens(children);
-	tree.calculateNextUnvisitingPerson();
-	tree.calculateNextUnvisitingPerson();
+	tree.setChildren(children);
+	tree.updatingCurrentPerson();
+	tree.updatingCurrentPerson();
 
 	Person rurick5 = new Person(rurick2.getUrl());
 	tree.setCurrentPerson(rurick5);
 
 	assertTrue(tree.isCurrentPersonDeleted());
-	List<Person> allPersons = tree.getAllPersons();
+	List<Person> allPersons = tree.getGenealogicalTree();
 	assertTrue(allPersons.size() == 3);
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick2));
 	assertTrue(allPersons.get(2).equals(rurick4));
-	List<Integer> childrens = allPersons.get(0).getChildrens();
+	List<Integer> childrens = allPersons.get(0).getChildren();
 	assertTrue(childrens.size() == 2);
 	assertTrue(childrens.contains(rurick2.getId()));
 	assertFalse(childrens.contains(rurick3.getId()));
@@ -170,56 +206,60 @@ public class TestGenealogicalTree {
 	assertFalse(childrens.contains(rurick5.getId()));
     }
 
+    /** Проверка корректной установки детей */
     @Test
-    public void testSetChildrens() throws MalformedURLException {
+    public void testSetChildren() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
 	Person rurick2 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	persons.add(rurick2);
 	GenealogicalTree tree = new GenealogicalTree(rurick);
-	tree.setChildrens(persons);
+	tree.setChildren(persons);
 
-	List<Person> allPersons = tree.getAllPersons();
+	List<Person> allPersons = tree.getGenealogicalTree();
 	assertTrue(allPersons.size() == 2);
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick2));
-	List<Integer> childrens = allPersons.get(0).getChildrens();
+	List<Integer> childrens = allPersons.get(0).getChildren();
 	assertTrue(childrens.size() == 1);
 	assertTrue(childrens.contains(rurick2.getId()));
-	assertTrue(allPersons.get(1).getChildrens().isEmpty());
+	assertTrue(allPersons.get(1).getChildren().isEmpty());
     }
 
+    /** Проверка установки детей удаленной персоне */
     @Test
-    public void testSetChildrensDeletedPerson() throws MalformedURLException {
+    public void testSetChildrenDeletedPerson() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
 	Person rurick2 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	persons.add(rurick2);
 	GenealogicalTree tree = new GenealogicalTree(rurick);
-	tree.setChildrens(persons);
-	tree.calculateNextUnvisitingPerson();
+	tree.setChildren(persons);
+	tree.updatingCurrentPerson();
 	tree.setCurrentPerson(rurick);
 	try {
-	    tree.setChildrens(persons);
+	    tree.setChildren(persons);
 	    fail("Удалось установить детей удаленной персоне");
 	} catch (IllegalArgumentException ex) {
 	    assertTrue(ex.getMessage().equals("Нельзя установить детей удаленной персоне. Текущая персона уже другая"));
 	}
     }
 
+    /** Проверка установки детей, которые уже есть в родословном древе */
     @Test
     public void testSetChildrensWhenChildContains() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
 	persons.add(rurick);
 	GenealogicalTree tree = new GenealogicalTree(rurick);
-	tree.setChildrens(persons);
-	assertTrue(tree.getAllPersons().get(0).getChildrens().size() == 1);
-	assertTrue(tree.getAllPersons().get(0).getChildrens().get(0) == rurick.getId());
+	tree.setChildren(persons);
+	assertTrue(tree.getGenealogicalTree().get(0).getChildren().size() == 1);
+	assertTrue(tree.getGenealogicalTree().get(0).getChildren().get(0) == rurick.getId());
     }
 
+    /** Проверка корректного обновления текущей персоны */
     @Test
-    public void testCalculateNextUnvisitingPerson() throws MalformedURLException {
+    public void testUpdatingCurrentPerson() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	assertTrue(tree.hasUnvisitingPerson());
-	tree.calculateNextUnvisitingPerson();
+	tree.updatingCurrentPerson();
 	assertFalse(tree.hasUnvisitingPerson());
 
 	tree = new GenealogicalTree(rurick);
@@ -228,15 +268,15 @@ public class TestGenealogicalTree {
 	Person rurick3 = new Person("https://ru.wikipedia.org/wiki/Рюрик3");
 	children.add(rurick2);
 	children.add(rurick3);
-	tree.setChildrens(children);
-	tree.calculateNextUnvisitingPerson();
+	tree.setChildren(children);
+	tree.updatingCurrentPerson();
 	tree.setCurrentPerson(rurick);
 	assertTrue(tree.hasUnvisitingPerson());
 	assertTrue(tree.isCurrentPersonDeleted());
-	tree.calculateNextUnvisitingPerson();
+	tree.updatingCurrentPerson();
 	assertFalse(tree.isCurrentPersonDeleted());
 	assertTrue(tree.hasUnvisitingPerson());
-	tree.calculateNextUnvisitingPerson();
+	tree.updatingCurrentPerson();
 	assertFalse(tree.hasUnvisitingPerson());
     }
 
@@ -250,8 +290,8 @@ public class TestGenealogicalTree {
 	List<Person> persons = new ArrayList<Person>();
 	persons.add(rurick2);
 	persons.add(rurick3);
-	tree.setChildrens(persons);
-	tree.calculateNextUnvisitingPerson();
+	tree.setChildren(persons);
+	tree.updatingCurrentPerson();
 
 	tree.setCurrentPerson(rurick);
 	assertTrue(tree.isCurrentPersonDeleted());
@@ -264,25 +304,25 @@ public class TestGenealogicalTree {
     public void testHasUnvisitingPerson() {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	assertTrue(tree.hasUnvisitingPerson());
-	tree.calculateNextUnvisitingPerson();
+	tree.updatingCurrentPerson();
 	assertFalse(tree.hasUnvisitingPerson());
     }
 
     @Test
-    public void testGetUnvisitingUrl() {
+    public void testGetCurrentUrl() {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
-	assertTrue(tree.getUnvisitingUrl().equals(rurick.getUrl()));
+	assertTrue(tree.getCurrentUrl().equals(rurick.getUrl()));
     }
 
     @Test
-    public void testGetAllPersons() throws MalformedURLException {
+    public void testGetGenealogicalTree() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
 	List<Person> children = new ArrayList<Person>();
 	Person rurick2 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	children.add(rurick2);
-	tree.setChildrens(children);
-	assertTrue(tree.getAllPersons().size() == 2);
-	assertTrue(tree.getAllPersons().get(0).equals(rurick));
-	assertTrue(tree.getAllPersons().get(1).equals(rurick2));
+	tree.setChildren(children);
+	assertTrue(tree.getGenealogicalTree().size() == 2);
+	assertTrue(tree.getGenealogicalTree().get(0).equals(rurick));
+	assertTrue(tree.getGenealogicalTree().get(1).equals(rurick2));
     }
 }

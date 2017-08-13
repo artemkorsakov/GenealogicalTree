@@ -1,6 +1,4 @@
-/**
- * http://fonkost.ru
- */
+/** http://fonkost.ru */
 package ru.fonkost.entities;
 
 import java.net.MalformedURLException;
@@ -10,19 +8,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Класс представителя династии
- *
- * @author Артём Корсаков
- */
+/** Класс представителя династии */
 public class Person {
     private int id;
     private static int count = 0;
     private String name;
     private URL url;
     private String nameUrl;
-    private List<Integer> childrens = new ArrayList<Integer>();
+    private List<Integer> children = new ArrayList<Integer>();
 
+    /** Инициализация персоны по её странице в Wikipedia */
     public Person(String url) throws MalformedURLException {
 	setUrl(url);
 	count++;
@@ -52,6 +47,10 @@ public class Person {
 	this.name = name;
     }
 
+    /**
+     * Возвращает наименование ссылки, которое имеет персона на странице
+     * родителя
+     */
     public String getNameUrl() {
 	return nameUrl;
     }
@@ -64,24 +63,37 @@ public class Person {
 	}
     }
 
-    public boolean IsCorrectNameUrl() {
+    /**
+     * Корректно ли наименование ссылки?! Наименование считается корректным,
+     * если начинается не с числа.
+     *
+     * @return true, if successful
+     */
+    public boolean isCorrectNameUrl() {
 	Pattern p = Pattern.compile("^[\\D]+.+");
 	Matcher m = p.matcher(nameUrl);
 	return m.matches();
     }
 
+    /**
+     * Копирование заданной персоны в текущую. <br>
+     * Копируются все поля, кроме наименования ссылки и детей по причине
+     * описанной в методе
+     * {@link ru.fonkost.pageObjects.PersonPage#getPerson(String) getPerson}
+     * класса PersonPage
+     */
     public void copyMainData(Person person) {
 	this.name = person.name;
 	this.url = person.url;
     }
 
-    public List<Integer> getChildrens() {
-	return childrens;
+    public List<Integer> getChildren() {
+	return children;
     }
 
     public void setChild(int childId) {
-	if (!childrens.contains(childId)) {
-	    childrens.add(childId);
+	if (!children.contains(childId)) {
+	    children.add(childId);
 	}
     }
 
@@ -89,14 +101,15 @@ public class Person {
 	if (oldId == newId) {
 	    return;
 	}
-	if (!childrens.contains(oldId)) {
+	if (!children.contains(oldId)) {
 	    return;
 	}
-	childrens.remove((Object) oldId);
+	children.remove((Object) oldId);
 	setChild(newId);
     }
 
-    public static void ResetCount() {
+    /** Используется исключительно для тестирования */
+    public static void resetCount() {
 	count = 0;
     }
 
@@ -117,6 +130,6 @@ public class Person {
 
     @Override
     public String toString() {
-	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl + "; childrens=" + childrens;
+	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl + "; childrens=" + children;
     }
 }

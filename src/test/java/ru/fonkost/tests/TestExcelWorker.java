@@ -25,8 +25,12 @@ import ru.fonkost.utils.ExcelWorker;
  * @author Артём Корсаков
  */
 public class TestExcelWorker {
+    
     /**
-     * Тестирование создания Excel-файла со списком персон
+     * Тестирование создания Excel-файла со списком персон.
+     *
+     * @throws Exception
+     *             the exception
      */
     @Test
     public void testExcelWorker() throws Exception {
@@ -99,7 +103,7 @@ public class TestExcelWorker {
 	assertTrue(row.getCell(1).getStringCellValue().equals(person.getName()));
 
 	String childrens = row.getCell(2).getStringCellValue();
-	assertTrue(childrens.equals(person.getChildrens().toString()));
+	assertTrue(childrens.equals(person.getChildren().toString()));
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
 

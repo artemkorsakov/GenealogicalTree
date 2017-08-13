@@ -1,6 +1,4 @@
-/**
- * http://fonkost.ru
- */
+/** http://fonkost.ru */
 package ru.fonkost.tests;
 
 import static org.junit.Assert.assertFalse;
@@ -15,11 +13,7 @@ import org.junit.Test;
 
 import ru.fonkost.entities.Person;
 
-/**
- * Тестирование класса Person
- *
- * @author Артём Корсаков
- */
+/** Тестирование класса Person */
 public class TestPerson {
     @Test
     public void testCreatePerson() throws Exception {
@@ -101,7 +95,7 @@ public class TestPerson {
     }
 
     @Test
-    public void testCorrectPerson() throws Exception {
+    public void testPersonthisCorrectNameAndNameUrl() throws Exception {
 	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setName("Рюрик");
 	rurick.setNameUrl("РюрикUrl");
@@ -111,25 +105,25 @@ public class TestPerson {
     }
 
     @Test
-    public void testCorrectNameUrl() throws Exception {
+    public void testIsCorrectNameUrl() throws Exception {
 	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setNameUrl("Александр 1");
-	assertTrue(rurick.IsCorrectNameUrl());
+	assertTrue(rurick.isCorrectNameUrl());
 	rurick.setNameUrl("1 Александр");
-	assertFalse(rurick.IsCorrectNameUrl());
+	assertFalse(rurick.isCorrectNameUrl());
 	rurick.setNameUrl("1");
-	assertFalse(rurick.IsCorrectNameUrl());
+	assertFalse(rurick.isCorrectNameUrl());
     }
 
     @Test
     public void testIdAndResetCount() throws Exception {
-	Person.ResetCount();
+	Person.resetCount();
 	Person person = new Person("https://ru.wikipedia.org");
 	assertTrue(person.getId() == 1);
 	Person person2 = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	assertTrue(person.getId() == 1);
 	assertTrue(person2.getId() == 2);
-	Person.ResetCount();
+	Person.resetCount();
 	Person person3 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
 	assertTrue(person.getId() == 1);
 	assertTrue(person2.getId() == 2);
@@ -139,43 +133,43 @@ public class TestPerson {
     @Test
     public void testSetChild() throws Exception {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
-	assertTrue(rurick.getChildrens().isEmpty());
+	assertTrue(rurick.getChildren().isEmpty());
 
 	Person igor = new Person("https://ru.wikipedia.org/wiki/Игорь Рюрикович");
-	assertTrue(rurick.getChildrens().isEmpty());
-	assertTrue(igor.getChildrens().isEmpty());
+	assertTrue(rurick.getChildren().isEmpty());
+	assertTrue(igor.getChildren().isEmpty());
 	rurick.setChild(igor.getId());
-	assertTrue(rurick.getChildrens().get(0) == igor.getId());
-	assertTrue(rurick.getChildrens().size() == 1);
-	assertTrue(igor.getChildrens().isEmpty());
+	assertTrue(rurick.getChildren().get(0) == igor.getId());
+	assertTrue(rurick.getChildren().size() == 1);
+	assertTrue(igor.getChildren().isEmpty());
 	rurick.setChild(igor.getId());
-	assertTrue(rurick.getChildrens().get(0) == igor.getId());
-	assertTrue(rurick.getChildrens().size() == 1);
-	assertTrue(igor.getChildrens().isEmpty());
+	assertTrue(rurick.getChildren().get(0) == igor.getId());
+	assertTrue(rurick.getChildren().size() == 1);
+	assertTrue(igor.getChildren().isEmpty());
     }
 
     @Test
-    public void testSetChildrens() throws Exception {
+    public void testSetChildren() throws Exception {
 	Person svyatoslav = new Person("https://ru.wikipedia.org/wiki/Святослав Игоревич");
 	Person yaropolk = new Person("https://ru.wikipedia.org/wiki/Ярополк Святославич");
 	Person oleg = new Person("https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)");
 	Person vladimir = new Person("https://ru.wikipedia.org/wiki/Владимир Святославич");
-	assertTrue(svyatoslav.getChildrens().isEmpty());
-	assertTrue(yaropolk.getChildrens().isEmpty());
-	assertTrue(oleg.getChildrens().isEmpty());
-	assertTrue(vladimir.getChildrens().isEmpty());
+	assertTrue(svyatoslav.getChildren().isEmpty());
+	assertTrue(yaropolk.getChildren().isEmpty());
+	assertTrue(oleg.getChildren().isEmpty());
+	assertTrue(vladimir.getChildren().isEmpty());
 
 	svyatoslav.setChild(yaropolk.getId());
 	svyatoslav.setChild(oleg.getId());
 	svyatoslav.setChild(vladimir.getId());
 
-	assertTrue(svyatoslav.getChildrens().get(0) == yaropolk.getId());
-	assertTrue(svyatoslav.getChildrens().get(1) == oleg.getId());
-	assertTrue(svyatoslav.getChildrens().get(2) == vladimir.getId());
-	assertTrue(svyatoslav.getChildrens().size() == 3);
-	assertTrue(yaropolk.getChildrens().isEmpty());
-	assertTrue(oleg.getChildrens().isEmpty());
-	assertTrue(vladimir.getChildrens().isEmpty());
+	assertTrue(svyatoslav.getChildren().get(0) == yaropolk.getId());
+	assertTrue(svyatoslav.getChildren().get(1) == oleg.getId());
+	assertTrue(svyatoslav.getChildren().get(2) == vladimir.getId());
+	assertTrue(svyatoslav.getChildren().size() == 3);
+	assertTrue(yaropolk.getChildren().isEmpty());
+	assertTrue(oleg.getChildren().isEmpty());
+	assertTrue(vladimir.getChildren().isEmpty());
     }
 
     @Test
@@ -184,54 +178,54 @@ public class TestPerson {
 
 	// Пустой список
 	person.replaceChild(1, 2);
-	assertTrue(person.getChildrens().isEmpty());
+	assertTrue(person.getChildren().isEmpty());
 
 	person.setChild(1);
 	person.setChild(2);
 	person.setChild(3);
-	assertTrue(person.getChildrens().size() == 3);
-	assertTrue(person.getChildrens().contains(1));
-	assertTrue(person.getChildrens().contains(2));
-	assertTrue(person.getChildrens().contains(3));
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(2));
+	assertTrue(person.getChildren().contains(3));
 
 	// Замена на себя
 	person.replaceChild(2, 2);
-	assertTrue(person.getChildrens().size() == 3);
-	assertTrue(person.getChildrens().contains(1));
-	assertTrue(person.getChildrens().contains(2));
-	assertTrue(person.getChildrens().contains(3));
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(2));
+	assertTrue(person.getChildren().contains(3));
 
 	// Замена существуюшего на несуществующий номер
 	person.replaceChild(2, 4);
-	assertTrue(person.getChildrens().size() == 3);
-	assertTrue(person.getChildrens().contains(1));
-	assertTrue(person.getChildrens().contains(4));
-	assertTrue(person.getChildrens().contains(3));
-	assertFalse(person.getChildrens().contains(2));
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(4));
+	assertTrue(person.getChildren().contains(3));
+	assertFalse(person.getChildren().contains(2));
 
 	// Замена несуществующего на существующий
 	person.replaceChild(5, 1);
-	assertTrue(person.getChildrens().size() == 3);
-	assertTrue(person.getChildrens().contains(1));
-	assertTrue(person.getChildrens().contains(4));
-	assertTrue(person.getChildrens().contains(3));
-	assertFalse(person.getChildrens().contains(5));
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(4));
+	assertTrue(person.getChildren().contains(3));
+	assertFalse(person.getChildren().contains(5));
 
 	// Замена несуществующего на несуществующий
 	person.replaceChild(6, 7);
-	assertTrue(person.getChildrens().size() == 3);
-	assertTrue(person.getChildrens().contains(1));
-	assertTrue(person.getChildrens().contains(4));
-	assertTrue(person.getChildrens().contains(3));
-	assertFalse(person.getChildrens().contains(6));
-	assertFalse(person.getChildrens().contains(7));
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(4));
+	assertTrue(person.getChildren().contains(3));
+	assertFalse(person.getChildren().contains(6));
+	assertFalse(person.getChildren().contains(7));
 
 	// Замена на существующий номер
 	person.replaceChild(4, 3);
-	assertTrue(person.getChildrens().size() == 2);
-	assertTrue(person.getChildrens().contains(1));
-	assertTrue(person.getChildrens().contains(3));
-	assertFalse(person.getChildrens().contains(4));
+	assertTrue(person.getChildren().size() == 2);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(3));
+	assertFalse(person.getChildren().contains(4));
     }
 
     @Test
@@ -283,17 +277,16 @@ public class TestPerson {
 
     @Test
     public void testToString() throws MalformedURLException {
-	Person.ResetCount();
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	rurick.setName("Имя");
 	rurick.setNameUrl("ИмяСсылки");
-	assertTrue(rurick.toString()
-		.equals("name=Имя; id=1; url=https://ru.wikipedia.org/wiki/Рюрик; nameUrl=ИмяСсылки; childrens=[]"));
+	assertTrue(rurick.toString().equals("name=Имя; id=" + rurick.getId()
+		+ "; url=https://ru.wikipedia.org/wiki/Рюрик; nameUrl=ИмяСсылки; childrens=[]"));
     }
 
     @Test
-    public void testCopyWithoutNameUrlAndChildrens() throws MalformedURLException {
-	Person.ResetCount();
+    public void testCopyMainData() throws MalformedURLException {
+	Person.resetCount();
 	Person first = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	first.setName("Name_first");
 	first.setNameUrl("NameUrl_first");
@@ -313,9 +306,9 @@ public class TestPerson {
 	assertTrue(second.getId() == 2);
 	assertTrue(first.getNameUrl().equals("NameUrl_first"));
 	assertTrue(second.getNameUrl().equals("NameUrl_second"));
-	assertTrue(first.getChildrens().get(0) == 3);
-	assertTrue(first.getChildrens().size() == 1);
-	assertTrue(second.getChildrens().get(0) == 4);
-	assertTrue(second.getChildrens().size() == 1);
+	assertTrue(first.getChildren().get(0) == 3);
+	assertTrue(first.getChildren().size() == 1);
+	assertTrue(second.getChildren().get(0) == 4);
+	assertTrue(second.getChildren().size() == 1);
     }
 }

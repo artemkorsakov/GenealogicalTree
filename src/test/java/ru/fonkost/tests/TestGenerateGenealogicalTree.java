@@ -17,8 +17,19 @@ import org.junit.Test;
 import ru.fonkost.entities.Person;
 import ru.fonkost.main.GenerateGenealogicalTree;
 
+/**
+ * The Class TestGenerateGenealogicalTree.
+ *
+ * @author Артём Корсаков
+ */
 public class TestGenerateGenealogicalTree {
 
+    /**
+     * Test incorrect arguments.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     public void testIncorrectArguments() throws Exception {
 	new GenerateGenealogicalTree();
@@ -41,9 +52,15 @@ public class TestGenerateGenealogicalTree {
 	}
     }
 
+    /**
+     * Test generate genealogical tree.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     public void testGenerateGenealogicalTree() throws Exception {
-	Person.ResetCount();
+	Person.resetCount();
 	String url = "https://ru.wikipedia.org/wiki/%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B9_II";
 	GenerateGenealogicalTree.main(new String[] { url });
 
@@ -96,9 +113,15 @@ public class TestGenerateGenealogicalTree {
 	file.close();
     }
 
+    /**
+     * Test duplicate persons.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     public void testDuplicatePersons() throws Exception {
-	Person.ResetCount();
+	Person.resetCount();
 	String url = "https://ru.wikipedia.org/wiki/%D0%A4%D1%80%D0%B8%D0%B7%D0%BE_%D0%9E%D1%80%D0%B0%D0%BD%D1%81%D0%BA%D0%BE-%D0%9D%D0%B0%D1%81%D1%81%D0%B0%D1%83%D1%81%D0%BA%D0%B8%D0%B9";
 	GenerateGenealogicalTree.main(new String[] { url });
 
@@ -134,7 +157,7 @@ public class TestGenerateGenealogicalTree {
 	assertTrue(row.getCell(1).getStringCellValue().equals(person.getName()));
 
 	String childrens = row.getCell(2).getStringCellValue();
-	assertTrue(childrens.equals(person.getChildrens().toString()));
+	assertTrue(childrens.equals(person.getChildren().toString()));
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
 

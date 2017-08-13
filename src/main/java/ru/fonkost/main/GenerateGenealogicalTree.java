@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 
-import ru.fonkost.driverHelper.DriverFactory;
+import ru.fonkost.driverHelper.DriverHelper;
 import ru.fonkost.entities.GenealogicalTree;
 import ru.fonkost.entities.Person;
 import ru.fonkost.pageObjects.PersonPage;
@@ -31,6 +31,15 @@ import ru.fonkost.utils.ExcelWorker;
  * @author Артём Корсаков
  */
 public final class GenerateGenealogicalTree {
+    
+    /**
+     * The main method.
+     *
+     * @param args
+     *            the arguments
+     * @throws Exception
+     *             the exception
+     */
     public static void main(String[] args) throws Exception {
 	String url = getUrl(args);
 	GenealogicalTree tree = getGenealogicalTreeByUrl(url);
@@ -51,19 +60,19 @@ public final class GenerateGenealogicalTree {
     }
 
     private static GenealogicalTree getGenealogicalTreeByUrl(String url) throws MalformedURLException {
-	WebDriver driver = DriverFactory.GetDriver();
+	WebDriver driver = DriverHelper.getDriver();
 	Person person = new Person(url);
 	GenealogicalTree tree = new GenealogicalTree(person);
 	PersonPage page = new PersonPage(driver);
 	while (tree.hasUnvisitingPerson()) {
-	    String currentUrl = tree.getUnvisitingUrl();
+	    String currentUrl = tree.getCurrentUrl();
 	    Person currentPerson = page.getPerson(currentUrl);
 	    tree.setCurrentPerson(currentPerson);
 	    if (!tree.isCurrentPersonDeleted()) {
-		List<Person> childrens = page.GetChildrensUrl();
-		tree.setChildrens(childrens);
+		List<Person> childrens = page.getChildrensUrl();
+		tree.setChildren(childrens);
 	    }
-	    tree.calculateNextUnvisitingPerson();
+	    tree.updatingCurrentPerson();
 	}
 	driver.quit();
 	return tree;
@@ -72,6 +81,6 @@ public final class GenerateGenealogicalTree {
     private static void saveResultAndQuit(GenealogicalTree tree) throws Exception {
 	String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
 	ExcelWorker excelWorker = new ExcelWorker();
-	excelWorker.savePersons(fileName, tree.getAllPersons());
+	excelWorker.savePersons(fileName, tree.getGenealogicalTree());
     }
 }
