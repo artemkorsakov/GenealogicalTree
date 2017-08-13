@@ -59,7 +59,7 @@ public final class GenerateGenealogicalTree {
 
 	try {
 	    URL url = new URL(args[0]);
-	    if (url.getHost().contains("wikipedia.org")) {
+	    if (!url.getHost().contains("wikipedia.org")) {
 		throw new IllegalArgumentException(
 			"Алгоритм предназначен для генерации родословного древа только на основе данных Wikipedia");
 	    }
