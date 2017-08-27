@@ -56,7 +56,10 @@ public final class DriverHelper {
 	return result;
     }
 
-    /** Возвращает true, если текущий элемент - уточняющая ссылка */
+    /**
+     * Возвращает true, если текущий элемент -
+     * <a href="http://htmlbook.ru/html/sup">уточняющая ссылка</a>
+     */
     public static boolean isSup(WebElement element) {
 	String parentTagName = element.findElement(By.xpath(".//..")).getTagName();
 	return parentTagName.equals("sup");

@@ -59,14 +59,14 @@ public class TestDriverHelper {
 	long start = System.currentTimeMillis();
 	List<WebElement> elements = DriverHelper.getElements(driver, By.xpath(locator));
 	long finish = System.currentTimeMillis();
-	assertTrue((finish - start) < 1000);
+	assertTrue((finish - start) < 10000);
 	assertTrue(elements.size() == 5);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Алексей_Николаевич");
 	start = System.currentTimeMillis();
 	elements = DriverHelper.getElements(driver, By.xpath(locator));
 	finish = System.currentTimeMillis();
-	assertTrue((finish - start) < 1000);
+	assertTrue((finish - start) < 10000);
 	assertTrue(elements.size() == 0);
     }
 

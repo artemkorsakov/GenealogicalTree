@@ -26,13 +26,14 @@ public class PersonPage {
 
     /**
      * Возвращает историческое лицо, вычисленное на основе данных её страницы.
+     * <br>
      * 
      * В данном методе вычисляются все данные, кроме наименования ссылки,
      * которая есть только на странице родителя и со страницы персоны её
      * вычислить не удастся. Кроме того, здесь не вычисляются дети персоны, т.к.
      * текущая персона может "стать" "дубликатом" и может быть удалена. Поэтому
      * вычисление детей происходит в отдельном методе, который вызывается только
-     * если персона - не дубликат.
+     * если персона - не дубликат. <br>
      * 
      * Отдельно стоит упомянуть, почему переопределяется url, хотя он передается
      * в качестве параметра: дело в том, что в Wikipedia одной персоне может
@@ -66,19 +67,19 @@ public class PersonPage {
 	    return new ArrayList<Person>();
 	}
 
-	List<WebElement> childrensLinks = getChildrensLinks();
-	List<Person> childrens = new ArrayList<Person>();
-	for (WebElement link : childrensLinks) {
+	List<WebElement> childrenLinks = getChildrenLinks();
+	List<Person> children = new ArrayList<Person>();
+	for (WebElement link : childrenLinks) {
 	    if (DriverHelper.isSup(link)) {
 		continue;
 	    }
 	    Person person = new Person(link.getAttribute("href"));
 	    person.setNameUrl(link.getText());
 	    if (person.isCorrectNameUrl()) {
-		childrens.add(person);
+		children.add(person);
 	    }
 	}
-	return childrens;
+	return children;
     }
 
     private String getName() throws MalformedURLException {
@@ -94,7 +95,7 @@ public class PersonPage {
 	return list.size() == 0 ? namePage : list.get(0).getText();
     }
 
-    private List<WebElement> getChildrensLinks() {
+    private List<WebElement> getChildrenLinks() {
 	List<WebElement> childrensLinks = DriverHelper.getElements(driver,
 		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
 	return childrensLinks;

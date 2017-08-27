@@ -26,7 +26,9 @@ public final class GenealogicalTree {
     private int indexCurrentUnvisitedPerson;
     private boolean isCurrentPersonDeleted;
 
-    /** Инициализация родословного древа по родоночальнику династии */
+    /**
+     * Инициализация родословного древа по родоночальнику династии.
+     */
     public GenealogicalTree(Person person) {
 	if (person == null) {
 	    throw new IllegalArgumentException("Укажите непустого основателя династии");
@@ -93,15 +95,15 @@ public final class GenealogicalTree {
      * <li>Если ребенок не встречается в родословном древе, то в список детей
      * добавляется его идентификатор. Кроме того, сам ребенок добавляется в
      * родословное древо в конец, в список "непосещенных" персон. Т.о.
-     * происходит "наполнение" списка.</li>
+     * происходит "наполнение" списка за счет детей текущей персоны.</li>
      * </ul>
      */
-    public void setChildren(List<Person> childrens) {
+    public void setChildren(List<Person> children) {
 	if (isCurrentPersonDeleted) {
 	    throw new IllegalArgumentException("Нельзя установить детей удаленной персоне. Текущая персона уже другая");
 	}
 
-	for (Person person : childrens) {
+	for (Person person : children) {
 	    int index = AllPersons.indexOf(person);
 	    int id;
 	    if (index >= 0) {
@@ -130,6 +132,7 @@ public final class GenealogicalTree {
 	}
     }
 
+    /** Признак удаленности текущей персоны */
     public boolean isCurrentPersonDeleted() {
 	return isCurrentPersonDeleted;
     }
@@ -151,6 +154,7 @@ public final class GenealogicalTree {
 	return AllPersons.get(indexCurrentUnvisitedPerson).getUrl();
     }
 
+    /** Возвращает список персон, составляющих родословное древо */
     public List<Person> getGenealogicalTree() {
 	return AllPersons;
     }

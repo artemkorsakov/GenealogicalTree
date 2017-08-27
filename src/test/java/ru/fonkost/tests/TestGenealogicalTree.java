@@ -29,9 +29,9 @@ public class TestGenealogicalTree {
      * Проверка, что родословное древо не создается с персоной равной null.<br>
      * Для корректно созданного родословного древа проверяется следующее:
      * <ul>
-     * <li>Текущая персона не удалена</li>
+     * <li>Текущая персона не удалена.</li>
      * <li>В родословном древе есть "непосещенные" персоны.</li>
-     * <li>Родословное древо состоит только из родоночальника династии</li>
+     * <li>Родословное древо состоит только из родоночальника династии.</li>
      * </ul>
      */
     @Test
@@ -83,7 +83,7 @@ public class TestGenealogicalTree {
 
     /**
      * Проверка установки в качестве текущей ту персону, которая встречается в
-     * родословном древе, но после текущей персоны.
+     * родословном древе, но после текущей персоны среди "непосещенных".
      */
     @Test
     public void testSetUnvisitedPerson() throws MalformedURLException {
@@ -136,8 +136,8 @@ public class TestGenealogicalTree {
 
     /**
      * Проверка корректного удаления персоны, если она встречается в списке
-     * детей у "посещенных" персон, но при этом "дубликат" также встречается в
-     * этом же списке. Идентификатор удаляемой персоны "не новый".
+     * детей у "посещенных" персон, но при этом её дубликат, на которого её
+     * нужно будет заменить, также встречается в этом же списке.
      */
     @Test
     public void testRemovePersonWhenSheIsChild() throws MalformedURLException {
@@ -169,10 +169,13 @@ public class TestGenealogicalTree {
     }
 
     /**
-     * Проверка корректного удаления персоны, если она встречается в списке
-     * детей у "посещенных" персон. При этом идентификатор удаляемой персоны
-     * "новый", который ещё не встречался в списке. Проверка, что "новый"
-     * идентификатор удаляемой персоны не добавился в список детей.
+     * Проверка корректного удаления текущей персоны, если она встречается в
+     * списке детей у "посещенных" персон. <br>
+     * При этом идентификатор персоны переданной в качестве параметра в методе
+     * {@link ru.fonkost.entities.GenealogicalTree#setCurrentPerson(Person)
+     * setCurrentPerson(Person person)} новый, который ещё не встречался в
+     * списке. Проверка, что новый идентификатор удаляемой персоны не добавился
+     * в список детей.
      */
     @Test
     public void testRemovePersonWhenSheIsChildButAnotherId() throws MalformedURLException {
@@ -205,7 +208,7 @@ public class TestGenealogicalTree {
 	assertFalse(childrens.contains(rurick5.getId()));
     }
 
-    /** Проверка корректной установки детей */
+    /** Проверка корректной установки детей. */
     @Test
     public void testSetChildren() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
@@ -224,7 +227,7 @@ public class TestGenealogicalTree {
 	assertTrue(allPersons.get(1).getChildren().isEmpty());
     }
 
-    /** Проверка невозможности установки детей удаленной персоне */
+    /** Проверка невозможности установки детей удаленной персоне. */
     @Test
     public void testSetChildrenDeletedPerson() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
@@ -242,7 +245,7 @@ public class TestGenealogicalTree {
 	}
     }
 
-    /** Проверка установки детей, которые уже есть в родословном древе */
+    /** Проверка установки детей, которые уже есть в родословном древе. */
     @Test
     public void testSetChildrenWhenChildContains() throws MalformedURLException {
 	List<Person> persons = new ArrayList<Person>();
@@ -253,7 +256,7 @@ public class TestGenealogicalTree {
 	assertTrue(tree.getGenealogicalTree().get(0).getChildren().get(0) == rurick.getId());
     }
 
-    /** Проверка корректного обновления текущей персоны */
+    /** Проверка корректного обновления текущей персоны. */
     @Test
     public void testUpdatingCurrentPerson() throws MalformedURLException {
 	GenealogicalTree tree = new GenealogicalTree(rurick);
