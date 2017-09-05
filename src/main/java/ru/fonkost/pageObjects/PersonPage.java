@@ -97,9 +97,9 @@ public class PersonPage {
     }
 
     private List<WebElement> getChildrenLinks() {
-	List<WebElement> childrensLinks = DriverHelper.getElements(driver,
+	List<WebElement> childrenLinks = DriverHelper.getElements(driver,
 		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
-	return childrensLinks;
+	return childrenLinks;
     }
 
     private void waitLoadPage() {

@@ -138,8 +138,8 @@ public class TestGenerateGenealogicalTree {
 
 	assertTrue(row.getCell(1).getStringCellValue().equals(person.getName()));
 
-	String childrens = row.getCell(2).getStringCellValue();
-	assertTrue(childrens.equals(person.getChildren().toString()));
+	String children = row.getCell(2).getStringCellValue();
+	assertTrue(children.equals(person.getChildren().toString()));
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
 

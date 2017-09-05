@@ -65,7 +65,7 @@ public class TestExcelWorker {
 	Row row = sheet.getRow(0);
 	assertTrue(row.getCell(0).getStringCellValue().equals("id"));
 	assertTrue(row.getCell(1).getStringCellValue().equals("name"));
-	assertTrue(row.getCell(2).getStringCellValue().equals("childrens"));
+	assertTrue(row.getCell(2).getStringCellValue().equals("children"));
 	assertTrue(row.getCell(3).getStringCellValue().equals("url"));
 	assertTrue(row.getCell(4).getStringCellValue().equals("urlName"));
 
@@ -88,8 +88,8 @@ public class TestExcelWorker {
 
 	assertTrue(row.getCell(1).getStringCellValue().equals(person.getName()));
 
-	String childrens = row.getCell(2).getStringCellValue();
-	assertTrue(childrens.equals(person.getChildren().toString()));
+	String children = row.getCell(2).getStringCellValue();
+	assertTrue(children.equals(person.getChildren().toString()));
 
 	assertTrue(row.getCell(3).getStringCellValue().equals(person.getUrl()));
 

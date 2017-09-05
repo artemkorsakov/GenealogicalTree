@@ -163,12 +163,12 @@ public class TestPersonPage {
     public void testEmptyChildrenInPersonWithAnchor() throws Exception {
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович");
 	PersonPage page = new PersonPage(driver);
-	List<Person> childrens = page.getChildrenUrl();
-	assertTrue(childrens.size() == 5);
+	List<Person> children = page.getChildrenUrl();
+	assertTrue(children.size() == 5);
 
 	driver.navigate().to("https://ru.wikipedia.org/wiki/Владимир_Александрович#.D0.A1.D0.B5.D0.BC.D1.8C.D1.8F");
-	childrens = page.getChildrenUrl();
-	assertTrue(childrens.size() == 0);
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 0);
     }
 
     @AfterClass

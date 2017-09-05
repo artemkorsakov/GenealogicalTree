@@ -126,12 +126,12 @@ public class TestGenealogicalTree {
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick3));
 	assertTrue(allPersons.get(2).equals(rurick4));
-	List<Integer> childrens = allPersons.get(0).getChildren();
-	assertTrue(childrens.size() == 3);
-	assertTrue(childrens.contains(rurick.getId()));
-	assertFalse(childrens.contains(rurick2.getId()));
-	assertTrue(childrens.contains(rurick3.getId()));
-	assertTrue(childrens.contains(rurick4.getId()));
+	List<Integer> childrenIds = allPersons.get(0).getChildren();
+	assertTrue(childrenIds.size() == 3);
+	assertTrue(childrenIds.contains(rurick.getId()));
+	assertFalse(childrenIds.contains(rurick2.getId()));
+	assertTrue(childrenIds.contains(rurick3.getId()));
+	assertTrue(childrenIds.contains(rurick4.getId()));
     }
 
     /**
@@ -161,11 +161,11 @@ public class TestGenealogicalTree {
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick2));
 	assertTrue(allPersons.get(2).equals(rurick4));
-	List<Integer> childrens = allPersons.get(0).getChildren();
-	assertTrue(childrens.size() == 2);
-	assertTrue(childrens.contains(rurick2.getId()));
-	assertFalse(childrens.contains(rurick3.getId()));
-	assertTrue(childrens.contains(rurick4.getId()));
+	List<Integer> childrenIds = allPersons.get(0).getChildren();
+	assertTrue(childrenIds.size() == 2);
+	assertTrue(childrenIds.contains(rurick2.getId()));
+	assertFalse(childrenIds.contains(rurick3.getId()));
+	assertTrue(childrenIds.contains(rurick4.getId()));
     }
 
     /**
@@ -200,12 +200,12 @@ public class TestGenealogicalTree {
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick2));
 	assertTrue(allPersons.get(2).equals(rurick4));
-	List<Integer> childrens = allPersons.get(0).getChildren();
-	assertTrue(childrens.size() == 2);
-	assertTrue(childrens.contains(rurick2.getId()));
-	assertFalse(childrens.contains(rurick3.getId()));
-	assertTrue(childrens.contains(rurick4.getId()));
-	assertFalse(childrens.contains(rurick5.getId()));
+	List<Integer> childrenIds = allPersons.get(0).getChildren();
+	assertTrue(childrenIds.size() == 2);
+	assertTrue(childrenIds.contains(rurick2.getId()));
+	assertFalse(childrenIds.contains(rurick3.getId()));
+	assertTrue(childrenIds.contains(rurick4.getId()));
+	assertFalse(childrenIds.contains(rurick5.getId()));
     }
 
     /** Проверка корректной установки детей. */
@@ -221,9 +221,9 @@ public class TestGenealogicalTree {
 	assertTrue(allPersons.size() == 2);
 	assertTrue(allPersons.get(0).equals(rurick));
 	assertTrue(allPersons.get(1).equals(rurick2));
-	List<Integer> childrens = allPersons.get(0).getChildren();
-	assertTrue(childrens.size() == 1);
-	assertTrue(childrens.contains(rurick2.getId()));
+	List<Integer> childrenIds = allPersons.get(0).getChildren();
+	assertTrue(childrenIds.size() == 1);
+	assertTrue(childrenIds.contains(rurick2.getId()));
 	assertTrue(allPersons.get(1).getChildren().isEmpty());
     }
 

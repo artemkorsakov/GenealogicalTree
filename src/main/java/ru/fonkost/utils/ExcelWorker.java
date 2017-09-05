@@ -40,7 +40,7 @@ public class ExcelWorker {
 	workbook = new HSSFWorkbook();
 	sheet = workbook.createSheet(name);
 	rowNum = 0;
-	saveRow("id", "name", "childrens", "url", "urlName");
+	saveRow("id", "name", "children", "url", "urlName");
     }
 
     private void savePerson(Person person) throws ParseException {

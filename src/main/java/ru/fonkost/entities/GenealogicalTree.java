@@ -22,7 +22,7 @@ import java.util.List;
  * Пока оставлено так для удобства тестирования алгоритма. </strong>
  */
 public final class GenealogicalTree {
-    private List<Person> AllPersons;
+    private List<Person> allPersons;
     private int indexCurrentUnvisitedPerson;
     private boolean isCurrentPersonDeleted;
 
@@ -33,8 +33,8 @@ public final class GenealogicalTree {
 	if (person == null) {
 	    throw new IllegalArgumentException("Укажите непустого основателя династии");
 	}
-	AllPersons = new ArrayList<Person>();
-	AllPersons.add(person);
+	allPersons = new ArrayList<Person>();
+	allPersons.add(person);
 	indexCurrentUnvisitedPerson = 0;
 	isCurrentPersonDeleted = false;
     }
@@ -56,11 +56,11 @@ public final class GenealogicalTree {
      * "дойдет очередь".
      */
     public void setCurrentPerson(Person currentPerson) {
-	int indexDuplicate = AllPersons.indexOf(currentPerson);
+	int indexDuplicate = allPersons.indexOf(currentPerson);
 	if ((0 <= indexDuplicate) && (indexDuplicate < indexCurrentUnvisitedPerson)) {
 	    removePerson(indexDuplicate);
 	} else {
-	    AllPersons.get(indexCurrentUnvisitedPerson).copyMainData(currentPerson);
+	    allPersons.get(indexCurrentUnvisitedPerson).copyMainData(currentPerson);
 	    isCurrentPersonDeleted = false;
 	}
     }
@@ -74,13 +74,13 @@ public final class GenealogicalTree {
      * После удаления "текущая" персона помечается удаленной.
      */
     private void removePerson(int indexDuplicate) {
-	int idRemovedPerson = AllPersons.get(indexCurrentUnvisitedPerson).getId();
-	int idDuplicate = AllPersons.get(indexDuplicate).getId();
+	int idRemovedPerson = allPersons.get(indexCurrentUnvisitedPerson).getId();
+	int idDuplicate = allPersons.get(indexDuplicate).getId();
 	for (int i = 0; i < indexCurrentUnvisitedPerson; i++) {
-	    Person person = AllPersons.get(i);
+	    Person person = allPersons.get(i);
 	    person.replaceChild(idRemovedPerson, idDuplicate);
 	}
-	AllPersons.remove(indexCurrentUnvisitedPerson);
+	allPersons.remove(indexCurrentUnvisitedPerson);
 	isCurrentPersonDeleted = true;
     }
 
@@ -104,15 +104,15 @@ public final class GenealogicalTree {
 	}
 
 	for (Person person : children) {
-	    int index = AllPersons.indexOf(person);
+	    int index = allPersons.indexOf(person);
 	    int id;
 	    if (index >= 0) {
-		id = AllPersons.get(index).getId();
+		id = allPersons.get(index).getId();
 	    } else {
-		AllPersons.add(person);
+		allPersons.add(person);
 		id = person.getId();
 	    }
-	    AllPersons.get(indexCurrentUnvisitedPerson).setChild(id);
+	    allPersons.get(indexCurrentUnvisitedPerson).setChild(id);
 	}
     }
 
@@ -143,7 +143,7 @@ public final class GenealogicalTree {
      * персон не осталось.
      */
     public boolean hasUnvisitingPerson() {
-	return indexCurrentUnvisitedPerson < AllPersons.size();
+	return indexCurrentUnvisitedPerson < allPersons.size();
     }
 
     /**
@@ -151,11 +151,11 @@ public final class GenealogicalTree {
      * персоны.
      */
     public String getCurrentUrl() {
-	return AllPersons.get(indexCurrentUnvisitedPerson).getUrl();
+	return allPersons.get(indexCurrentUnvisitedPerson).getUrl();
     }
 
     /** Возвращает список персон, составляющих родословное древо */
     public List<Person> getGenealogicalTree() {
-	return AllPersons;
+	return allPersons;
     }
 }

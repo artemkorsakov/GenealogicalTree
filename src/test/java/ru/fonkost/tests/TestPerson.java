@@ -281,7 +281,7 @@ public class TestPerson {
 	rurick.setName("Имя");
 	rurick.setNameUrl("ИмяСсылки");
 	assertTrue(rurick.toString().equals("name=Имя; id=" + rurick.getId()
-		+ "; url=https://ru.wikipedia.org/wiki/Рюрик; nameUrl=ИмяСсылки; childrens=[]"));
+		+ "; url=https://ru.wikipedia.org/wiki/Рюрик; nameUrl=ИмяСсылки; children=[]"));
     }
 
     @Test

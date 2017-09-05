@@ -130,6 +130,6 @@ public class Person {
 
     @Override
     public String toString() {
-	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl + "; childrens=" + children;
+	return "name=" + name + "; id=" + id + "; url=" + url + "; nameUrl=" + nameUrl + "; children=" + children;
     }
 }

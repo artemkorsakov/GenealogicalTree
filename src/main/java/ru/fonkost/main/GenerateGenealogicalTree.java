@@ -97,8 +97,8 @@ public final class GenerateGenealogicalTree {
 	    Person currentPerson = page.getPerson(currentUrl);
 	    tree.setCurrentPerson(currentPerson);
 	    if (!tree.isCurrentPersonDeleted()) {
-		List<Person> childrens = page.getChildrenUrl();
-		tree.setChildren(childrens);
+		List<Person> children = page.getChildrenUrl();
+		tree.setChildren(children);
 	    }
 	    tree.updatingCurrentPerson();
 	}
