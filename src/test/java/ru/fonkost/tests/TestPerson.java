@@ -311,4 +311,27 @@ public class TestPerson {
 	assertTrue(second.getChildren().get(0) == 4);
 	assertTrue(second.getChildren().size() == 1);
     }
+
+    @Test
+    public void testParents() throws MalformedURLException {
+	Person first = new Person("https://ru.wikipedia.org/wiki/Рюрик");
+	assertTrue(first.getParents().size() == 0);
+	first.setParent(5);
+	assertTrue(first.getParents().size() == 1);
+	assertTrue(first.getParents().get(0) == 5);
+	first.setParent(6);
+	assertTrue(first.getParents().size() == 2);
+	assertTrue(first.getParents().get(0) == 5);
+	assertTrue(first.getParents().get(1) == 6);
+    }
+
+    @Test
+    public void testNumberGeneration() throws MalformedURLException {
+	Person first = new Person("https://ru.wikipedia.org/wiki/Рюрик");
+	assertTrue(first.getNumberGeneration() == 0);
+	first.setNumberGeneration(3);
+	assertTrue(first.getNumberGeneration() == 3);
+	first.setNumberGeneration(5);
+	assertTrue(first.getNumberGeneration() == 3);
+    }
 }

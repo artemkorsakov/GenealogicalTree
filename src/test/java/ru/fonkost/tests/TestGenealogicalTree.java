@@ -256,6 +256,37 @@ public class TestGenealogicalTree {
 	assertTrue(tree.getGenealogicalTree().get(0).getChildren().get(0) == rurick.getId());
     }
 
+    /** Проверка корректной установки детей. */
+    @Test
+    public void testNumberGenerationAndParents() throws MalformedURLException {
+	GenealogicalTree tree = new GenealogicalTree(rurick);
+	List<Person> persons = new ArrayList<Person>();
+	Person rurick2 = new Person("https://ru.wikipedia.org/wiki/Рюрик2");
+	persons.add(rurick2);
+	tree.setChildren(persons);
+
+	assertTrue(tree.getGenealogicalTree().get(0).getParents().size() == 0);
+	assertTrue(tree.getGenealogicalTree().get(0).getNumberGeneration() == 0);
+	assertTrue(tree.getGenealogicalTree().get(1).getParents().size() == 1);
+	assertTrue(tree.getGenealogicalTree().get(1).getParents().get(0) == rurick.getId());
+	assertTrue(tree.getGenealogicalTree().get(1).getNumberGeneration() == 1);
+
+	tree.updatingCurrentPerson();
+	persons = new ArrayList<Person>();
+	Person rurick3 = new Person("https://ru.wikipedia.org/wiki/Рюрик3");
+	persons.add(rurick3);
+	tree.setChildren(persons);
+
+	assertTrue(tree.getGenealogicalTree().get(0).getParents().size() == 0);
+	assertTrue(tree.getGenealogicalTree().get(0).getNumberGeneration() == 0);
+	assertTrue(tree.getGenealogicalTree().get(1).getParents().size() == 1);
+	assertTrue(tree.getGenealogicalTree().get(1).getParents().get(0) == rurick.getId());
+	assertTrue(tree.getGenealogicalTree().get(1).getNumberGeneration() == 1);
+	assertTrue(tree.getGenealogicalTree().get(2).getParents().size() == 1);
+	assertTrue(tree.getGenealogicalTree().get(2).getParents().get(0) == rurick2.getId());
+	assertTrue(tree.getGenealogicalTree().get(2).getNumberGeneration() == 2);
+    }
+
     /** Проверка корректного обновления текущей персоны. */
     @Test
     public void testUpdatingCurrentPerson() throws MalformedURLException {

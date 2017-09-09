@@ -16,6 +16,8 @@ public class Person {
     private URL url;
     private String nameUrl;
     private List<Integer> children = new ArrayList<Integer>();
+    private List<Integer> parents = new ArrayList<Integer>();
+    private int numberGeneration = 0;
 
     /** Инициализация персоны по её странице в Wikipedia */
     public Person(String url) throws MalformedURLException {
@@ -106,6 +108,31 @@ public class Person {
 	}
 	children.remove((Object) oldId);
 	setChild(newId);
+    }
+
+    /** Возвращает список родителей */
+    public List<Integer> getParents() {
+	return parents;
+    }
+
+    /** Устанавливает идентификатор родителя */
+    public void setParent(int parent) {
+	parents.add(parent);
+    }
+
+    /** Возвращает номер колена */
+    public int getNumberGeneration() {
+	return numberGeneration;
+    }
+
+    /**
+     * Устанавливает номер колена. Если номер колена не равен 0, то значит он
+     * уже установлен другим родителем и необходимости в его обновлении нет.
+     */
+    public void setNumberGeneration(int numberGeneration) {
+	if (this.numberGeneration == 0) {
+	    this.numberGeneration = numberGeneration;
+	}
     }
 
     /** Используется исключительно для тестирования */

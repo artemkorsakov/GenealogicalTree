@@ -91,11 +91,12 @@ public final class GenealogicalTree {
      * <ul>
      * <li>Если ребенок уже встречается в родословном древе (среди "посещенных"
      * и "непосещенных" персон), то в список детей добавляется идентификатор
-     * дубликата</li>
-     * <li>Если ребенок не встречается в родословном древе, то в список детей
-     * добавляется его идентификатор. Кроме того, сам ребенок добавляется в
-     * родословное древо в конец, в список "непосещенных" персон. Т.о.
-     * происходит "наполнение" списка за счет детей текущей персоны.</li>
+     * дубликата. А дубликату устанавливается "дополнительный" родитель</li>
+     * <li>Если ребенок не встречается в родословном древе, то ему
+     * устанавливается номер поколения и родитель, а в список детей текущей
+     * персоны добавляется его идентификатор. Кроме того, сам ребенок
+     * добавляется в родословное древо в конец, в список "непосещенных" персон.
+     * Т.о. происходит "наполнение" списка за счет детей текущей персоны.</li>
      * </ul>
      */
     public void setChildren(List<Person> children) {
@@ -103,16 +104,23 @@ public final class GenealogicalTree {
 	    throw new IllegalArgumentException("Нельзя установить детей удаленной персоне. Текущая персона уже другая");
 	}
 
+	Person currentPerson = allPersons.get(indexCurrentUnvisitedPerson);
+	int numberGeneration = currentPerson.getNumberGeneration();
+	numberGeneration++;
+	int idParent = currentPerson.getId();
 	for (Person person : children) {
 	    int index = allPersons.indexOf(person);
 	    int id;
 	    if (index >= 0) {
+		allPersons.get(index).setParent(idParent);
 		id = allPersons.get(index).getId();
 	    } else {
+		person.setNumberGeneration(numberGeneration);
+		person.setParent(idParent);
 		allPersons.add(person);
 		id = person.getId();
 	    }
-	    allPersons.get(indexCurrentUnvisitedPerson).setChild(id);
+	    currentPerson.setChild(id);
 	}
     }
 
