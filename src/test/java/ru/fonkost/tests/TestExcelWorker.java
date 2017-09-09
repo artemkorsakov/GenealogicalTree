@@ -61,7 +61,7 @@ public class TestExcelWorker {
 	FileInputStream file = new FileInputStream(new File(fileName));
 	HSSFWorkbook workbook = new HSSFWorkbook(file);
 	HSSFSheet sheet = workbook.getSheetAt(0);
-	assertTrue(sheet.getSheetName().equals("Генеалогическое древо Рюрик"));
+	assertTrue(sheet.getSheetName().equals("Древо Рюрик"));
 	Row row = sheet.getRow(0);
 	assertTrue(row.getCell(0).getStringCellValue().equals("id"));
 	assertTrue(row.getCell(1).getStringCellValue().equals("name"));

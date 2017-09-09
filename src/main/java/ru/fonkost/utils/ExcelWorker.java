@@ -28,7 +28,7 @@ public class ExcelWorker {
 	    return;
 	}
 
-	String dynastyName = "Генеалогическое древо " + Persons.get(0).getName();
+	String dynastyName = "Древо " + Persons.get(0).getName();
 	createSheet(dynastyName);
 	for (Person person : Persons) {
 	    savePerson(person);
@@ -40,22 +40,24 @@ public class ExcelWorker {
 	workbook = new HSSFWorkbook();
 	sheet = workbook.createSheet(name);
 	rowNum = 0;
-	saveRow("id", "name", "children", "url", "urlName");
+	saveRow("id", "name", "children", "url", "urlName", "numGen", "parents");
     }
 
     private void savePerson(Person person) throws ParseException {
 	saveRow(String.valueOf(person.getId()), person.getName(), person.getChildren().toString(), person.getUrl(),
-		person.getNameUrl());
+		person.getNameUrl(), String.valueOf(person.getNumberGeneration()), person.getParents().toString());
 	System.out.println(person);
     }
 
-    private void saveRow(String col1, String col2, String col3, String col4, String col5) {
+    private void saveRow(String col1, String col2, String col3, String col4, String col5, String col6, String col7) {
 	Row row = sheet.createRow(rowNum);
 	row.createCell(0).setCellValue(col1);
 	row.createCell(1).setCellValue(col2);
 	row.createCell(2).setCellValue(col3);
 	row.createCell(3).setCellValue(col4);
 	row.createCell(4).setCellValue(col5);
+	row.createCell(5).setCellValue(col6);
+	row.createCell(6).setCellValue(col7);
 	rowNum++;
     }
 
