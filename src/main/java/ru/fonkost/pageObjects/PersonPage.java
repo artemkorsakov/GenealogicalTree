@@ -93,12 +93,18 @@ public class PersonPage {
 
 	String anchor = DriverHelper.getAnchor(driver);
 	List<WebElement> list = DriverHelper.getElements(driver, By.id(anchor));
-	return list.size() == 0 ? namePage : list.get(0).getText();
+
+	if (list.size() == 0) {
+	    return namePage;
+	}
+
+	String name = list.get(0).getText().trim();
+	return name.isEmpty() ? namePage : name;
     }
 
     private List<WebElement> getChildrenLinks() {
-	List<WebElement> childrenLinks = DriverHelper.getElements(driver,
-		By.xpath("//table[@class='infobox']//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
+	List<WebElement> childrenLinks = DriverHelper.getElements(driver, By.xpath(
+		"//table[contains(@class, 'infobox')]//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
 	return childrenLinks;
     }
 
