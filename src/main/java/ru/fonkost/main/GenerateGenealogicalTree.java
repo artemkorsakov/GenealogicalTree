@@ -3,6 +3,7 @@ package ru.fonkost.main;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -11,7 +12,7 @@ import ru.fonkost.driverHelper.DriverHelper;
 import ru.fonkost.entities.GenealogicalTree;
 import ru.fonkost.entities.Person;
 import ru.fonkost.pageObjects.PersonPage;
-import ru.fonkost.utils.ExcelWorker;
+import ru.fonkost.utils.MySqlHelper;
 
 /**
  * Генерация родословного дерева на основе данных Wikipedia. <br>
@@ -108,8 +109,8 @@ public final class GenerateGenealogicalTree {
 
     /** Сохранение результатов генерации в Excel-файле */
     private static void saveResultAndQuit(GenealogicalTree tree) throws Exception {
-	String fileName = "C:\\workspace\\GenerateGenealogicalTree.xls";
-	ExcelWorker excelWorker = new ExcelWorker();
-	excelWorker.savePersons(fileName, tree.getGenealogicalTree());
+	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+	String tableName = "generate" + timestamp.getTime();
+	MySqlHelper.saveTree(tableName, tree.getGenealogicalTree());
     }
 }
