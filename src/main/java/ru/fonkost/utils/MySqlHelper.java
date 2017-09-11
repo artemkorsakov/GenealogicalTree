@@ -50,6 +50,7 @@ public class MySqlHelper {
 		statement.executeUpdate(insert);
 		System.out.println("Insert person " + insert);
 	    }
+	    System.out.println("Success");
 	} catch (SQLException sqlEx) {
 	    sqlEx.printStackTrace();
 	} finally {
@@ -83,9 +84,9 @@ public class MySqlHelper {
 	sql.append("INSERT INTO genealogicaltree." + tableName);
 	sql.append("(id, name, url, nameUrl, children, parents, numberGeneration) \n VALUES (");
 	sql.append(person.getId() + ",");
-	sql.append("'" + person.getName() + "',");
+	sql.append("'" + person.getName().replace("'", "") + "',");
 	sql.append("'" + person.getUrl() + "',");
-	sql.append("'" + person.getNameUrl() + "',");
+	sql.append("'" + person.getNameUrl().replace("'", "") + "',");
 	sql.append("'" + person.getChildren() + "',");
 	sql.append("'" + person.getParents() + "',");
 	sql.append(person.getNumberGeneration());
