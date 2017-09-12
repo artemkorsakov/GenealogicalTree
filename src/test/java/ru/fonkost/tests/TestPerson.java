@@ -81,6 +81,18 @@ public class TestPerson {
 	} catch (IllegalArgumentException ex) {
 	    assertTrue(ex.getMessage().equals("Имя должно иметь непустое значение"));
 	}
+	try {
+	    p.setName("'");
+	    fail("Создалась персона с апострофом");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Имя должно иметь непустое значение"));
+	}
+	try {
+	    p.setName(" ' ");
+	    fail("Создалась персона с пробельным именем и апострофом");
+	} catch (IllegalArgumentException ex) {
+	    assertTrue(ex.getMessage().equals("Имя должно иметь непустое значение"));
+	}
     }
 
     @Test
@@ -91,6 +103,10 @@ public class TestPerson {
 	p.setNameUrl("");
 	assertTrue(p.getNameUrl().equals(""));
 	p.setNameUrl("   ");
+	assertTrue(p.getNameUrl().equals(""));
+	p.setNameUrl("'");
+	assertTrue(p.getNameUrl().equals(""));
+	p.setNameUrl(" ' ");
 	assertTrue(p.getNameUrl().equals(""));
     }
 
@@ -113,6 +129,15 @@ public class TestPerson {
 	assertFalse(rurick.isCorrectNameUrl());
 	rurick.setNameUrl("1");
 	assertFalse(rurick.isCorrectNameUrl());
+    }
+
+    @Test
+    public void testApostrophe() throws Exception {
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setNameUrl("Генрих II д'Альбре");
+	assertTrue(rurick.getNameUrl().equals("Генрих II дАльбре"));
+	rurick.setName("Генрих II д'Альбре");
+	assertTrue(rurick.getName().equals("Генрих II дАльбре"));
     }
 
     @Test

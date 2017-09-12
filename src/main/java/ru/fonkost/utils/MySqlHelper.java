@@ -84,9 +84,9 @@ public class MySqlHelper {
 	sql.append("INSERT INTO genealogicaltree." + tableName);
 	sql.append("(id, name, url, nameUrl, children, parents, numberGeneration) \n VALUES (");
 	sql.append(person.getId() + ",");
-	sql.append("'" + person.getName().replace("'", "") + "',");
+	sql.append("'" + person.getName() + "',");
 	sql.append("'" + person.getUrl() + "',");
-	sql.append("'" + person.getNameUrl().replace("'", "") + "',");
+	sql.append("'" + person.getNameUrl() + "',");
 	sql.append("'" + person.getChildren() + "',");
 	sql.append("'" + person.getParents() + "',");
 	sql.append(person.getNumberGeneration());
@@ -98,8 +98,6 @@ public class MySqlHelper {
      * Возвращает родословное древо из заданной таблицы. <br>
      * Метод используется только для тестирования корректности работы с БД.
      *
-     * @param tableName
-     *            имя таблицы
      * @return родословное древо из таблицы
      * @throws Exception
      */

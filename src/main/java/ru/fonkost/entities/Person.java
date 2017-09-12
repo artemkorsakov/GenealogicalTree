@@ -43,10 +43,10 @@ public class Person {
     }
 
     public void setName(String name) {
-	if (name == null || name.trim().isEmpty()) {
+	if (name == null || name.replace("'", "").trim().isEmpty()) {
 	    throw new IllegalArgumentException("Имя должно иметь непустое значение");
 	}
-	this.name = name;
+	this.name = name.replace("'", "").trim();
     }
 
     /**
@@ -58,10 +58,10 @@ public class Person {
     }
 
     public void setNameUrl(String nameUrl) {
-	if (nameUrl == null || nameUrl.trim().isEmpty()) {
+	if (nameUrl == null || nameUrl.replace("'", "").trim().isEmpty()) {
 	    this.nameUrl = "";
 	} else {
-	    this.nameUrl = nameUrl;
+	    this.nameUrl = nameUrl.replace("'", "").trim();
 	}
     }
 
