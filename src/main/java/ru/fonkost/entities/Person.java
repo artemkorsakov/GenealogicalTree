@@ -30,6 +30,14 @@ public class Person {
 	return id;
     }
 
+    /**
+     * Для корректной выгрузки родословного древа из БД, когда нужно установить
+     * тот идентифиатор, который указан в БД
+     */
+    public void setId(int id) {
+	this.id = id;
+    }
+
     public String getUrl() {
 	return url.toString();
     }
@@ -75,6 +83,14 @@ public class Person {
 	Pattern p = Pattern.compile("^[\\D]+.+");
 	Matcher m = p.matcher(nameUrl);
 	return m.matches();
+    }
+
+    /** Возвращает короткое имя для заглавия */
+    public String getTitleName() {
+	if (!nameUrl.isEmpty() && !nameUrl.equals("null")) {
+	    return nameUrl;
+	}
+	return name.split(" ", 2)[0];
     }
 
     /**

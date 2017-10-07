@@ -113,14 +113,49 @@ public class MySqlHelper {
 		throw new Exception("Не найдено ни одной таблицы");
 	    }
 	    String tableName = resultSet.getString("TABLE_NAME");
+	    tree = getTreeFormTable(tableName);
+	} catch (SQLException sqlEx) {
+	    sqlEx.printStackTrace();
+	} finally {
+	    try {
+		connection.close();
+	    } catch (SQLException se) {
+	    }
+	    try {
+		statement.close();
+	    } catch (SQLException se) {
+	    }
+	    try {
+		resultSet.close();
+	    } catch (SQLException se) {
+	    }
+	}
+	return tree;
+    }
 
-	    String query = "select name, url, nameUrl, children, parents, numberGeneration from genealogicaltree."
+    /**
+     * Возвращает родословное древо из заданной таблицы. <br>
+     * Метод используется только для тестирования корректности работы с БД.
+     *
+     * @return родословное древо из таблицы
+     * @throws Exception
+     */
+    public static List<Person> getTreeFormTable(String tableName) throws Exception {
+	List<Person> tree = new ArrayList<Person>();
+	try {
+	    connection = DriverManager.getConnection(url, user, password);
+	    statement = connection.createStatement();
+
+	    String query = "select id, name, url, nameUrl, children, parents, numberGeneration from genealogicaltree."
 		    + tableName;
 	    resultSet = statement.executeQuery(query);
 
 	    while (resultSet.next()) {
 		String url = resultSet.getString("url");
 		Person person = new Person(url);
+
+		int id = resultSet.getInt("id");
+		person.setId(id);
 
 		String name = resultSet.getString("name");
 		person.setName(name);

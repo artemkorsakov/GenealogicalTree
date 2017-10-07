@@ -132,6 +132,20 @@ public class TestPerson {
     }
 
     @Test
+    public void testGetTitleName() throws Exception {
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setName("Александр");
+	rurick.setNameUrl("");
+	assertTrue(rurick.getTitleName().equals("Александр"));
+	rurick.setName("Владимир Александрович");
+	assertTrue(rurick.getTitleName().equals("Владимир"));
+	rurick.setNameUrl("Петр");
+	assertTrue(rurick.getTitleName().equals("Петр"));
+	rurick.setNameUrl("null");
+	assertTrue(rurick.getTitleName().equals("Владимир"));
+    }
+
+    @Test
     public void testApostrophe() throws Exception {
 	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setNameUrl("Генрих II д'Альбре");
