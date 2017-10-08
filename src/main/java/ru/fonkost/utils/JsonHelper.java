@@ -5,8 +5,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import ru.fonkost.entities.JsonPerson;
 import ru.fonkost.entities.Person;
 
 /**
@@ -25,12 +29,7 @@ import ru.fonkost.entities.Person;
  * Пока оставлено так для удобства тестирования алгоритма. </strong>
  */
 public class JsonHelper {
-    private static int id = 0;
-    private static String fileName;
-    private static File file = null;
-    private static FileWriter fr = null;
-    private static BufferedWriter br = null;
-    private static List<Person> tree = null;
+    private static List<JsonPerson> treeJson = null;
 
     /**
      * Сохранение родословного древа в json-формате, понимаемым утилитой
@@ -38,13 +37,21 @@ public class JsonHelper {
      * Toolkit</a>
      */
     public static void saveTree(String tableName) throws Exception {
-	tree = MySqlHelper.getTreeFormTable(tableName);
-	fileName = "C:\\workspace\\temp\\" + tableName + ".json";
-	file = new File(fileName);
+	calculateJsonTree(tableName);
+	calculateDescendants();
+	sortTree();
+	String fileName = "C:\\workspace\\temp\\" + tableName + ".json";
+	File file = new File(fileName);
+	FileWriter fr = new FileWriter(file);
+	BufferedWriter br = new BufferedWriter(fr);
 	try {
-	    fr = new FileWriter(file);
-	    br = new BufferedWriter(fr);
-	    saveTreeJson();
+	    long start = System.currentTimeMillis();
+	    String result = getTreeJson();
+	    long finish = System.currentTimeMillis();
+	    double time = (finish - start) / 1000;
+	    System.out.println("Прошло времени в секундах: " + time);
+	    br.write(result);
+	    br.flush();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	} finally {
@@ -57,95 +64,76 @@ public class JsonHelper {
 	}
     }
 
-    /** Сохранить родословное древо */
-    private static void saveTreeJson() throws Exception {
-	id = 0;
-	Person person = findPerson(1);
-	if (person == null) {
-	    return;
+    /** Сформировать дерево из JsonPerson */
+    private static void calculateJsonTree(String tableName) throws Exception {
+	List<Person> tree = MySqlHelper.getTreeFormTable(tableName);
+	treeJson = new ArrayList<JsonPerson>();
+	for (Person person : tree) {
+	    treeJson.add(new JsonPerson(person));
 	}
-	savePersonJson(person);
+	tree = null;
+    }
+
+    /** Расчитать количество потомков для всего родословного древа */
+    private static void calculateDescendants() throws Exception {
+	for (int i = treeJson.size() - 1; i >= 0; i--) {
+	    JsonPerson jp = treeJson.get(i);
+	    jp.setDescendants(getDescendants(jp));
+	}
+    }
+
+    /** Вернуть количество потомков для всего родословного древа */
+    private static int getDescendants(JsonPerson person) throws Exception {
+	int result = person.getDescendants();
+	if (result != -1) {
+	    return result;
+	}
+	List<Integer> children = person.getChildren();
+	result = 0;
+	for (int idChild : children) {
+	    JsonPerson jp = findJsonPerson(idChild);
+	    result += getDescendants(jp);
+	}
+	return result;
+    }
+
+    /** Отсортировать список по количеству потомков */
+    private static void sortTree() {
+	Collections.sort(treeJson, new Comparator<JsonPerson>() {
+	    @Override
+	    public int compare(JsonPerson o1, JsonPerson o2) {
+		return o1.getDescendants() - o2.getDescendants();
+	    }
+	});
+    }
+
+    /** Сохранить родословное древо */
+    private static String getTreeJson() throws Exception {
+	JsonPerson person = findJsonPerson(1);
+	if (person == null) {
+	    return "";
+	}
+	String result = person.getFormat();
+	int indef = result.indexOf("indefinedChild");
+	while (indef != -1) {
+	    int ednIdx = result.indexOf(" ", indef);
+	    String indefinedChild = result.substring(indef, ednIdx);
+	    int idChild = Integer.parseInt(indefinedChild.substring(14));
+	    JsonPerson child = findJsonPerson(idChild);
+	    String childJson = child.getFormat();
+	    result = result.replace(indefinedChild + " ", childJson);
+	    indef = result.indexOf("indefinedChild", indef + 1);
+	}
+	return result;
     }
 
     /** Найти персону в списке */
-    private static Person findPerson(int id) throws Exception {
-	for (Person person : tree) {
-	    if (person.getId() == id) {
+    private static JsonPerson findJsonPerson(int id) throws Exception {
+	for (JsonPerson person : treeJson) {
+	    if (person.isPersonId(id)) {
 		return person;
 	    }
 	}
 	return null;
-    }
-
-    /** Вернуть Json персоны */
-    private static void savePersonJson(Person person) throws Exception {
-	write(getId());
-	write(getName(person));
-	write(getData(person));
-
-	write("children:[");
-	List<Integer> children = person.getChildren();
-	if (!children.isEmpty()) {
-	    int i = 0;
-	    for (int id : children) {
-		Person child = findPerson(id);
-		savePersonJson(child);
-		i++;
-		if (i < children.size()) {
-		    write(", ");
-		}
-	    }
-	}
-	write("]}");
-    }
-
-    /** Сохранение строки в файл */
-    private static void write(String str) throws IOException {
-	br.write(str);
-	br.flush();
-    }
-
-    /** Вернуть данные для идентификатора элемента */
-    private static String getId() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("{id:\\\"person");
-	sb.append(id++);
-	sb.append("\\\", ");
-	return sb.toString();
-    }
-
-    /** Вернуть данные для имени персоны со ссылкой на wiki */
-    private static String getName(Person person) {
-	StringBuilder sb = new StringBuilder();
-	sb.append("name:\\\"");
-	sb.append(person.getTitleName());
-	sb.append(" <br><a href='");
-	sb.append(person.getUrl());
-	sb.append("'>wiki</a>\\\", ");
-	return sb.toString();
-    }
-
-    /** Вернуть данные для всплывающего лэйбла */
-    private static String getData(Person person) {
-	StringBuilder sb = new StringBuilder();
-	sb.append("data:{ ");
-	sb.append("\\\"id\\\": \\\"");
-	sb.append(person.getId());
-	sb.append("\\\", ");
-	sb.append("\\\"name\\\": \\\"");
-	sb.append(person.getName());
-	sb.append("\\\", ");
-	sb.append("\\\"nameUrl\\\": \\\"");
-	String nameUrl = person.getNameUrl();
-	if (nameUrl == null || nameUrl.isEmpty()) {
-	    nameUrl = "-";
-	}
-	sb.append(nameUrl);
-	sb.append("\\\", ");
-	sb.append("\\\"numGen\\\": \\\"");
-	sb.append(person.getNumberGeneration());
-	sb.append("\\\"");
-	sb.append(" }, ");
-	return sb.toString();
     }
 }

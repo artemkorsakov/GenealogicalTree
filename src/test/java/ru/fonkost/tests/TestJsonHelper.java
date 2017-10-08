@@ -33,12 +33,4 @@ public class TestJsonHelper {
 	assertTrue(lines.size() == 1);
 	assertTrue(lines.get(0).equals(checkStrAdam));
     }
-
-    @Test
-    public void testIncorrectTableName() throws Exception {
-	String filename = "C:\\workspace\\temp\\error.json";
-	JsonHelper.saveTree("error");
-	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
-	assertTrue(lines.isEmpty());
-    }
 }
