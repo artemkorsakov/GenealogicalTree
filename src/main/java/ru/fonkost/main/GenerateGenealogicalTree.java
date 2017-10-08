@@ -12,7 +12,6 @@ import ru.fonkost.driverHelper.DriverHelper;
 import ru.fonkost.entities.GenealogicalTree;
 import ru.fonkost.entities.Person;
 import ru.fonkost.pageObjects.PersonPage;
-import ru.fonkost.utils.JsonHelper;
 import ru.fonkost.utils.MySqlHelper;
 
 /**
@@ -109,14 +108,11 @@ public final class GenerateGenealogicalTree {
     }
 
     /**
-     * Сохранение результатов генерации в локальной базе данных, а также в
-     * Json-формате
+     * Сохранение результатов генерации в локальной базе данных
      */
     private static void saveResultAndQuit(GenealogicalTree tree) throws Exception {
 	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 	String tableName = "generate" + timestamp.getTime();
 	MySqlHelper.saveTree(tableName, tree.getGenealogicalTree());
-	String filename = "C:\\workspace\\temp\\" + tableName + ".json";
-	JsonHelper.saveTree(tree.getGenealogicalTree(), filename);
     }
 }

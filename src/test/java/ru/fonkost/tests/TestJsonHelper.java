@@ -3,72 +3,42 @@ package ru.fonkost.tests;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import ru.fonkost.entities.Person;
 import ru.fonkost.utils.JsonHelper;
 
 public class TestJsonHelper {
-    private static List<Person> data = null;
-    private static String checkStr = "{id:\\\"person0\\\", name:\\\"Рюрик <br><a href='https://ru.wikipedia.org/wiki/Рюрик'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Рюрик\\\", \\\"nameUrl\\\": \\\"-\\\", \\\"numGen\\\": \\\"0\\\" }, children:[{id:\\\"person1\\\", name:\\\"Игорь <br><a href='https://ru.wikipedia.org/wiki/Игорь Рюрикович'>wiki</a>\\\", data:{ \\\"id\\\": \\\"2\\\", \\\"name\\\": \\\"Игорь Рюрикович\\\", \\\"nameUrl\\\": \\\"Игорь\\\", \\\"numGen\\\": \\\"0\\\" }, children:[{id:\\\"person2\\\", name:\\\"Святослав <br><a href='https://ru.wikipedia.org/wiki/Святослав Игоревич'>wiki</a>\\\", data:{ \\\"id\\\": \\\"3\\\", \\\"name\\\": \\\"Святослав Игоревич\\\", \\\"nameUrl\\\": \\\"Святослав\\\", \\\"numGen\\\": \\\"0\\\" }, children:[{id:\\\"person3\\\", name:\\\"Ярополк <br><a href='https://ru.wikipedia.org/wiki/Ярополк Святославич'>wiki</a>\\\", data:{ \\\"id\\\": \\\"4\\\", \\\"name\\\": \\\"Ярополк Святославич\\\", \\\"nameUrl\\\": \\\"Ярополк\\\", \\\"numGen\\\": \\\"0\\\" }, children:[]}, {id:\\\"person4\\\", name:\\\"Олег <br><a href='https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)'>wiki</a>\\\", data:{ \\\"id\\\": \\\"5\\\", \\\"name\\\": \\\"Олег Святославич (князь древлянский)\\\", \\\"nameUrl\\\": \\\"Олег\\\", \\\"numGen\\\": \\\"0\\\" }, children:[]}, {id:\\\"person5\\\", name:\\\"Владимир <br><a href='https://ru.wikipedia.org/wiki/Владимир Святославич'>wiki</a>\\\", data:{ \\\"id\\\": \\\"6\\\", \\\"name\\\": \\\"Владимир Святославич\\\", \\\"nameUrl\\\": \\\"Владимир\\\", \\\"numGen\\\": \\\"0\\\" }, children:[]}]}]}]}";
+    private static String checkStr = "{id:\\\"person0\\\", name:\\\"Николай <br><a href='https://ru.wikipedia.org/wiki/%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B9_II'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Николай II\\\", \\\"nameUrl\\\": \\\"null\\\", \\\"numGen\\\": \\\"0\\\" }, children:[{id:\\\"person1\\\", name:\\\"Ольга <br><a href='https://ru.wikipedia.org/wiki/%D0%9E%D0%BB%D1%8C%D0%B3%D0%B0_%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B5%D0%B2%D0%BD%D0%B0_(%D0%B2%D0%B5%D0%BB%D0%B8%D0%BA%D0%B0%D1%8F_%D0%BA%D0%BD%D1%8F%D0%B6%D0%BD%D0%B0)'>wiki</a>\\\", data:{ \\\"id\\\": \\\"3\\\", \\\"name\\\": \\\"Ольга Николаевна (великая княжна)\\\", \\\"nameUrl\\\": \\\"Ольга\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}, {id:\\\"person2\\\", name:\\\"Татьяна <br><a href='https://ru.wikipedia.org/wiki/%D0%A2%D0%B0%D1%82%D1%8C%D1%8F%D0%BD%D0%B0_%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B5%D0%B2%D0%BD%D0%B0_(%D0%B2%D0%B5%D0%BB%D0%B8%D0%BA%D0%B0%D1%8F_%D0%BA%D0%BD%D1%8F%D0%B6%D0%BD%D0%B0)'>wiki</a>\\\", data:{ \\\"id\\\": \\\"4\\\", \\\"name\\\": \\\"Татьяна Николаевна (великая княжна)\\\", \\\"nameUrl\\\": \\\"Татьяна\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}, {id:\\\"person3\\\", name:\\\"Мария <br><a href='https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%80%D0%B8%D1%8F_%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B5%D0%B2%D0%BD%D0%B0_(%D0%B2%D0%B5%D0%BB%D0%B8%D0%BA%D0%B0%D1%8F_%D0%BA%D0%BD%D1%8F%D0%B6%D0%BD%D0%B0)'>wiki</a>\\\", data:{ \\\"id\\\": \\\"5\\\", \\\"name\\\": \\\"Мария Николаевна (великая княжна)\\\", \\\"nameUrl\\\": \\\"Мария\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}, {id:\\\"person4\\\", name:\\\"Анастасия <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D1%81%D0%B8%D1%8F_%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B5%D0%B2%D0%BD%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"6\\\", \\\"name\\\": \\\"Анастасия Николаевна\\\", \\\"nameUrl\\\": \\\"Анастасия\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}, {id:\\\"person5\\\", name:\\\"Алексей <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B5%D0%B9_%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B5%D0%B2%D0%B8%D1%87'>wiki</a>\\\", data:{ \\\"id\\\": \\\"7\\\", \\\"name\\\": \\\"Алексей Николаевич\\\", \\\"nameUrl\\\": \\\"Алексей\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}]}";
+    private static String checkStrAdam = "{id:\\\"person0\\\", name:\\\"Адам <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D0%B4%D0%B0%D0%BC'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Адам\\\", \\\"nameUrl\\\": \\\"null\\\", \\\"numGen\\\": \\\"0\\\" }, children:[{id:\\\"person1\\\", name:\\\"Каин <br><a href='https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B8%D0%BD'>wiki</a>\\\", data:{ \\\"id\\\": \\\"3\\\", \\\"name\\\": \\\"Каин\\\", \\\"nameUrl\\\": \\\"Каин\\\", \\\"numGen\\\": \\\"1\\\" }, children:[{id:\\\"person2\\\", name:\\\"Енох <br><a href='https://ru.wikipedia.org/wiki/%D0%95%D0%BD%D0%BE%D1%85_(%D1%81%D1%8B%D0%BD_%D0%9A%D0%B0%D0%B8%D0%BD%D0%B0)'>wiki</a>\\\", data:{ \\\"id\\\": \\\"7\\\", \\\"name\\\": \\\"Енох (сын Каина)\\\", \\\"nameUrl\\\": \\\"Енох\\\", \\\"numGen\\\": \\\"2\\\" }, children:[]}]}, {id:\\\"person3\\\", name:\\\"Авель <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D0%B2%D0%B5%D0%BB%D1%8C'>wiki</a>\\\", data:{ \\\"id\\\": \\\"4\\\", \\\"name\\\": \\\"Авель\\\", \\\"nameUrl\\\": \\\"Авель\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}, {id:\\\"person4\\\", name:\\\"Сиф <br><a href='https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%84'>wiki</a>\\\", data:{ \\\"id\\\": \\\"5\\\", \\\"name\\\": \\\"Сиф\\\", \\\"nameUrl\\\": \\\"Сиф\\\", \\\"numGen\\\": \\\"1\\\" }, children:[{id:\\\"person5\\\", name:\\\"Енос <br><a href='https://ru.wikipedia.org/wiki/%D0%95%D0%BD%D0%BE%D1%81'>wiki</a>\\\", data:{ \\\"id\\\": \\\"10\\\", \\\"name\\\": \\\"Енос\\\", \\\"nameUrl\\\": \\\"Енос\\\", \\\"numGen\\\": \\\"2\\\" }, children:[{id:\\\"person6\\\", name:\\\"Каинан <br><a href='https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B8%D0%BD%D0%B0%D0%BD,_%D1%81%D1%8B%D0%BD_%D0%95%D0%BD%D0%BE%D1%81%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"13\\\", \\\"name\\\": \\\"Каинан, сын Еноса\\\", \\\"nameUrl\\\": \\\"Каинан\\\", \\\"numGen\\\": \\\"3\\\" }, children:[{id:\\\"person7\\\", name:\\\"Малелеил <br><a href='https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D0%BB%D0%B5%D0%BB%D0%B5%D0%B8%D0%BB'>wiki</a>\\\", data:{ \\\"id\\\": \\\"15\\\", \\\"name\\\": \\\"Малелеил\\\", \\\"nameUrl\\\": \\\"Малелеил\\\", \\\"numGen\\\": \\\"4\\\" }, children:[{id:\\\"person8\\\", name:\\\"Иаред <br><a href='https://ru.wikipedia.org/wiki/%D0%98%D0%B0%D1%80%D0%B5%D0%B4'>wiki</a>\\\", data:{ \\\"id\\\": \\\"17\\\", \\\"name\\\": \\\"Иаред\\\", \\\"nameUrl\\\": \\\"Иаред\\\", \\\"numGen\\\": \\\"5\\\" }, children:[{id:\\\"person9\\\", name:\\\"Енох <br><a href='https://ru.wikipedia.org/wiki/%D0%95%D0%BD%D0%BE%D1%85,_%D1%81%D1%8B%D0%BD_%D0%98%D0%B0%D1%80%D0%B5%D0%B4%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"19\\\", \\\"name\\\": \\\"Енох, сын Иареда\\\", \\\"nameUrl\\\": \\\"Енох\\\", \\\"numGen\\\": \\\"6\\\" }, children:[{id:\\\"person10\\\", name:\\\"Мафусаил <br><a href='https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%84%D1%83%D1%81%D0%B0%D0%B8%D0%BB'>wiki</a>\\\", data:{ \\\"id\\\": \\\"21\\\", \\\"name\\\": \\\"Мафусаил\\\", \\\"nameUrl\\\": \\\"Мафусаил\\\", \\\"numGen\\\": \\\"7\\\" }, children:[{id:\\\"person11\\\", name:\\\"Ламех <br><a href='https://ru.wikipedia.org/wiki/%D0%9B%D0%B0%D0%BC%D0%B5%D1%85'>wiki</a>\\\", data:{ \\\"id\\\": \\\"23\\\", \\\"name\\\": \\\"Ламех\\\", \\\"nameUrl\\\": \\\"Ламех\\\", \\\"numGen\\\": \\\"8\\\" }, children:[{id:\\\"person12\\\", name:\\\"Ной <br><a href='https://ru.wikipedia.org/wiki/%D0%9D%D0%BE%D0%B9'>wiki</a>\\\", data:{ \\\"id\\\": \\\"25\\\", \\\"name\\\": \\\"Ной\\\", \\\"nameUrl\\\": \\\"Ной\\\", \\\"numGen\\\": \\\"9\\\" }, children:[{id:\\\"person13\\\", name:\\\"Сим <br><a href='https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BC'>wiki</a>\\\", data:{ \\\"id\\\": \\\"27\\\", \\\"name\\\": \\\"Сим\\\", \\\"nameUrl\\\": \\\"Сим\\\", \\\"numGen\\\": \\\"10\\\" }, children:[{id:\\\"person14\\\", name:\\\"Арфаксад <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D1%80%D1%84%D0%B0%D0%BA%D1%81%D0%B0%D0%B4_(%D1%81%D1%8B%D0%BD_%D0%A1%D0%B8%D0%BC%D0%B0)'>wiki</a>\\\", data:{ \\\"id\\\": \\\"31\\\", \\\"name\\\": \\\"Арфаксад (сын Сима)\\\", \\\"nameUrl\\\": \\\"Арфаксад\\\", \\\"numGen\\\": \\\"11\\\" }, children:[{id:\\\"person15\\\", name:\\\"Каинан <br><a href='https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B8%D0%BD%D0%B0%D0%BD,_%D1%81%D1%8B%D0%BD_%D0%90%D1%80%D1%84%D0%B0%D0%BA%D1%81%D0%B0%D0%B4%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"45\\\", \\\"name\\\": \\\"Каинан, сын Арфаксада\\\", \\\"nameUrl\\\": \\\"Каинан\\\", \\\"numGen\\\": \\\"12\\\" }, children:[]}]}, {id:\\\"person16\\\", name:\\\"Арам, сын Сима <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D1%80%D0%B0%D0%BC,_%D1%81%D1%8B%D0%BD_%D0%A1%D0%B8%D0%BC%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"32\\\", \\\"name\\\": \\\"Арам, сын Сима\\\", \\\"nameUrl\\\": \\\"Арам, сын Сима\\\", \\\"numGen\\\": \\\"11\\\" }, children:[{id:\\\"person17\\\", name:\\\"Уц <br><a href='https://ru.wikipedia.org/wiki/%D0%A3%D1%86,_%D1%81%D1%8B%D0%BD_%D0%90%D1%80%D0%B0%D0%BC%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"47\\\", \\\"name\\\": \\\"Уц, сын Арама\\\", \\\"nameUrl\\\": \\\"Уц\\\", \\\"numGen\\\": \\\"12\\\" }, children:[]}]}]}, {id:\\\"person18\\\", name:\\\"Хам <br><a href='https://ru.wikipedia.org/wiki/%D0%A5%D0%B0%D0%BC'>wiki</a>\\\", data:{ \\\"id\\\": \\\"28\\\", \\\"name\\\": \\\"Хам\\\", \\\"nameUrl\\\": \\\"Хам\\\", \\\"numGen\\\": \\\"10\\\" }, children:[{id:\\\"person19\\\", name:\\\"Хуш <br><a href='https://ru.wikipedia.org/wiki/%D0%A5%D1%83%D1%88'>wiki</a>\\\", data:{ \\\"id\\\": \\\"34\\\", \\\"name\\\": \\\"Хуш\\\", \\\"nameUrl\\\": \\\"Хуш\\\", \\\"numGen\\\": \\\"11\\\" }, children:[{id:\\\"person20\\\", name:\\\"Нимрод <br><a href='https://ru.wikipedia.org/wiki/%D0%9D%D0%B8%D0%BC%D1%80%D0%BE%D0%B4'>wiki</a>\\\", data:{ \\\"id\\\": \\\"49\\\", \\\"name\\\": \\\"Нимрод\\\", \\\"nameUrl\\\": \\\"Нимрод\\\", \\\"numGen\\\": \\\"12\\\" }, children:[]}]}, {id:\\\"person21\\\", name:\\\"Ханаан, сын Хама <br><a href='https://ru.wikipedia.org/wiki/%D0%A5%D0%B0%D0%BD%D0%B0%D0%B0%D0%BD,_%D1%81%D1%8B%D0%BD_%D0%A5%D0%B0%D0%BC%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"35\\\", \\\"name\\\": \\\"Ханаан, сын Хама\\\", \\\"nameUrl\\\": \\\"Ханаан, сын Хама\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}, {id:\\\"person22\\\", name:\\\"Мицраим <br><a href='https://ru.wikipedia.org/wiki/%D0%9C%D0%B8%D1%86%D1%80%D0%B0%D0%B8%D0%BC'>wiki</a>\\\", data:{ \\\"id\\\": \\\"36\\\", \\\"name\\\": \\\"Мицраим\\\", \\\"nameUrl\\\": \\\"Мицраим\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}, {id:\\\"person23\\\", name:\\\"Фут, сын Хама <br><a href='https://ru.wikipedia.org/wiki/%D0%A4%D1%83%D1%82,_%D1%81%D1%8B%D0%BD_%D0%A5%D0%B0%D0%BC%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"37\\\", \\\"name\\\": \\\"Фут, сын Хама\\\", \\\"nameUrl\\\": \\\"Фут, сын Хама\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}]}, {id:\\\"person24\\\", name:\\\"Иафет <br><a href='https://ru.wikipedia.org/wiki/%D0%98%D0%B0%D1%84%D0%B5%D1%82'>wiki</a>\\\", data:{ \\\"id\\\": \\\"29\\\", \\\"name\\\": \\\"Иафет\\\", \\\"nameUrl\\\": \\\"Иафет\\\", \\\"numGen\\\": \\\"10\\\" }, children:[{id:\\\"person25\\\", name:\\\"Мадай <br><a href='https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D0%B4%D0%B0%D0%B9'>wiki</a>\\\", data:{ \\\"id\\\": \\\"39\\\", \\\"name\\\": \\\"Мадай\\\", \\\"nameUrl\\\": \\\"Мадай\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}, {id:\\\"person26\\\", name:\\\"Иаван <br><a href='https://ru.wikipedia.org/wiki/%D0%98%D0%B0%D0%B2%D0%B0%D0%BD'>wiki</a>\\\", data:{ \\\"id\\\": \\\"40\\\", \\\"name\\\": \\\"Иаван\\\", \\\"nameUrl\\\": \\\"Иаван\\\", \\\"numGen\\\": \\\"11\\\" }, children:[{id:\\\"person27\\\", name:\\\"Елиса <br><a href='https://ru.wikipedia.org/wiki/%D0%95%D0%BB%D0%B8%D1%81%D0%B0'>wiki</a>\\\", data:{ \\\"id\\\": \\\"55\\\", \\\"name\\\": \\\"Елиса\\\", \\\"nameUrl\\\": \\\"Елиса\\\", \\\"numGen\\\": \\\"12\\\" }, children:[]}]}, {id:\\\"person28\\\", name:\\\"Фувал <br><a href='https://ru.wikipedia.org/wiki/%D0%A4%D1%83%D0%B2%D0%B0%D0%BB'>wiki</a>\\\", data:{ \\\"id\\\": \\\"41\\\", \\\"name\\\": \\\"Фувал\\\", \\\"nameUrl\\\": \\\"Фувал\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}, {id:\\\"person29\\\", name:\\\"Мешех <br><a href='https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%88%D0%B5%D1%85'>wiki</a>\\\", data:{ \\\"id\\\": \\\"42\\\", \\\"name\\\": \\\"Мешех\\\", \\\"nameUrl\\\": \\\"Мешех\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}, {id:\\\"person30\\\", name:\\\"Фирас <br><a href='https://ru.wikipedia.org/wiki/%D0%A4%D0%B8%D1%80%D0%B0%D1%81'>wiki</a>\\\", data:{ \\\"id\\\": \\\"43\\\", \\\"name\\\": \\\"Фирас\\\", \\\"nameUrl\\\": \\\"Фирас\\\", \\\"numGen\\\": \\\"11\\\" }, children:[]}]}]}]}]}]}]}]}]}]}]}]}";
 
     @Test
-    public void testSaveTree() throws IOException {
-	String filename = "C:\\workspace\\temp\\result.json";
-	List<Person> tree = getTestData();
-	JsonHelper.saveTree(tree, filename);
+    public void testSaveTree() throws Exception {
+	String filename = "C:\\workspace\\temp\\testsavetreeJson.json";
+	JsonHelper.saveTree("testsavetreeJson");
 	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
 	assertTrue(lines.size() == 1);
 	assertTrue(lines.get(0).equals(checkStr));
     }
 
-    private static List<Person> getTestData() throws MalformedURLException {
-	if (data != null) {
-	    return data;
-	}
+    @Test
+    public void testSaveTreeAdam() throws Exception {
+	String filename = "C:\\workspace\\temp\\adam20170910.json";
+	JsonHelper.saveTree("adam20170910");
+	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+	assertTrue(lines.size() == 1);
+	assertTrue(lines.get(0).equals(checkStrAdam));
+    }
 
-	Person.resetCount();
-	List<Person> persons = new ArrayList<Person>();
-	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
-	rurick.setName("Рюрик");
-	rurick.setNameUrl("");
-	Person igor = new Person("https://ru.wikipedia.org/wiki/Игорь Рюрикович");
-	igor.setName("Игорь Рюрикович");
-	igor.setNameUrl("Игорь");
-	rurick.setChild(igor.getId());
-	Person svyatoslav = new Person("https://ru.wikipedia.org/wiki/Святослав Игоревич");
-	svyatoslav.setName("Святослав Игоревич");
-	svyatoslav.setNameUrl("Святослав");
-	igor.setChild(svyatoslav.getId());
-	Person yaropolk = new Person("https://ru.wikipedia.org/wiki/Ярополк Святославич");
-	yaropolk.setName("Ярополк Святославич");
-	yaropolk.setNameUrl("Ярополк");
-	Person oleg = new Person("https://ru.wikipedia.org/wiki/Олег Святославич (князь древлянский)");
-	oleg.setName("Олег Святославич (князь древлянский)");
-	oleg.setNameUrl("Олег");
-	Person vladimir = new Person("https://ru.wikipedia.org/wiki/Владимир Святославич");
-	vladimir.setName("Владимир Святославич");
-	vladimir.setNameUrl("Владимир");
-	svyatoslav.setChild(yaropolk.getId());
-	svyatoslav.setChild(oleg.getId());
-	svyatoslav.setChild(vladimir.getId());
-
-	persons.add(rurick);
-	persons.add(igor);
-	persons.add(svyatoslav);
-	persons.add(yaropolk);
-	persons.add(oleg);
-	persons.add(vladimir);
-
-	data = persons;
-	return data;
+    @Test
+    public void testIncorrectTableName() throws Exception {
+	String filename = "C:\\workspace\\temp\\error.json";
+	JsonHelper.saveTree("error");
+	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+	assertTrue(lines.isEmpty());
     }
 }

@@ -1,12 +1,10 @@
 /** http://fonkost.ru */
 package ru.fonkost.utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.fonkost.entities.Person;
@@ -28,91 +26,126 @@ import ru.fonkost.entities.Person;
  */
 public class JsonHelper {
     private static int id = 0;
-    private static List<Person> tree = new ArrayList<Person>();
-    private static String filePath;
+    private static String fileName;
+    private static File file = null;
+    private static FileWriter fr = null;
+    private static BufferedWriter br = null;
+    private static List<Person> tree = null;
 
     /**
      * Сохранение родословного древа в json-формате, понимаемым утилитой
      * <a href="https://philogb.github.io/jit/index.html">JavaScript InfoVis
      * Toolkit</a>
      */
-    public static void saveTree(List<Person> list, String fileName) throws IOException {
-	filePath = fileName;
-	tree = list;
-	saveTreeJson();
-    }
-
-    /** Сохранение строки в файл */
-    private static void write(String str) throws IOException {
+    public static void saveTree(String tableName) throws Exception {
+	tree = MySqlHelper.getTreeFormTable(tableName);
+	fileName = "C:\\workspace\\temp\\" + tableName + ".json";
+	file = new File(fileName);
 	try {
-	    File myFile = new File(filePath);
-	    if (!myFile.exists()) {
-		myFile.createNewFile();
-	    }
-	    Files.write(Paths.get(filePath), str.getBytes(), StandardOpenOption.APPEND);
+	    fr = new FileWriter(file);
+	    br = new BufferedWriter(fr);
+	    saveTreeJson();
 	} catch (IOException e) {
-	    System.out.println(e);
+	    e.printStackTrace();
+	} finally {
+	    try {
+		br.close();
+		fr.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
 	}
     }
 
     /** Сохранить родословное древо */
-    private static void saveTreeJson() throws IOException {
+    private static void saveTreeJson() throws Exception {
 	id = 0;
-	if (tree.isEmpty()) {
+	Person person = findPerson(1);
+	if (person == null) {
 	    return;
 	}
-	Person person = tree.get(0);
 	savePersonJson(person);
     }
 
-    /** Вернуть Json персоны */
-    private static void savePersonJson(Person person) throws IOException {
-	write("{id:\\\"person" + id++ + "\\\", ");
-	write("name:\\\"" + person.getTitleName() + " <br><a href='" + person.getUrl() + "'>wiki</a>\\\", ");
-	write("data:{ ");
-	saveData(person);
-	write(" }, ");
-	write("children:[");
-	saveChildrenJson(person.getChildren());
-	write("]}");
-    }
-
-    /** Сформировать json детей */
-    private static void saveChildrenJson(List<Integer> children) throws IOException {
-	if (children.isEmpty()) {
-	    return;
-	}
-
-	int i = 0;
-	for (int id : children) {
-	    Person child = findPerson(id);
-	    savePersonJson(child);
-	    i++;
-	    if (i < children.size()) {
-		write(", ");
-	    }
-	}
-    }
-
-    /** Сформировать данные для всплывающего лэйбла */
-    private static void saveData(Person person) throws IOException {
-	write("\\\"id\\\": \\\"" + person.getId() + "\\\", ");
-	write("\\\"name\\\": \\\"" + person.getName() + "\\\", ");
-	String nameUrl = person.getNameUrl();
-	if (nameUrl == null || nameUrl.isEmpty()) {
-	    nameUrl = "-";
-	}
-	write("\\\"nameUrl\\\": \\\"" + nameUrl + "\\\", ");
-	write("\\\"numGen\\\": \\\"" + person.getNumberGeneration() + "\\\"");
-    }
-
     /** Найти персону в списке */
-    private static Person findPerson(int id) {
+    private static Person findPerson(int id) throws Exception {
 	for (Person person : tree) {
 	    if (person.getId() == id) {
 		return person;
 	    }
 	}
 	return null;
+    }
+
+    /** Вернуть Json персоны */
+    private static void savePersonJson(Person person) throws Exception {
+	write(getId());
+	write(getName(person));
+	write(getData(person));
+
+	write("children:[");
+	List<Integer> children = person.getChildren();
+	if (!children.isEmpty()) {
+	    int i = 0;
+	    for (int id : children) {
+		Person child = findPerson(id);
+		savePersonJson(child);
+		i++;
+		if (i < children.size()) {
+		    write(", ");
+		}
+	    }
+	}
+	write("]}");
+    }
+
+    /** Сохранение строки в файл */
+    private static void write(String str) throws IOException {
+	br.write(str);
+	br.flush();
+    }
+
+    /** Вернуть данные для идентификатора элемента */
+    private static String getId() {
+	StringBuilder sb = new StringBuilder();
+	sb.append("{id:\\\"person");
+	sb.append(id++);
+	sb.append("\\\", ");
+	return sb.toString();
+    }
+
+    /** Вернуть данные для имени персоны со ссылкой на wiki */
+    private static String getName(Person person) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("name:\\\"");
+	sb.append(person.getTitleName());
+	sb.append(" <br><a href='");
+	sb.append(person.getUrl());
+	sb.append("'>wiki</a>\\\", ");
+	return sb.toString();
+    }
+
+    /** Вернуть данные для всплывающего лэйбла */
+    private static String getData(Person person) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("data:{ ");
+	sb.append("\\\"id\\\": \\\"");
+	sb.append(person.getId());
+	sb.append("\\\", ");
+	sb.append("\\\"name\\\": \\\"");
+	sb.append(person.getName());
+	sb.append("\\\", ");
+	sb.append("\\\"nameUrl\\\": \\\"");
+	String nameUrl = person.getNameUrl();
+	if (nameUrl == null || nameUrl.isEmpty()) {
+	    nameUrl = "-";
+	}
+	sb.append(nameUrl);
+	sb.append("\\\", ");
+	sb.append("\\\"numGen\\\": \\\"");
+	sb.append(person.getNumberGeneration());
+	sb.append("\\\"");
+	sb.append(" }, ");
+	return sb.toString();
     }
 }

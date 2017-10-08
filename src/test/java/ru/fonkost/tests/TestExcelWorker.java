@@ -20,7 +20,7 @@ import ru.fonkost.utils.ExcelWorker;
 public class TestExcelWorker {
     @Test
     public void testExcelWorker() throws Exception {
-	String fileName = "C:\\workspace\\dynasticTree.xls";
+	String fileName = "C:\\workspace\\temp\\dynasticTree.xls";
 
 	List<Person> persons = new ArrayList<Person>();
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
