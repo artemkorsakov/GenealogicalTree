@@ -12,7 +12,7 @@ public class JsonPerson {
 
     public JsonPerson(Person person) {
 	this.person = person;
-	id = ++count;
+	id = count++;
     }
 
     /** Совпадает ли заданный id с id персоны */
@@ -117,5 +117,10 @@ public class JsonPerson {
 	sb.append("\\\"");
 	sb.append(" }, ");
 	return sb.toString();
+    }
+
+    /** Создан исключительно для тестов */
+    public static void resetCount() {
+	count = 0;
     }
 }

@@ -78,7 +78,8 @@ public class JsonHelper {
     private static void calculateDescendants() throws Exception {
 	for (int i = treeJson.size() - 1; i >= 0; i--) {
 	    JsonPerson jp = treeJson.get(i);
-	    jp.setDescendants(getDescendants(jp));
+	    int count = getDescendants(jp);
+	    jp.setDescendants(count);
 	}
     }
 
@@ -92,7 +93,7 @@ public class JsonHelper {
 	result = 0;
 	for (int idChild : children) {
 	    JsonPerson jp = findJsonPerson(idChild);
-	    result += getDescendants(jp);
+	    result += getDescendants(jp) + 1;
 	}
 	return result;
     }
@@ -109,22 +110,19 @@ public class JsonHelper {
 
     /** Сохранить родословное древо */
     private static String getTreeJson() throws Exception {
-	JsonPerson person = findJsonPerson(1);
-	if (person == null) {
-	    return "";
+	for (int i = 0; i < treeJson.size(); i++) {
+	    JsonPerson person = treeJson.get(i);
+	    String format = person.getFormat();
+	    List<Integer> children = person.getChildren();
+	    for (int idChild : children) {
+		JsonPerson child = findJsonPerson(idChild);
+		format = format.replace("indefinedChild" + idChild + " ", child.getFormat());
+	    }
+	    person.setFormat(format);
+
+	    System.out.println(format);
 	}
-	String result = person.getFormat();
-	int indef = result.indexOf("indefinedChild");
-	while (indef != -1) {
-	    int ednIdx = result.indexOf(" ", indef);
-	    String indefinedChild = result.substring(indef, ednIdx);
-	    int idChild = Integer.parseInt(indefinedChild.substring(14));
-	    JsonPerson child = findJsonPerson(idChild);
-	    String childJson = child.getFormat();
-	    result = result.replace(indefinedChild + " ", childJson);
-	    indef = result.indexOf("indefinedChild", indef + 1);
-	}
-	return result;
+	return treeJson.get(treeJson.size() - 1).getFormat();
     }
 
     /** Найти персону в списке */
