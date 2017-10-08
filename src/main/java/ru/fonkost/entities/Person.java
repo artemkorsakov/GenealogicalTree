@@ -87,7 +87,7 @@ public class Person {
 
     /** Возвращает короткое имя для заглавия */
     public String getTitleName() {
-	if (!nameUrl.isEmpty() && !nameUrl.equals("null")) {
+	if (nameUrl != null && !nameUrl.isEmpty() && !nameUrl.equals("null")) {
 	    return nameUrl;
 	}
 	return name.split(" ", 2)[0];
