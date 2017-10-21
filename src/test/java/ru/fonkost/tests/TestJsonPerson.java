@@ -50,14 +50,79 @@ public class TestJsonPerson {
     }
 
     @Test
-    public void testFormat() throws Exception {
-	List<Person> tree = MySqlHelper.getTreeFormTable("testsavetreeJson");
-	Person person = tree.get(5);
-	JsonPerson jp = new JsonPerson(person);
-	System.out.println(jp.getFormat());
-	assertTrue(jp.getFormat().equals(
-		"{id:\\\"person0\\\", name:\\\"Алексей <br><a href='https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B5%D0%B9_%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B5%D0%B2%D0%B8%D1%87'>wiki</a>\\\", data:{ \\\"id\\\": \\\"7\\\", \\\"name\\\": \\\"Алексей Николаевич\\\", \\\"nameUrl\\\": \\\"Алексей\\\", \\\"numGen\\\": \\\"1\\\" }, children:[]}"));
-	jp.setFormat("test");
-	assertTrue(jp.getFormat().equals("test"));
+    public void testGetPersonJson() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setName("Рюрик");
+	rurick.setNameUrl("Рюрик");
+	JsonPerson jp = new JsonPerson(rurick);
+	String json = "{id:\\\"person0\\\", name:\\\"Рюрик <br><a href='https://ru.wikipedia.org'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Рюрик\\\", \\\"nameUrl\\\": \\\"Рюрик\\\", \\\"numGen\\\": \\\"0\\\" }, children:[";
+	assertTrue(jp.getPersonJson().equals(json));
+    }
+
+    @Test
+    public void testGetPersonJsonWithNullNameUrl() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setName("Рюрик");
+	JsonPerson jp = new JsonPerson(rurick);
+	String json = "{id:\\\"person0\\\", name:\\\"Рюрик <br><a href='https://ru.wikipedia.org'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Рюрик\\\", \\\"nameUrl\\\": \\\"-\\\", \\\"numGen\\\": \\\"0\\\" }, children:[";
+	assertTrue(jp.getPersonJson().equals(json));
+    }
+
+    @Test
+    public void testGetPersonJsonWithEmptyNameUrl() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setName("Рюрик");
+	rurick.setNameUrl("");
+	JsonPerson jp = new JsonPerson(rurick);
+	String json = "{id:\\\"person0\\\", name:\\\"Рюрик <br><a href='https://ru.wikipedia.org'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Рюрик\\\", \\\"nameUrl\\\": \\\"-\\\", \\\"numGen\\\": \\\"0\\\" }, children:[";
+	assertTrue(jp.getPersonJson().equals(json));
+    }
+
+    @Test
+    public void testGetDublicateJson() throws Exception {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setName("Рюрик");
+	rurick.setNameUrl("Рюрик");
+	JsonPerson jp = new JsonPerson(rurick);
+	String json = "{id:\\\"person0_1\\\", name:\\\"Дубликат (Рюрик) <a href='http://fonkost.ru/genealogicaltree/rurick/1'>link</a>\\\", data:{ \\\"name\\\": \\\"Эта персона уже встречается в родословном древе и она детализирована у своего первого родителя\\\" }, children:[]}";
+	assertTrue(jp.getDublicateJson("rurick", 1).equals(json));
+    }
+
+    @Test
+    public void testToString() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	JsonPerson jp = new JsonPerson(rurick);
+	assertTrue(jp.toString().equals("personId=1"));
+    }
+
+    @Test
+    public void testGetId() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	JsonPerson jp = new JsonPerson(rurick);
+	assertTrue(jp.getId() == 1);
+    }
+
+    @Test
+    public void testIsFirstParent() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setParent(1);
+	JsonPerson jp = new JsonPerson(rurick);
+	assertFalse(jp.isFirstParent(0));
+	assertTrue(jp.isFirstParent(1));
+	assertFalse(jp.isFirstParent(2));
     }
 }

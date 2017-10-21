@@ -268,6 +268,37 @@ public class TestPerson {
     }
 
     @Test
+    public void testRemoveChild() throws MalformedURLException {
+	Person person = new Person("https://ru.wikipedia.org/wiki/Рюрик");
+
+	// Пустой список
+	person.removeChild(1);
+	assertTrue(person.getChildren().isEmpty());
+
+	person.setChild(1);
+	person.setChild(2);
+	person.setChild(3);
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(2));
+	assertTrue(person.getChildren().contains(3));
+
+	// Удаление несуществующего
+	person.removeChild(4);
+	assertTrue(person.getChildren().size() == 3);
+	assertTrue(person.getChildren().contains(1));
+	assertTrue(person.getChildren().contains(2));
+	assertTrue(person.getChildren().contains(3));
+
+	// Удаление существующего
+	person.removeChild(2);
+	assertTrue(person.getChildren().size() == 2);
+	assertTrue(person.getChildren().contains(1));
+	assertFalse(person.getChildren().contains(2));
+	assertTrue(person.getChildren().contains(3));
+    }
+
+    @Test
     public void testEquals() throws MalformedURLException {
 	Person rurick = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 
@@ -362,6 +393,9 @@ public class TestPerson {
 	assertTrue(first.getParents().size() == 2);
 	assertTrue(first.getParents().get(0) == 5);
 	assertTrue(first.getParents().get(1) == 6);
+	assertTrue(first.isFirstParent(5));
+	assertFalse(first.isFirstParent(6));
+	assertFalse(first.isFirstParent(0));
     }
 
     @Test

@@ -196,4 +196,58 @@ public class MySqlHelper {
 	}
 	return tree;
     }
+
+    /* Обновление формата */
+    public static void updateFormat(String tableName, int id, String format) throws SQLException {
+	try {
+	    connection = DriverManager.getConnection(url, user, password);
+	    statement = connection.createStatement();
+	    StringBuilder sql = new StringBuilder();
+	    sql.append("UPDATE genealogicaltree." + tableName + " \n");
+	    sql.append("SET `format` = '" + format.replace("'", "''") + "' ");
+	    sql.append("WHERE `id` = " + id);
+	    sql.append(";");
+	    statement.executeUpdate(sql.toString());
+	} catch (SQLException sqlEx) {
+	    sqlEx.printStackTrace();
+	    throw sqlEx;
+	} finally {
+	    try {
+		connection.close();
+	    } catch (SQLException se) {
+	    }
+	    try {
+		statement.close();
+	    } catch (SQLException se) {
+	    }
+	}
+    }
+
+    /* Получение формата */
+    public static String getFormat(String tableName, int id) throws Exception {
+	try {
+	    connection = DriverManager.getConnection(url, user, password);
+	    statement = connection.createStatement();
+
+	    String queryTableName = "SELECT FORMAT FROM genealogicaltree." + tableName + " \n WHERE `id` = " + id + ";";
+	    resultSet = statement.executeQuery(queryTableName);
+	    if (!resultSet.next()) {
+		throw new Exception("Формат у данной персоны не установлен");
+	    }
+	    String format = resultSet.getString("FORMAT");
+	    return format.replace("\"", "\\\"");
+	} catch (SQLException sqlEx) {
+	    sqlEx.printStackTrace();
+	} finally {
+	    try {
+		connection.close();
+	    } catch (SQLException se) {
+	    }
+	    try {
+		statement.close();
+	    } catch (SQLException se) {
+	    }
+	}
+	throw new Exception("Не удалось получить формат");
+    }
 }

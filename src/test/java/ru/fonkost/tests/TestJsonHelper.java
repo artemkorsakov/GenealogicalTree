@@ -21,9 +21,10 @@ public class TestJsonHelper {
     public void testSaveTree() throws Exception {
 	JsonPerson.resetCount();
 	String filename = "C:\\workspace\\temp\\testsavetreeJson.json";
-	JsonHelper.saveTree("testsavetreeJson");
+	JsonHelper.saveTree("testsavetreeJson", "nikolay");
 	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
 	assertTrue(lines.size() == 1);
+	System.out.println(lines.get(0));
 	assertTrue(lines.get(0).equals(checkStr));
     }
 
@@ -31,9 +32,10 @@ public class TestJsonHelper {
     public void testSaveTreeAdam() throws Exception {
 	JsonPerson.resetCount();
 	String filename = "C:\\workspace\\temp\\adam20170910.json";
-	JsonHelper.saveTree("adam20170910");
+	JsonHelper.saveTree("adam20170910", "adam");
 	List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
 	assertTrue(lines.size() == 1);
+	System.out.println(lines.get(0));
 	assertTrue(lines.get(0).equals(checkStrAdam));
     }
 }

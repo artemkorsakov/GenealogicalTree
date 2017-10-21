@@ -20,8 +20,8 @@ public class GenerateJsonFromBD {
      * для родословных деревьев, сгенерированных до выгрузки в Json.
      */
     public static void main(String[] args) throws Exception {
-	String tableName = "rurick20170910";
-	JsonHelper.saveTree(tableName);
+	String tableName = "formatrurick20170910";
+	JsonHelper.saveTree(tableName, "rurick");
 	System.out.println("Complite");
     }
 }

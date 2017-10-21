@@ -96,4 +96,12 @@ public class TestMySqlHelper {
 	assertTrue(result.get(5).getParents().size() == 1);
 	assertTrue(result.get(5).getParents().get(0) == 1);
     }
+
+    @Test
+    public void testUpdateFormat() throws Exception {
+	MySqlHelper.updateFormat("formatrurick20170910", 1, "testUpdateFormat");
+	String format = MySqlHelper.getFormat("formatrurick20170910", 1);
+	assertTrue(format.equals("testUpdateFormat"));
+	MySqlHelper.updateFormat("formatrurick20170910", 1, "");
+    }
 }

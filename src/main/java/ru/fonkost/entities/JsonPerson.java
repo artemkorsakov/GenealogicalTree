@@ -8,7 +8,6 @@ public class JsonPerson {
     private int id;
     private Person person;
     private int descendants = -1;
-    private String format = null;
 
     public JsonPerson(Person person) {
 	this.person = person;
@@ -18,6 +17,16 @@ public class JsonPerson {
     /** Совпадает ли заданный id с id персоны */
     public boolean isPersonId(int id) {
 	return person.getId() == id;
+    }
+
+    /** Является ли заданный родитель первым? */
+    public boolean isFirstParent(int parent) {
+	return person.isFirstParent(parent);
+    }
+
+    /** Вернуть идентификатор JsonPerson */
+    public int getId() {
+	return person.getId();
     }
 
     /** Вернуть детей персоны */
@@ -33,24 +42,26 @@ public class JsonPerson {
 	this.descendants = descendants;
     }
 
-    public String getFormat() {
-	if (format == null) {
-	    format = getPersonJson();
-	}
-	return format;
-    }
-
-    public void setFormat(String format) {
-	this.format = format;
-    }
-
     /** Вернуть Json персоны */
-    private String getPersonJson() {
+    public String getPersonJson() {
 	StringBuilder sb = new StringBuilder();
 	sb.append(getIdJson());
 	sb.append(getNameJson());
 	sb.append(getDataJson());
 	sb.append(getChildrenJson());
+	return sb.toString();
+    }
+
+    /** Вернуть Json дубликата */
+    public String getDublicateJson(String ancestor, int idParent) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("{id:\\\"person" + id + "_" + idParent + "\\\", ");
+	sb.append("name:\\\"Дубликат (" + person.getTitleName() + ") ");
+	sb.append("<a href='http://fonkost.ru/genealogicaltree/");
+	sb.append(ancestor + "/" + person.getId() + "'>link</a>\\\", ");
+	sb.append("data:{ \\\"name\\\": \\\"Эта персона уже встречается в родословном древе ");
+	sb.append("и она детализирована у своего первого родителя\\\" }, ");
+	sb.append("children:[]}");
 	return sb.toString();
     }
 
@@ -70,28 +81,8 @@ public class JsonPerson {
 	sb.append(person.getTitleName());
 	sb.append(" <br><a href='");
 	sb.append(person.getUrl());
-	sb.append("'>wiki</a>\\\", ");
-	return sb.toString();
-    }
-
-    /** Вернуть данные для детей персоны */
-    private String getChildrenJson() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("children:[");
-	List<Integer> children = person.getChildren();
-	if (!children.isEmpty()) {
-	    int i = 0;
-	    for (int id : children) {
-		sb.append("indefinedChild");
-		sb.append(id);
-		sb.append(" ");
-		i++;
-		if (i < children.size()) {
-		    sb.append(", ");
-		}
-	    }
-	}
-	sb.append("]}");
+	sb.append("'>wiki</a>");
+	sb.append("\\\", ");
 	return sb.toString();
     }
 
@@ -117,6 +108,16 @@ public class JsonPerson {
 	sb.append("\\\"");
 	sb.append(" }, ");
 	return sb.toString();
+    }
+
+    /** Вернуть данные для детей персоны */
+    private String getChildrenJson() {
+	return "children:[";
+    }
+
+    @Override
+    public String toString() {
+	return "personId=" + person.getId();
     }
 
     /** Создан исключительно для тестов */

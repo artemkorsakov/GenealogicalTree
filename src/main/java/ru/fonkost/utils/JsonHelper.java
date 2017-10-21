@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.mysql.cj.jdbc.exceptions.PacketTooBigException;
+
 import ru.fonkost.entities.JsonPerson;
 import ru.fonkost.entities.Person;
 
@@ -36,17 +38,20 @@ public class JsonHelper {
      * <a href="https://philogb.github.io/jit/index.html">JavaScript InfoVis
      * Toolkit</a>
      */
-    public static void saveTree(String tableName) throws Exception {
+    public static void saveTree(String tableName, String ancestor) throws Exception {
 	calculateJsonTree(tableName);
+	System.out.println("Complite calculateJsonTree");
 	calculateDescendants();
+	System.out.println("Complite calculateDescendants");
 	sortTree();
+	System.out.println("Complite sortTree");
 	String fileName = "C:\\workspace\\temp\\" + tableName + ".json";
 	File file = new File(fileName);
 	FileWriter fr = new FileWriter(file);
 	BufferedWriter br = new BufferedWriter(fr);
 	try {
 	    long start = System.currentTimeMillis();
-	    String result = getTreeJson();
+	    String result = getTreeJson(tableName, ancestor);
 	    long finish = System.currentTimeMillis();
 	    double time = (finish - start) / 1000;
 	    System.out.println("Прошло времени в секундах: " + time);
@@ -69,9 +74,33 @@ public class JsonHelper {
 	List<Person> tree = MySqlHelper.getTreeFormTable(tableName);
 	treeJson = new ArrayList<JsonPerson>();
 	for (Person person : tree) {
+	    loopbackProtection(person);
 	    treeJson.add(new JsonPerson(person));
 	}
 	tree = null;
+    }
+
+    /**
+     * Среди потомков Рюрика возможно зацикливание, когда в информации о детях
+     * персоны есть ссылки на матерей детей, а на страницах матерей ответная
+     * ссылка на персону. В этом случае у персоны среди детей может быть
+     * идентификатор собственного родителя, что послучит причиной зацикливания.
+     * <br>
+     * Примером может послужить <a href=
+     * "https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%80%D0%BB_IX_(%D0%BA%D0%BE%D1%80%D0%BE%D0%BB%D1%8C_%D0%A4%D1%80%D0%B0%D0%BD%D1%86%D0%B8%D0%B8)">
+     * Карл IX</a> и его любовница <a href=
+     * "https://ru.wikipedia.org/wiki/%D0%A2%D1%83%D1%88%D0%B5,_%D0%9C%D0%B0%D1%80%D0%B8">
+     * Мария Туше</a><br>
+     * Избавляемся от дубликатов, путем удаления из списка детей тех, кто есть в
+     * родителях.
+     */
+    private static void loopbackProtection(Person person) {
+	for (int id : person.getParents()) {
+	    if (person.getChildren().contains(id)) {
+		System.out.println(person.getId());
+		person.removeChild(id);
+	    }
+	}
     }
 
     /** Расчитать количество потомков для всего родословного древа */
@@ -109,20 +138,39 @@ public class JsonHelper {
     }
 
     /** Сохранить родословное древо */
-    private static String getTreeJson() throws Exception {
+    private static String getTreeJson(String tableName, String ancestor) throws Exception {
+	boolean isBigTree = treeJson.size() > 500;
 	for (int i = 0; i < treeJson.size(); i++) {
-	    JsonPerson person = treeJson.get(i);
-	    String format = person.getFormat();
-	    List<Integer> children = person.getChildren();
-	    for (int idChild : children) {
-		JsonPerson child = findJsonPerson(idChild);
-		format = format.replace("indefinedChild" + idChild + " ", child.getFormat());
+	    JsonPerson jperson = treeJson.get(i);
+	    try {
+		StringBuilder sb = new StringBuilder();
+		String json = jperson.getPersonJson();
+		sb.append(json);
+		List<Integer> children = jperson.getChildren();
+		for (int j = 0; j < children.size(); j++) {
+		    int idChild = children.get(j);
+		    JsonPerson jChild = findJsonPerson(idChild);
+		    String formatChild = !isBigTree || jChild.isFirstParent(jperson.getId())
+			    ? MySqlHelper.getFormat(tableName, idChild)
+			    : jChild.getDublicateJson(ancestor, jperson.getId());
+		    sb.append(formatChild);
+		    if (j + 1 < children.size()) {
+			sb.append(", ");
+		    }
+		}
+		sb.append("]}");
+		String result = sb.toString();
+		MySqlHelper.updateFormat(tableName, jperson.getId(), result);
+		if (i % 100 == 0 || i + 1 == treeJson.size()) {
+		    System.out.println("Успешно: " + jperson.getId() + " - это " + i + " из " + treeJson.size());
+		}
+	    } catch (PacketTooBigException ex) {
+		System.out.println(jperson.getDescendants());
+		throw ex;
 	    }
-	    person.setFormat(format);
-
-	    System.out.println(format);
 	}
-	return treeJson.get(treeJson.size() - 1).getFormat();
+	String result = MySqlHelper.getFormat(tableName, 1);
+	return result;
     }
 
     /** Найти персону в списке */

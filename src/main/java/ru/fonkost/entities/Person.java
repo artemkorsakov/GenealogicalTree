@@ -122,8 +122,12 @@ public class Person {
 	if (!children.contains(oldId)) {
 	    return;
 	}
-	children.remove((Object) oldId);
+	removeChild(oldId);
 	setChild(newId);
+    }
+
+    public void removeChild(int id) {
+	children.remove((Object) id);
     }
 
     /** Возвращает список родителей */
@@ -134,6 +138,14 @@ public class Person {
     /** Устанавливает идентификатор родителя */
     public void setParent(int parent) {
 	parents.add(parent);
+    }
+
+    /** Является ли заданный родитель первым? */
+    public boolean isFirstParent(int parent) {
+	if (parents.size() == 0) {
+	    return false;
+	}
+	return parents.get(0) == parent;
     }
 
     /** Возвращает номер колена */
