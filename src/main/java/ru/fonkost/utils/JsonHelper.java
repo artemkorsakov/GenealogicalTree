@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.mysql.cj.jdbc.exceptions.PacketTooBigException;
-
 import ru.fonkost.entities.JsonPerson;
 import ru.fonkost.entities.Person;
 
@@ -110,6 +108,7 @@ public class JsonHelper {
 	    int count = getDescendants(jp);
 	    jp.setDescendants(count);
 	}
+	System.out.println("У основателя династии " + treeJson.get(0).getDescendants() + " потомков");
     }
 
     /** Вернуть количество потомков для всего родословного древа */
@@ -142,32 +141,24 @@ public class JsonHelper {
 	boolean isBigTree = treeJson.size() > 500;
 	for (int i = 0; i < treeJson.size(); i++) {
 	    JsonPerson jperson = treeJson.get(i);
-	    try {
-		StringBuilder sb = new StringBuilder();
-		String json = jperson.getPersonJson();
-		sb.append(json);
-		List<Integer> children = jperson.getChildren();
-		for (int j = 0; j < children.size(); j++) {
-		    int idChild = children.get(j);
-		    JsonPerson jChild = findJsonPerson(idChild);
-		    String formatChild = !isBigTree || jChild.isFirstParent(jperson.getId())
-			    ? MySqlHelper.getFormat(tableName, idChild)
-			    : jChild.getDublicateJson(ancestor, jperson.getId());
-		    sb.append(formatChild);
-		    if (j + 1 < children.size()) {
-			sb.append(", ");
-		    }
+	    StringBuilder sb = new StringBuilder();
+	    String json = jperson.getPersonJson();
+	    sb.append(json);
+	    List<Integer> children = jperson.getChildren();
+	    for (int j = 0; j < children.size(); j++) {
+		int idChild = children.get(j);
+		JsonPerson jChild = findJsonPerson(idChild);
+		boolean isBigDescendants = jChild.getDescendants() > 25;
+		String formatChild = isBigDescendants && isBigTree && !jChild.isFirstParent(jperson.getPersonId())
+			? jChild.getDublicateJson(ancestor, jperson.getPersonId())
+			: MySqlHelper.getFormat(tableName, idChild).replace("person", "person" + jperson.getId() + "_");
+		sb.append(formatChild);
+		if (j + 1 < children.size()) {
+		    sb.append(", ");
 		}
-		sb.append("]}");
-		String result = sb.toString();
-		MySqlHelper.updateFormat(tableName, jperson.getId(), result);
-		if (i % 100 == 0 || i + 1 == treeJson.size()) {
-		    System.out.println("Успешно: " + jperson.getId() + " - это " + i + " из " + treeJson.size());
-		}
-	    } catch (PacketTooBigException ex) {
-		System.out.println(jperson.getDescendants());
-		throw ex;
 	    }
+	    sb.append("]}");
+	    MySqlHelper.updateFormat(tableName, jperson.getPersonId(), sb.toString());
 	}
 	String result = MySqlHelper.getFormat(tableName, 1);
 	return result;

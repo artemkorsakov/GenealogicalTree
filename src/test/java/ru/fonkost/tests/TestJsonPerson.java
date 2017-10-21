@@ -111,7 +111,7 @@ public class TestJsonPerson {
 	JsonPerson.resetCount();
 	Person rurick = new Person("https://ru.wikipedia.org");
 	JsonPerson jp = new JsonPerson(rurick);
-	assertTrue(jp.getId() == 1);
+	assertTrue(jp.getPersonId() == 1);
     }
 
     @Test

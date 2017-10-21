@@ -24,9 +24,14 @@ public class JsonPerson {
 	return person.isFirstParent(parent);
     }
 
-    /** Вернуть идентификатор JsonPerson */
-    public int getId() {
+    /** Вернуть идентификатор Person */
+    public int getPersonId() {
 	return person.getId();
+    }
+
+    /** Вернуть идентификатор */
+    public int getId() {
+	return id;
     }
 
     /** Вернуть детей персоны */

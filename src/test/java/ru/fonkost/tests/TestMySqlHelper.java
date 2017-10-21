@@ -99,9 +99,9 @@ public class TestMySqlHelper {
 
     @Test
     public void testUpdateFormat() throws Exception {
-	MySqlHelper.updateFormat("formatrurick20170910", 1, "testUpdateFormat");
-	String format = MySqlHelper.getFormat("formatrurick20170910", 1);
-	assertTrue(format.equals("testUpdateFormat"));
-	MySqlHelper.updateFormat("formatrurick20170910", 1, "");
+	MySqlHelper.updateFormat("testupdateformat", 1, "newValue");
+	String format = MySqlHelper.getFormat("testupdateformat", 1);
+	assertTrue(format.equals("newValue"));
+	MySqlHelper.updateFormat("testupdateformat", 1, "");
     }
 }
