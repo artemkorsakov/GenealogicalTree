@@ -2,26 +2,38 @@
 package ru.fonkost.pageObjects;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.List;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-import ru.fonkost.driverHelper.DriverHelper;
 import ru.fonkost.entities.Person;
 
 /**
- * Страница исторического лица на Wikipedia. Например,
- * <a href="https://ru.wikipedia.org/wiki/%D0%A0%D1%8E%D1%80%D0%B8%D0%BA">Рюрика
- * </a>
+ * Страница исторического лица. В зависимости от переданной ссылки определяется,
+ * к какому домену принадлежит ссылка и возвращается экземпляр класса страницы
+ * для заданного домена.
+ *
+ * @author Артём Корсаков
  */
-public class PersonPage {
-    private WebDriver driver;
+public abstract class PersonPage {
+    protected WebDriver driver;
 
-    public PersonPage(WebDriver driver) {
-	this.driver = driver;
+    /**
+     * Создание страницы в зависимости от домена.
+     */
+    public static PersonPage createPersonPage(WebDriver driver, String link) throws Exception {
+	if (link == null) {
+	    throw new Exception("Link can not be null");
+	}
+	URL url = new URL(link);
+	String host = url.getHost();
+	if (host.contains("wikipedia")) {
+	    return new WikipediaPage(driver);
+	} else if (host.contains("wikidata")) {
+	    return new WikidataPage(driver);
+	}
+	throw new Exception("The page for the link " + link + " is not defined");
     }
 
     /**
@@ -43,15 +55,7 @@ public class PersonPage {
      * дубликатов. Поэтому в качестве урла используется тот урл, на который
      * редиректятся все остальные.
      */
-    public Person getPerson(String url) throws MalformedURLException {
-	driver.navigate().to(url);
-
-	String name = getName();
-
-	Person person = new Person(driver.getCurrentUrl());
-	person.setName(name);
-	return person;
-    }
+    public abstract Person getPerson(String url) throws MalformedURLException;
 
     /**
      * Возвращает список урлов страниц детей персоны.
@@ -61,54 +65,5 @@ public class PersonPage {
      * результате будут повторно вычислены дети родителя, т.е. братья и сестры
      * текущей персоны.
      */
-    public List<Person> getChildrenUrl() throws MalformedURLException {
-	waitLoadPage();
-
-	if (DriverHelper.hasAnchor(driver)) {
-	    return new ArrayList<Person>();
-	}
-
-	List<WebElement> childrenLinks = getChildrenLinks();
-	List<Person> children = new ArrayList<Person>();
-	for (WebElement link : childrenLinks) {
-	    if (DriverHelper.isSup(link)) {
-		continue;
-	    }
-	    Person person = new Person(link.getAttribute("href"));
-	    person.setNameUrl(link.getText());
-	    if (person.isCorrectNameUrl()) {
-		children.add(person);
-	    }
-	}
-	return children;
-    }
-
-    private String getName() throws MalformedURLException {
-	waitLoadPage();
-	String namePage = driver.findElement(By.cssSelector("#firstHeading")).getText();
-
-	if (!DriverHelper.hasAnchor(driver)) {
-	    return namePage;
-	}
-
-	String anchor = DriverHelper.getAnchor(driver);
-	List<WebElement> list = DriverHelper.getElements(driver, By.id(anchor));
-
-	if (list.size() == 0) {
-	    return namePage;
-	}
-
-	String name = list.get(0).getText().trim();
-	return name.isEmpty() ? namePage : name;
-    }
-
-    private List<WebElement> getChildrenLinks() {
-	List<WebElement> childrenLinks = DriverHelper.getElements(driver, By.xpath(
-		"//table[contains(@class, 'infobox')]//tr[th[.='Дети:']]//a[not(@class='new' or @class='extiw')]"));
-	return childrenLinks;
-    }
-
-    private void waitLoadPage() {
-	this.driver.findElement(By.cssSelector("#firstHeading"));
-    }
+    public abstract List<Person> getChildrenUrl() throws MalformedURLException;
 }

@@ -19,6 +19,14 @@ import ru.fonkost.utils.ExcelWorker;
 
 public class TestExcelWorker {
     @Test
+    public void testEmptyList() throws Exception {
+	List<Person> persons = new ArrayList<Person>();
+	ExcelWorker excelWorker = new ExcelWorker();
+	String fileName = "C:\\workspace\\temp\\empty.xls";
+	excelWorker.savePersons(fileName, persons);
+    }
+
+    @Test
     public void testExcelWorker() throws Exception {
 	String fileName = "C:\\workspace\\temp\\dynasticTree.xls";
 

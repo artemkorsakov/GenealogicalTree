@@ -148,7 +148,7 @@ public class JsonHelper {
 	    for (int j = 0; j < children.size(); j++) {
 		int idChild = children.get(j);
 		JsonPerson jChild = findJsonPerson(idChild);
-		boolean isBigDescendants = jChild.getDescendants() > 25;
+		boolean isBigDescendants = jChild.getDescendants() > 100;
 		String formatChild = isBigDescendants && isBigTree && !jChild.isFirstParent(jperson.getPersonId())
 			? jChild.getDublicateJson(ancestor, jperson.getPersonId())
 			: MySqlHelper.getFormat(tableName, idChild).replace("person", "person" + jperson.getId() + "_");

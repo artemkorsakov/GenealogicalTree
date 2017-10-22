@@ -36,9 +36,8 @@ public class TestGenerateGenealogicalTree {
 
 	try {
 	    GenerateGenealogicalTree.main(new String[] { "http://fonkost.ru/" });
-	} catch (IllegalArgumentException ex) {
-	    assertTrue(ex.getMessage().equals(
-		    "Алгоритм предназначен для генерации родословного древа только на основе данных Wikipedia"));
+	} catch (Exception ex) {
+	    assertTrue(ex.getMessage().equals("The page for the link http://fonkost.ru/ is not defined"));
 	}
     }
 

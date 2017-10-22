@@ -53,18 +53,20 @@ public final class GenerateGenealogicalTree {
     /**
      * Возвращается url основателя династии, если передан корректный параметр
      */
-    private static String getUrl(String[] args) {
+    private static String getUrl(String[] args) throws Exception {
 	if (args == null || args.length != 1) {
 	    throw new IllegalArgumentException("Должен быть задан один параметр");
 	}
-
 	try {
 	    URL url = new URL(args[0]);
-	    if (!url.getHost().contains("wikipedia.org")) {
-		throw new IllegalArgumentException(
-			"Алгоритм предназначен для генерации родословного древа только на основе данных Wikipedia");
+	    WebDriver driver = DriverHelper.getDriver();
+	    try {
+		PersonPage.createPersonPage(driver, url.toString());
+		return url.toString();
+	    } catch (Exception ex) {
+		driver.quit();
+		throw ex;
 	    }
-	    return url.toString();
 	} catch (MalformedURLException ex) {
 	    throw new IllegalArgumentException("Некорректный урл " + args[0]);
 	}
@@ -88,11 +90,11 @@ public final class GenerateGenealogicalTree {
      *            url основателя династии
      * @return родословное древо
      */
-    public static GenealogicalTree getGenealogicalTreeByUrl(String url) throws MalformedURLException {
+    public static GenealogicalTree getGenealogicalTreeByUrl(String url) throws Exception {
 	WebDriver driver = DriverHelper.getDriver();
 	Person person = new Person(url);
 	GenealogicalTree tree = new GenealogicalTree(person);
-	PersonPage page = new PersonPage(driver);
+	PersonPage page = PersonPage.createPersonPage(driver, url);
 	while (tree.hasUnvisitingPerson()) {
 	    String currentUrl = tree.getCurrentUrl();
 	    Person currentPerson = page.getPerson(currentUrl);

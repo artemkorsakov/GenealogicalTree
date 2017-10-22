@@ -14,14 +14,15 @@ import ru.fonkost.utils.JsonHelper;
  * @author Артём Корсаков
  */
 public class GenerateJsonFromBD {
-
     /**
      * Метод выгружает из БД родословное древо и сохраняет его в Json. Создан
      * для родословных деревьев, сгенерированных до выгрузки в Json.
      */
     public static void main(String[] args) throws Exception {
-	String tableName = "20170910_rurick";
-	JsonHelper.saveTree(tableName, "rurick");
+	if (args == null || args.length != 2) {
+	    throw new IllegalArgumentException("Must be two parameters");
+	}
+	JsonHelper.saveTree(args[0], args[1]);
 	System.out.println("Complite");
     }
 }

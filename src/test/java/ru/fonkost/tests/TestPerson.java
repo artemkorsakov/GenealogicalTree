@@ -386,6 +386,7 @@ public class TestPerson {
     public void testParents() throws MalformedURLException {
 	Person first = new Person("https://ru.wikipedia.org/wiki/Рюрик");
 	assertTrue(first.getParents().size() == 0);
+	assertFalse(first.isFirstParent(5));
 	first.setParent(5);
 	assertTrue(first.getParents().size() == 1);
 	assertTrue(first.getParents().get(0) == 5);
