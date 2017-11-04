@@ -44,6 +44,38 @@ public class TestWikidataPage {
 	assertTrue(person2.getUrl().equals("https://www.wikidata.org/wiki/Q18279069"));
     }
 
+    @Test
+    public void testChildrenSize() throws Exception {
+	driver.navigate().to("https://www.wikidata.org/wiki/Q586541");
+	PersonPage page = PersonPage.createPersonPage(driver, "https://www.wikidata.org/wiki/Q586541");
+	List<Person> children = page.getChildrenUrl();
+	assertTrue(children.size() == 4);
+	driver.navigate().to("https://www.wikidata.org/wiki/Q37085");
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 2);
+    }
+
+    @Test
+    public void testIsCorrectNameUrl() throws Exception {
+	driver.navigate().to("https://www.wikidata.org/wiki/Q2601799");
+	PersonPage page = PersonPage.createPersonPage(driver, "https://www.wikidata.org/wiki/Q2601799");
+	List<Person> children = page.getChildrenUrl();
+	assertTrue(children.size() == 0);
+	driver.navigate().to("https://www.wikidata.org/wiki/Q785620");
+	children = page.getChildrenUrl();
+	assertTrue(children.size() == 1);
+	Person person = children.get(0);
+	assertTrue(person.getNameUrl().equals("Armenak"));
+	assertTrue(person.getUrl().equals("https://www.wikidata.org/wiki/Q4068494"));
+    }
+
+    @Test
+    public void testNotRuLabel() throws Exception {
+	PersonPage page = PersonPage.createPersonPage(driver, "https://www.wikidata.org/wiki/Q399879");
+	Person person = page.getPerson("https://www.wikidata.org/wiki/Q399879");
+	assertTrue(person.getName().equals("Adela of France"));
+    }
+
     @AfterClass
     public static void Stop() {
 	driver.quit();

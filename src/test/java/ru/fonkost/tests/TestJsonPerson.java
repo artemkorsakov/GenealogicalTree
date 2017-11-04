@@ -45,8 +45,12 @@ public class TestJsonPerson {
 	assertTrue(jp.getDescendants() == -1);
 	jp.setDescendants(5);
 	assertTrue(jp.getDescendants() == 5);
-	jp.setDescendants(2);
-	assertTrue(jp.getDescendants() == 2);
+	long max = Integer.MAX_VALUE;
+	jp.setDescendants(max);
+	assertTrue(jp.getDescendants() == max);
+	max++;
+	jp.setDescendants(max);
+	assertTrue(jp.getDescendants() == max);
     }
 
     @Test

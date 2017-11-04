@@ -72,7 +72,8 @@ public class WikipediaPage extends PersonPage {
 	}
 
 	String anchor = DriverHelper.getAnchor(driver);
-	List<WebElement> list = DriverHelper.getElements(driver, By.id(anchor));
+	By locator = By.xpath("//*[@id='" + anchor + "']/../*[@class='mw-headline']");
+	List<WebElement> list = DriverHelper.getElements(driver, locator);
 
 	if (list.size() == 0) {
 	    return namePage;

@@ -111,7 +111,7 @@ public class TestPerson {
     }
 
     @Test
-    public void testPersonthisCorrectNameAndNameUrl() throws Exception {
+    public void testPersonWithCorrectNameAndNameUrl() throws Exception {
 	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setName("Рюрик");
 	rurick.setNameUrl("РюрикUrl");
@@ -125,9 +125,15 @@ public class TestPerson {
 	Person rurick = new Person("https://ru.wikipedia.org");
 	rurick.setNameUrl("Александр 1");
 	assertTrue(rurick.isCorrectNameUrl());
+	rurick.setNameUrl("Qedar");
+	assertTrue(rurick.isCorrectNameUrl());
+	rurick.setNameUrl("Rachel");
+	assertTrue(rurick.isCorrectNameUrl());
 	rurick.setNameUrl("1 Александр");
 	assertFalse(rurick.isCorrectNameUrl());
 	rurick.setNameUrl("1");
+	assertFalse(rurick.isCorrectNameUrl());
+	rurick.setNameUrl("Q1687510");
 	assertFalse(rurick.isCorrectNameUrl());
     }
 

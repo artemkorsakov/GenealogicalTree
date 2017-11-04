@@ -80,9 +80,9 @@ public class Person {
      * @return true, if successful
      */
     public boolean isCorrectNameUrl() {
-	Pattern p = Pattern.compile("^[\\D]+.+");
+	Pattern p = Pattern.compile("^Q?[\\d]+.*");
 	Matcher m = p.matcher(nameUrl);
-	return m.matches();
+	return !m.matches();
     }
 
     /** Возвращает короткое имя для заглавия */

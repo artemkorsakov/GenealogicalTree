@@ -30,6 +30,12 @@ import ru.fonkost.utils.MySqlHelper;
  * <li><a href=
  * "https://ru.wikipedia.org/wiki/%D0%A7%D0%B8%D0%BD%D0%B3%D0%B8%D1%81%D1%85%D0%B0%D0%BD">
  * Чингисхана</a></li>
+ * <li><a href="https://www.wikidata.org/wiki/Q70899">Адама (Wikidata)</a></li>
+ * <li><a href="https://www.wikidata.org/wiki/Q7990">Рюрика (Wikidata)</a></li>
+ * <li><a href="https://www.wikidata.org/wiki/Q181915">Романовых (Wikidata)</a>
+ * </li>
+ * <li><a href="https://www.wikidata.org/wiki/Q720">Чингисхана (Wikidata)</a>
+ * </li>
  * </ul>
  */
 public final class GenerateGenealogicalTree {
@@ -63,9 +69,8 @@ public final class GenerateGenealogicalTree {
 	    try {
 		PersonPage.createPersonPage(driver, url.toString());
 		return url.toString();
-	    } catch (Exception ex) {
+	    } finally {
 		driver.quit();
-		throw ex;
 	    }
 	} catch (MalformedURLException ex) {
 	    throw new IllegalArgumentException("Некорректный урл " + args[0]);

@@ -10,7 +10,11 @@ import ru.fonkost.utils.JsonHelper;
  * <a href="http://fonkost.ru/genealogicaltree_tree/rurick">Рюриковичи</a>,
  * <a href="http://fonkost.ru/genealogicaltree_tree/adam">Адам</a>,
  * <a href="http://fonkost.ru/genealogicaltree_tree/genghiskhan">Чингисхан</a>
- *
+ * <a href="https://www.wikidata.org/wiki/Q70899">Адама (Wikidata)</a>
+ * <a href="https://www.wikidata.org/wiki/Q7990">Рюрика (Wikidata)</a>
+ * <a href="https://www.wikidata.org/wiki/Q181915">Романовых (Wikidata)</a>
+ * <a href="https://www.wikidata.org/wiki/Q720">Чингисхана (Wikidata)</a>
+ * 
  * @author Артём Корсаков
  */
 public class GenerateJsonFromBD {

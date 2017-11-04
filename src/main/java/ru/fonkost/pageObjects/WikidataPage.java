@@ -17,11 +17,11 @@ import ru.fonkost.entities.Person;
  * <a href="https://www.wikidata.org/wiki/Q7990">Рюрика </a>
  */
 public class WikidataPage extends PersonPage {
+    private final By loadPageBy = By.xpath("//th[@class='wikibase-entitytermsforlanguageview-language'][.='Russian']");
     private final By namePageBy = By.cssSelector("#firstHeading");
     private final By nameRuBy = By
 	    .xpath("//div[@class='wikibase-labelview'][@lang='ru']//span[@class='wikibase-labelview-text']");
-    private final By childrenLinks = By
-	    .xpath("//div[@id='P40']//div[contains(@class, 'wikibase-statementview-mainsnak')]//a");
+    private final By childrenLinks = By.xpath("//div[@id='P40']//div[@class = 'wikibase-statementview-mainsnak']//a");
 
     WikidataPage(WebDriver driver) {
 	this.driver = driver;
@@ -51,13 +51,20 @@ public class WikidataPage extends PersonPage {
 	for (WebElement el : childrenEl) {
 	    Person person = new Person(el.getAttribute("href"));
 	    person.setNameUrl(el.getText());
-	    children.add(person);
+	    if (person.isCorrectNameUrl()) {
+		children.add(person);
+	    }
 	}
 	return children;
     }
 
     private String getName() throws MalformedURLException {
+	waitLoadPage();
 	String namePage = driver.findElement(namePageBy).getText();
+	int index = namePage.indexOf(" (Q");
+	if (index != -1) {
+	    namePage = namePage.substring(0, index);
+	}
 	List<WebElement> list = DriverHelper.getElements(driver, nameRuBy);
 	if (list.size() == 0) {
 	    return namePage;
@@ -67,6 +74,6 @@ public class WikidataPage extends PersonPage {
     }
 
     private void waitLoadPage() {
-	this.driver.findElement(namePageBy);
+	this.driver.findElement(loadPageBy);
     }
 }

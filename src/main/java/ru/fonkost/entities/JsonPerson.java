@@ -7,7 +7,7 @@ public class JsonPerson {
     private static int count = 0;
     private int id;
     private Person person;
-    private int descendants = -1;
+    private long descendants = -1;
 
     public JsonPerson(Person person) {
 	this.person = person;
@@ -39,11 +39,11 @@ public class JsonPerson {
 	return person.getChildren();
     }
 
-    public int getDescendants() {
+    public long getDescendants() {
 	return descendants;
     }
 
-    public void setDescendants(int descendants) {
+    public void setDescendants(long descendants) {
 	this.descendants = descendants;
     }
 

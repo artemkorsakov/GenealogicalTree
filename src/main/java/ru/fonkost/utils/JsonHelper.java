@@ -105,15 +105,15 @@ public class JsonHelper {
     private static void calculateDescendants() throws Exception {
 	for (int i = treeJson.size() - 1; i >= 0; i--) {
 	    JsonPerson jp = treeJson.get(i);
-	    int count = getDescendants(jp);
+	    long count = getDescendants(jp);
 	    jp.setDescendants(count);
 	}
 	System.out.println("У основателя династии " + treeJson.get(0).getDescendants() + " потомков");
     }
 
     /** Вернуть количество потомков для всего родословного древа */
-    private static int getDescendants(JsonPerson person) throws Exception {
-	int result = person.getDescendants();
+    private static long getDescendants(JsonPerson person) throws Exception {
+	long result = person.getDescendants();
 	if (result != -1) {
 	    return result;
 	}
@@ -131,7 +131,8 @@ public class JsonHelper {
 	Collections.sort(treeJson, new Comparator<JsonPerson>() {
 	    @Override
 	    public int compare(JsonPerson o1, JsonPerson o2) {
-		return o1.getDescendants() - o2.getDescendants();
+		long dif = o1.getDescendants() - o2.getDescendants();
+		return dif < 0 ? -1 : dif > 0 ? 1 : 0;
 	    }
 	});
     }
@@ -148,7 +149,7 @@ public class JsonHelper {
 	    for (int j = 0; j < children.size(); j++) {
 		int idChild = children.get(j);
 		JsonPerson jChild = findJsonPerson(idChild);
-		boolean isBigDescendants = jChild.getDescendants() > 100;
+		boolean isBigDescendants = jChild.getDescendants() > 10;
 		String formatChild = isBigDescendants && isBigTree && !jChild.isFirstParent(jperson.getPersonId())
 			? jChild.getDublicateJson(ancestor, jperson.getPersonId())
 			: MySqlHelper.getFormat(tableName, idChild).replace("person", "person" + jperson.getId() + "_");
