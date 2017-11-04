@@ -50,11 +50,16 @@ public class Person {
 	return name;
     }
 
+    /*
+     * Заменяем одинарные кавычки, чтобы не было проблем с сохранением персоны в
+     * БД, а двойные кавычки заменяем, чтобы не было проблем с генерацией
+     * json-формата (https://www.wikidata.org/wiki/Q3763021)
+     */
     public void setName(String name) {
 	if (name == null || name.replace("'", "").trim().isEmpty()) {
 	    throw new IllegalArgumentException("Имя должно иметь непустое значение");
 	}
-	this.name = name.replace("'", "").trim();
+	this.name = name.replace("'", "").replace("\"", "").trim();
     }
 
     /**
@@ -65,11 +70,12 @@ public class Person {
 	return nameUrl;
     }
 
+    /* Про кавычки см. комментарий для setName(String name) */
     public void setNameUrl(String nameUrl) {
 	if (nameUrl == null || nameUrl.replace("'", "").trim().isEmpty()) {
 	    this.nameUrl = "";
 	} else {
-	    this.nameUrl = nameUrl.replace("'", "").trim();
+	    this.nameUrl = nameUrl.replace("'", "").replace("\"", "").trim();
 	}
     }
 

@@ -89,6 +89,19 @@ public class TestJsonPerson {
     }
 
     @Test
+    public void testGetPersonJsonWithNameContainsApostrophe() throws MalformedURLException {
+	Person.resetCount();
+	JsonPerson.resetCount();
+	Person rurick = new Person("https://ru.wikipedia.org");
+	rurick.setName("Gianfrancesco \"Cagnino\" \'Gonzaga\'");
+	rurick.setNameUrl("Gianfrancesco \"Cagnino\" \'Gonzaga\'");
+	JsonPerson jp = new JsonPerson(rurick);
+	System.out.println(jp.getPersonJson());
+	String json = "{id:\\\"person0\\\", name:\\\"Gianfrancesco Cagnino Gonzaga <br><a href='https://ru.wikipedia.org'>wiki</a>\\\", data:{ \\\"id\\\": \\\"1\\\", \\\"name\\\": \\\"Gianfrancesco Cagnino Gonzaga\\\", \\\"nameUrl\\\": \\\"Gianfrancesco Cagnino Gonzaga\\\", \\\"numGen\\\": \\\"0\\\" }, children:[";
+	assertTrue(jp.getPersonJson().equals(json));
+    }
+
+    @Test
     public void testGetDublicateJson() throws Exception {
 	Person.resetCount();
 	JsonPerson.resetCount();
